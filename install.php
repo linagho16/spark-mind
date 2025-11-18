@@ -91,6 +91,9 @@ error_reporting(E_ALL);
             font-weight: 600;
             margin-top: 20px;
             transition: transform 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
         }
         
         .btn:hover {
@@ -113,6 +116,13 @@ error_reporting(E_ALL);
             margin: 5px 0;
             font-family: monospace;
         }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -127,12 +137,13 @@ error_reporting(E_ALL);
             
             try {
                 // Connexion sans spécifier la base de données
+                // ⚠️ MOT DE PASSE MYSQL : 
                 $pdo = new PDO("mysql:host=localhost;charset=utf8mb4", "root", "");
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
                 // Créer la base de données
                 $pdo->exec("CREATE DATABASE IF NOT EXISTS sparkmind_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-                echo '<div class="message success">✅ Base de données créée avec succès</div>';
+                echo '<div class="message success">✅ Base de données "sparkmind_db" créée avec succès</div>';
                 
                 // Sélectionner la base de données
                 $pdo->exec("USE sparkmind_db");
@@ -214,10 +225,10 @@ error_reporting(E_ALL);
                         'situation' => 'famille',
                         'categories_aide' => json_encode(['alimentaire']),
                         'urgence' => 'tres-urgent',
-                        'description_situation' => 'Je suis père de 3 enfants et je traverse actuellement une période difficile.',
-                        'demande_exacte' => 'Aide alimentaire pour 2 semaines.',
+                        'description_situation' => 'Je suis père de 3 enfants et je traverse actuellement une période difficile après avoir perdu mon emploi il y a 2 mois. Mes économies sont épuisées.',
+                        'demande_exacte' => 'Aide alimentaire pour ma famille (riz, pâtes, huile, lait pour enfants) pour tenir au moins 2 semaines.',
                         'telephone' => '+216 98 765 432',
-                        'email' => 'mohamed@email.com',
+                        'email' => 'mohamed.benali@email.com',
                         'preference_contact' => 'appel',
                         'horaires_disponibles' => json_encode(['matin', 'apres-midi']),
                         'visibilite' => 'publique',
@@ -232,10 +243,10 @@ error_reporting(E_ALL);
                         'situation' => 'enfants',
                         'categories_aide' => json_encode(['scolaire']),
                         'urgence' => 'urgent',
-                        'description_situation' => 'Mes enfants ont besoin de fournitures scolaires.',
-                        'demande_exacte' => '2 cartables et fournitures.',
+                        'description_situation' => 'Mes deux enfants ont besoin de fournitures scolaires pour la rentrée. Je suis mère célibataire et mes ressources sont limitées.',
+                        'demande_exacte' => '2 cartables, cahiers, stylos et livres scolaires pour mes enfants.',
                         'telephone' => '+216 22 123 456',
-                        'email' => 'fatma@email.com',
+                        'email' => 'fatma.t@email.com',
                         'preference_contact' => 'sms',
                         'horaires_disponibles' => json_encode(['soir']),
                         'visibilite' => 'publique',
@@ -250,8 +261,8 @@ error_reporting(E_ALL);
                         'situation' => 'seul',
                         'categories_aide' => json_encode(['medicale']),
                         'urgence' => 'tres-urgent',
-                        'description_situation' => 'Besoin urgent de consultation médicale.',
-                        'demande_exacte' => 'Consultation et médicaments.',
+                        'description_situation' => 'J\'ai besoin d\'une consultation médicale urgente mais je n\'ai pas les moyens de payer.',
+                        'demande_exacte' => 'Consultation médicale et médicaments pour diabète.',
                         'telephone' => '+216 50 789 123',
                         'email' => '',
                         'preference_contact' => 'appel',
@@ -259,6 +270,60 @@ error_reporting(E_ALL);
                         'visibilite' => 'semi-privee',
                         'anonyme' => 0,
                         'statut' => 'nouveau'
+                    ],
+                    [
+                        'nom' => 'Salma Mansouri',
+                        'age' => 28,
+                        'gouvernorat' => 'Sousse',
+                        'ville' => 'Sousse Ville',
+                        'situation' => 'famille',
+                        'categories_aide' => json_encode(['vestimentaire']),
+                        'urgence' => 'important',
+                        'description_situation' => 'Ma famille a besoin de vêtements pour l\'hiver qui approche.',
+                        'demande_exacte' => 'Vêtements chauds pour 2 enfants (5 et 8 ans).',
+                        'telephone' => '+216 25 456 789',
+                        'email' => 'salma.m@email.com',
+                        'preference_contact' => 'sms',
+                        'horaires_disponibles' => json_encode(['apres-midi', 'soir']),
+                        'visibilite' => 'publique',
+                        'anonyme' => 0,
+                        'statut' => 'traite'
+                    ],
+                    [
+                        'nom' => 'Youssef Gharbi',
+                        'age' => 45,
+                        'gouvernorat' => 'Ariana',
+                        'ville' => 'Ariana Ville',
+                        'situation' => 'famille',
+                        'categories_aide' => json_encode(['financiere']),
+                        'urgence' => 'urgent',
+                        'description_situation' => 'J\'ai des dettes urgentes à régler et je cherche une aide temporaire.',
+                        'demande_exacte' => 'Aide financière pour payer le loyer de ce mois.',
+                        'telephone' => '+216 52 963 741',
+                        'email' => 'youssef.g@email.com',
+                        'preference_contact' => 'appel',
+                        'horaires_disponibles' => json_encode(['matin']),
+                        'visibilite' => 'privee',
+                        'anonyme' => 0,
+                        'statut' => 'en-cours'
+                    ],
+                    [
+                        'nom' => 'Amira Ben Salem',
+                        'age' => 32,
+                        'gouvernorat' => 'Tunis',
+                        'ville' => 'El Menzah',
+                        'situation' => 'seul',
+                        'categories_aide' => json_encode(['psychologique']),
+                        'urgence' => 'peut-attendre',
+                        'description_situation' => 'Je traverse une période difficile et j\'ai besoin de soutien psychologique.',
+                        'demande_exacte' => 'Consultation avec un psychologue.',
+                        'telephone' => '+216 29 874 563',
+                        'email' => 'amira.bs@email.com',
+                        'preference_contact' => 'email',
+                        'horaires_disponibles' => json_encode(['apres-midi']),
+                        'visibilite' => 'semi-privee',
+                        'anonyme' => 1,
+                        'statut' => 'traite'
                     ]
                 ];
                 
@@ -271,48 +336,84 @@ error_reporting(E_ALL);
                 
                 $stmt = $pdo->prepare($sql);
                 
+                $inserted = 0;
                 foreach ($demandes_test as $demande) {
                     try {
                         $stmt->execute($demande);
+                        $inserted++;
                     } catch(PDOException $e) {
-                        // Ignorer si existe déjà
+                        // Ignorer si les données existent déjà
                     }
                 }
                 
-                echo '<div class="message success">✅ Données de test insérées</div>';
+                echo '<div class="message success">✅ ' . $inserted . ' demandes de test insérées</div>';
                 
                 echo '<div class="message success" style="margin-top: 30px;">
                         <h2 style="margin-bottom: 15px;">🎉 Installation terminée avec succès !</h2>
+                        <p style="margin-top: 10px;">La base de données <strong>sparkmind_db</strong> a été créée avec toutes les tables nécessaires.</p>
                       </div>';
                 
                 echo '<div class="credentials">
-                        <h3>🔐 Identifiants de connexion</h3>
+                        <h3>🔐 Identifiants de connexion Back Office</h3>
                         <p><strong>Username:</strong> admin</p>
                         <p><strong>Password:</strong> admin123</p>
-                        <p style="margin-top: 15px; color: #e65100;"><strong>⚠️ Changez ce mot de passe immédiatement !</strong></p>
+                        <p style="margin-top: 15px; color: #e65100;"><strong>⚠️ Changez ce mot de passe immédiatement après la première connexion !</strong></p>
                       </div>';
                 
-                echo '<div style="text-align: center;">
-                        <a href="views/backoffice/back.html" class="btn">Accéder au Back Office</a>
-                        <a href="views/frontoffice/formulaire.html" class="btn">Accéder au Formulaire</a>
+                echo '<div class="credentials" style="background: #e3f2fd; margin-top: 15px;">
+                        <h3 style="color: #1565c0;">🗄️ Configuration MySQL</h3>
+                        <p><strong>Host:</strong> localhost</p>
+                        <p><strong>Database:</strong> sparkmind_db</p>
+                        <p><strong>Username:</strong> root</p>
+                        <p><strong>Password:</strong> </p>
+                      </div>';
+                
+                echo '<div style="text-align: center;" class="btn-group">
+                        <a href="views/backoffice/back.html" class="btn">📊 Accéder au Back Office</a>
+                        <a href="views/frontoffice/formulaire.html" class="btn">✋ Accéder au Formulaire</a>
                       </div>';
                 
             } catch(PDOException $e) {
-                echo '<div class="message error">❌ Erreur: ' . $e->getMessage() . '</div>';
+                echo '<div class="message error">❌ Erreur lors de l\'installation : ' . $e->getMessage() . '</div>';
+                echo '<div class="message info">
+                        <strong>💡 Vérifications :</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>MySQL est-il démarré dans XAMPP ?</li>
+                            <li>Le mot de passe MySQL est-il bien "" ?</li>
+                            <li>Le fichier config.php contient-il le bon mot de passe ?</li>
+                        </ul>
+                      </div>';
             }
             
         } else {
             // Afficher le formulaire d'installation
             ?>
             <div class="message info">
-                <p><strong>Bienvenue dans l'installation de SparkMind !</strong></p>
-                <p style="margin-top: 10px;">Ce script va créer la base de données et les tables nécessaires.</p>
-                <p style="margin-top: 10px;"><strong>Configuration requise:</strong></p>
-                <ul style="margin-left: 20px; margin-top: 5px;">
+                <p><strong>👋 Bienvenue dans l'installation de SparkMind !</strong></p>
+                <p style="margin-top: 10px;">Ce script va automatiquement :</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>✅ Créer la base de données <strong>sparkmind_db</strong></li>
+                    <li>✅ Créer les tables (demandes, reponses, utilisateurs)</li>
+                    <li>✅ Créer un compte administrateur</li>
+                    <li>✅ Insérer des données de test</li>
+                </ul>
+            </div>
+            
+            <div class="message info" style="background: #fff3e0; border-left-color: #e65100;">
+                <p><strong>⚠️ Configuration requise :</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
                     <li>PHP 7.4 ou supérieur</li>
                     <li>MySQL 5.7 ou supérieur</li>
                     <li>Extension PDO activée</li>
+                    <li><strong>MySQL password = </strong></li>
                 </ul>
+            </div>
+            
+            <div class="credentials" style="background: #e3f2fd;">
+                <h3 style="color: #1565c0;">🗄️ Votre configuration MySQL :</h3>
+                <p><strong>Host:</strong> localhost</p>
+                <p><strong>Username:</strong> root</p>
+                <p><strong>Password:</strong> </p>
             </div>
             
             <form method="POST" style="text-align: center;">

@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.disabled = true;
         
         // Envoyer les données au serveur
-        fetch('../controllers/DemandeController.php?action=create', {
+        fetch('/SparkMind/controllers/DemandeController.php?action=create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

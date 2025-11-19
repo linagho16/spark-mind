@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don de service</title>
+  <link rel="stylesheet" href="don-service.css">
+</head>
+<body>
+  <div class="container-don">
+    <a href="frontoffice.html" class="btn-return">← Retour</a>
+    <h1>🤝 Don de service</h1>
+    <p class="info-text">Merci pour votre générosité ! Offrez votre temps et vos compétences pour aider ceux qui en ont besoin.</p>
+
+    <form>
+      <label for="type-service">Type de service</label>
+      <select id="type-service">
+        <option>Cours de langue</option>
+        <option>Garde d’animaux</option>
+        <option>Aide scolaire</option>
+        <option>Transport</option>
+        <option>Autre</option>
+      </select>
+
+      <label for="disponibilite">Disponibilité (jours / heures)</label>
+      <input type="text" id="disponibilite" placeholder="Ex: Lundi 14h-18h, Mercredi 9h-12h">
+
+      <label for="zone">Zone géographique</label>
+      <input type="text" id="zone" placeholder="Ex: Tunis, Ariana">
+
+      <label for="competence">Compétence particulière (optionnel)</label>
+      <input type="text" id="competence" placeholder="Ex: enseignant, vétérinaire...">
+
+      <label for="message">Message pour décrire l’aide</label>
+      <textarea id="message" rows="4" placeholder="Ex: Je peux donner des cours de maths à domicile"></textarea>
+
+      <button type="submit" class="submit-btn">Envoyer le don</button>
+    </form>
+  </div>
+</body>
+</html>

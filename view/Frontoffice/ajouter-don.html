@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajouter un don - Aide Solidaire</title>
+  <link rel="stylesheet" href="ajouter-don.css">
+</head>
+<body>
+  <header>
+    <h1>➕ Ajouter un don</h1>
+    <p>Créez votre don personnalisé pour aider comme vous le souhaitez ❤️</p>
+  </header>
+
+  <main class="ajouter-don-container">
+    <div class="tabs">
+      <input type="radio" id="tab-materiel" name="tab-group" checked>
+      <label for="tab-materiel">Matériel</label>
+
+      <input type="radio" id="tab-financier" name="tab-group">
+      <label for="tab-financier">Financier</label>
+
+      <input type="radio" id="tab-service" name="tab-group">
+      <label for="tab-service">Service</label>
+
+      <div class="tab-content" id="content-materiel">
+        <h2>📦 Don matériel</h2>
+        <form>
+          <label>Type d’objet :</label>
+          <select>
+            <option>Vêtements</option>
+            <option>Nourriture</option>
+            <option>Fournitures scolaires</option>
+            <option>Jouets</option>
+          </select>
+
+          <label>Quantité :</label>
+          <input type="number" placeholder="Ex: 5">
+
+          <label>État :</label>
+          <select>
+            <option>Neuf</option>
+            <option>Bon état</option>
+            <option>À réviser</option>
+          </select>
+
+          <label>Région / localisation :</label>
+          <input type="text" placeholder="Ex: Tunis">
+
+          <button type="submit">Envoyer le don</button>
+        </form>
+      </div>
+
+      <div class="tab-content" id="content-financier">
+        <h2>💰 Don financier</h2>
+        <form>
+          <label>Montant :</label>
+          <input type="number" placeholder="Ex: 50 €">
+
+          <label>Type de don :</label>
+          <select>
+            <option>Unique</option>
+            <option>Récurrent</option>
+          </select>
+
+          <label>Moyen de paiement :</label>
+          <select>
+            <option>Carte</option>
+            <option>PayPal</option>
+            <option>Autre</option>
+          </select>
+
+          <label>Message (facultatif) :</label>
+          <textarea placeholder="Pourquoi faites-vous ce don ?"></textarea>
+
+          <button type="submit">Envoyer le don</button>
+        </form>
+      </div>
+
+      <div class="tab-content" id="content-service">
+        <h2>🤝 Don de service</h2>
+        <form>
+          <label>Type de service :</label>
+          <select>
+            <option>Cours de langue</option>
+            <option>Garde d’animaux</option>
+            <option>Aide scolaire</option>
+            <option>Transport</option>
+          </select>
+
+          <label>Disponibilité :</label>
+          <input type="text" placeholder="Ex: Lundi 14h-16h">
+
+          <label>Zone géographique :</label>
+          <input type="text" placeholder="Ex: Sfax">
+
+          <label>Compétence particulière :</label>
+          <input type="text" placeholder="Ex: Informatique, Musique...">
+
+          <label>Message :</label>
+          <textarea placeholder="Décrivez votre aide"></textarea>
+
+          <button type="submit">Envoyer le don</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

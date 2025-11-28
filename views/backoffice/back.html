@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SparkMind - Back Office | Gestion des Demandes d'Aide</title>
+    <title>SparkMind - Back Office | Gestion Complète</title>
     <link rel="stylesheet" href="back.css">
     <script src="back.js" defer></script>
 </head>
@@ -17,34 +17,22 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active">
+            <a href="#demandes" class="nav-item active" onclick="showSection('demandes')">
                 <span class="nav-icon">📊</span>
-                <span>Tableau de bord</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">✋</span>
                 <span>Demandes d'aide</span>
                 <span class="badge">12</span>
             </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">🎁</span>
-                <span>Offres d'aide</span>
+            <a href="#categories" class="nav-item" onclick="showSection('categories')">
+                <span class="nav-icon">📁</span>
+                <span>Catégories</span>
             </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">👥</span>
-                <span>Utilisateurs</span>
+            <a href="#produits" class="nav-item" onclick="showSection('produits')">
+                <span class="nav-icon">📦</span>
+                <span>Produits</span>
             </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">🏘️</span>
-                <span>Groupes</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">💬</span>
-                <span>Discussions</span>
-            </a>
-            <a href="#" class="nav-item">
-                <span class="nav-icon">⚙️</span>
-                <span>Paramètres</span>
+            <a href="#albums" class="nav-item" onclick="showSection('albums')">
+                <span class="nav-icon">📸</span>
+                <span>Albums</span>
             </a>
             <a href="#" class="nav-item logout">
                 <span class="nav-icon">🚪</span>
@@ -55,379 +43,288 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <h1>Gestion des Demandes d'Aide</h1>
-            <div class="top-bar-actions">
-                <div class="search-box">
-                    <input type="text" placeholder="Rechercher une demande...">
-                    <span class="search-icon">🔍</span>
-                </div>
-                <div class="user-profile">
-                    <span class="user-name">Admin</span>
-                    <div class="user-avatar">A</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistics Cards -->
-        <div class="stats-container">
-            <div class="stat-card urgent">
-                <div class="stat-icon">🔴</div>
-                <div class="stat-info">
-                    <h3>3</h3>
-                    <p>Demandes urgentes</p>
+        <!-- ========================================
+             SECTION 1: DEMANDES D'AIDE (EXISTANTE)
+             ======================================== -->
+        <section id="section-demandes" class="content-section active">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <h1>Gestion des Demandes d'Aide</h1>
+                <div class="top-bar-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchDemandes" placeholder="Rechercher une demande...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="user-profile">
+                        <span class="user-name">Admin</span>
+                        <div class="user-avatar">A</div>
+                    </div>
                 </div>
             </div>
-            <div class="stat-card pending">
-                <div class="stat-icon">⏳</div>
-                <div class="stat-info">
-                    <h3>12</h3>
-                    <p>En attente</p>
+
+            <!-- Statistics Cards -->
+            <div class="stats-container">
+                <div class="stat-card urgent">
+                    <div class="stat-icon">🔴</div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Demandes urgentes</p>
+                    </div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>En attente</p>
+                    </div>
+                </div>
+                <div class="stat-card processed">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3>47</h3>
+                        <p>Traitées</p>
+                    </div>
+                </div>
+                <div class="stat-card total">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <h3>62</h3>
+                        <p>Total ce mois</p>
+                    </div>
                 </div>
             </div>
-            <div class="stat-card processed">
-                <div class="stat-icon">✅</div>
-                <div class="stat-info">
-                    <h3>47</h3>
-                    <p>Traitées</p>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Statut:</label>
+                    <select class="filter-select" name="statut">
+                        <option value="">Tous</option>
+                        <option value="nouveau">Nouveau</option>
+                        <option value="en-cours">En cours</option>
+                        <option value="traite">Traité</option>
+                        <option value="refuse">Refusé</option>
+                    </select>
                 </div>
-            </div>
-            <div class="stat-card total">
-                <div class="stat-icon">📈</div>
-                <div class="stat-info">
-                    <h3>62</h3>
-                    <p>Total ce mois</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="filters-section">
-            <div class="filter-group">
-                <label>Statut:</label>
-                <select class="filter-select" name="statut">
-                    <option value="">Tous</option>
-                    <option value="nouveau">Nouveau</option>
-                    <option value="en-cours">En cours</option>
-                    <option value="traite">Traité</option>
-                    <option value="refuse">Refusé</option>
-                </select>
+                <button class="btn-filter">Filtrer</button>
+                <button class="btn-reset">Réinitialiser</button>
             </div>
 
-            <div class="filter-group">
-                <label>Urgence:</label>
-                <select class="filter-select" name="urgence">
-                    <option value="">Toutes</option>
-                    <option value="tres-urgent">Très urgent</option>
-                    <option value="urgent">Urgent</option>
-                    <option value="important">Important</option>
-                    <option value="peut-attendre">Peut attendre</option>
-                </select>
+            <!-- Demandes Table -->
+            <div class="table-container">
+                <table class="demandes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Nom</th>
+                            <th>Gouvernorat</th>
+                            <th>Type d'aide</th>
+                            <th>Urgence</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Données dynamiques -->
+                    </tbody>
+                </table>
             </div>
 
-            <div class="filter-group">
-                <label>Type d'aide:</label>
-                <select class="filter-select" name="type">
-                    <option value="">Tous types</option>
-                    <option value="alimentaire">Alimentaire</option>
-                    <option value="scolaire">Scolaire</option>
-                    <option value="vestimentaire">Vestimentaire</option>
-                    <option value="medicale">Médicale</option>
-                    <option value="financiere">Financière</option>
-                    <option value="logement">Logement</option>
-                    <option value="professionnelle">Professionnelle</option>
-                    <option value="psychologique">Psychologique</option>
-                </select>
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" disabled>« Précédent</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">Suivant »</button>
+            </div>
+        </section>
+
+        <!-- ========================================
+             SECTION 2: CATEGORIES (NOUVELLE)
+             ======================================== -->
+        <section id="section-categories" class="content-section">
+            <div class="top-bar">
+                <h1>📁 Gestion des Catégories</h1>
+                <button class="btn-add" onclick="showAddCategoryForm()">➕ Ajouter une catégorie</button>
             </div>
 
-            <div class="filter-group">
-                <label>Gouvernorat:</label>
-                <select class="filter-select" name="gouvernorat">
-                    <option value="">Tous</option>
-                    <option value="Tunis">Tunis</option>
-                    <option value="Ariana">Ariana</option>
-                    <option value="Sfax">Sfax</option>
-                    <option value="Sousse">Sousse</option>
-                </select>
+            <div class="table-container">
+                <table class="categories-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody">
+                        <!-- Données dynamiques -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================================
+             SECTION 3: PRODUITS (NOUVELLE)
+             ======================================== -->
+        <section id="section-produits" class="content-section">
+            <div class="top-bar">
+                <h1>📦 Gestion des Produits</h1>
+                <button class="btn-add" onclick="showAddProductForm()">➕ Ajouter un produit</button>
             </div>
 
-            <button class="btn-filter">Filtrer</button>
-            <button class="btn-reset">Réinitialiser</button>
-        </div>
+            <div class="table-container">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Date</th>
+                            <th>Catégorie (JOIN)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Données dynamiques -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-        <!-- Demandes Table -->
-        <div class="table-container">
-            <table class="demandes-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Nom</th>
-                        <th>Gouvernorat</th>
-                        <th>Type d'aide</th>
-                        <th>Urgence</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>#1247</td>
-                        <td>12/11/2025</td>
-                        <td>Mohamed Ben Ali</td>
-                        <td>Ariana</td>
-                        <td>
-                            <span class="type-badge alimentaire">🍽️ Alimentaire</span>
-                        </td>
-                        <td>
-                            <span class="urgence-badge tres-urgent">🔴 Très urgent</span>
-                        </td>
-                        <td>
-                            <span class="status-badge nouveau">Nouveau</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action view" title="Voir détails">👁️</button>
-                                <button class="btn-action edit" title="Modifier">✏️</button>
-                                <button class="btn-action delete" title="Supprimer">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1246</td>
-                        <td>12/11/2025</td>
-                        <td>Fatma Trabelsi</td>
-                        <td>Tunis</td>
-                        <td>
-                            <span class="type-badge scolaire">📚 Scolaire</span>
-                        </td>
-                        <td>
-                            <span class="urgence-badge urgent">🟠 Urgent</span>
-                        </td>
-                        <td>
-                            <span class="status-badge en-cours">En cours</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action view" title="Voir détails">👁️</button>
-                                <button class="btn-action edit" title="Modifier">✏️</button>
-                                <button class="btn-action delete" title="Supprimer">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1245</td>
-                        <td>11/11/2025</td>
-                        <td>Ahmed Karoui</td>
-                        <td>Sfax</td>
-                        <td>
-                            <span class="type-badge medicale">🏥 Médicale</span>
-                        </td>
-                        <td>
-                            <span class="urgence-badge tres-urgent">🔴 Très urgent</span>
-                        </td>
-                        <td>
-                            <span class="status-badge nouveau">Nouveau</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action view" title="Voir détails">👁️</button>
-                                <button class="btn-action edit" title="Modifier">✏️</button>
-                                <button class="btn-action delete" title="Supprimer">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1244</td>
-                        <td>11/11/2025</td>
-                        <td>Salma Mansouri</td>
-                        <td>Sousse</td>
-                        <td>
-                            <span class="type-badge vestimentaire">👕 Vestimentaire</span>
-                        </td>
-                        <td>
-                            <span class="urgence-badge important">🟡 Important</span>
-                        </td>
-                        <td>
-                            <span class="status-badge traite">Traité</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action view" title="Voir détails">👁️</button>
-                                <button class="btn-action edit" title="Modifier">✏️</button>
-                                <button class="btn-action delete" title="Supprimer">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1243</td>
-                        <td>10/11/2025</td>
-                        <td>Youssef Gharbi</td>
-                        <td>Ariana</td>
-                        <td>
-                            <span class="type-badge financiere">💰 Financière</span>
-                        </td>
-                        <td>
-                            <span class="urgence-badge urgent">🟠 Urgent</span>
-                        </td>
-                        <td>
-                            <span class="status-badge en-cours">En cours</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action view" title="Voir détails">👁️</button>
-                                <button class="btn-action edit" title="Modifier">✏️</button>
-                                <button class="btn-action delete" title="Supprimer">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#1242</td>
-                        <td>10/11/2025</td>
-                        <td>Amira Ben Salem</td>
-                        <td>Tunis</td>
-                        <td>
-                            <span class="type-badge psychologique">💬 Psychologique</span>
-                        </td>
-                        <td>
-                            <span class="urgence-badge peut-attendre">🟢 Peut attendre</span>
-                        </td>
-                        <td>
-                            <span class="status-badge traite">Traité</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-action view" title="Voir détails">👁️</button>
-                                <button class="btn-action edit" title="Modifier">✏️</button>
-                                <button class="btn-action delete" title="Supprimer">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- ========================================
+             SECTION 4: ALBUMS (NOUVELLE)
+             ======================================== -->
+        <section id="section-albums" class="content-section">
+            <div class="top-bar">
+                <h1>📸 Gestion des Albums</h1>
+                <button class="btn-add" onclick="showAddAlbumForm()">➕ Ajouter un album</button>
+            </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button class="page-btn" disabled>« Précédent</button>
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
-            <button class="page-btn">3</button>
-            <button class="page-btn">4</button>
-            <button class="page-btn">Suivant »</button>
+            <div class="table-container">
+                <table class="albums-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Date</th>
+                            <th>Détails</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="albumsTableBody">
+                        <!-- Données dynamiques -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- ========================================
+         MODALS ET FORMULAIRES
+         ======================================== -->
+
+    <!-- Modal: Add/Edit Category -->
+    <div id="modalCategory" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="categoryModalTitle">Ajouter une catégorie</h2>
+                <button class="modal-close" onclick="closeModal('modalCategory')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formCategory" onsubmit="saveCategory(event)">
+                    <input type="hidden" id="categoryId">
+                    <div class="form-group">
+                        <label>Nom de la catégorie <span class="required">*</span></label>
+                        <input type="text" id="categoryName" required placeholder="Ex: Tech, Design, Santé...">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="categoryDescription" rows="4" placeholder="Description de la catégorie..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('modalCategory')">Annuler</button>
+                        <button type="submit" class="btn-save">💾 Enregistrer</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Modal Détails (caché par défaut) -->
+    <!-- Modal: Add/Edit Product -->
+    <div id="modalProduct" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="productModalTitle">Ajouter un produit</h2>
+                <button class="modal-close" onclick="closeModal('modalProduct')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formProduct" onsubmit="saveProduct(event)">
+                    <input type="hidden" id="productId">
+                    <div class="form-group">
+                        <label>Nom du produit <span class="required">*</span></label>
+                        <input type="text" id="productName" required placeholder="Nom du produit">
+                    </div>
+                    <div class="form-group">
+                        <label>Date <span class="required">*</span></label>
+                        <input type="date" id="productDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie <span class="required">*</span></label>
+                        <select id="productCategoryId" required>
+                            <option value="">Sélectionnez une catégorie</option>
+                            <!-- Options remplies dynamiquement -->
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('modalProduct')">Annuler</button>
+                        <button type="submit" class="btn-save">💾 Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Album -->
+    <div id="modalAlbum" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="albumModalTitle">Ajouter un album</h2>
+                <button class="modal-close" onclick="closeModal('modalAlbum')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formAlbum" onsubmit="saveAlbum(event)">
+                    <input type="hidden" id="albumId">
+                    <div class="form-group">
+                        <label>Nom de l'album <span class="required">*</span></label>
+                        <input type="text" id="albumName" required placeholder="Nom de l'album">
+                    </div>
+                    <div class="form-group">
+                        <label>Date <span class="required">*</span></label>
+                        <input type="date" id="albumDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Détails</label>
+                        <textarea id="albumDetails" rows="4" placeholder="Détails de l'album..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('modalAlbum')">Annuler</button>
+                        <button type="submit" class="btn-save">💾 Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Détails Demande (existante) -->
     <div class="modal" id="detailsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Détails de la Demande #1247</h2>
-                <button class="modal-close">✕</button>
+                <h2>Détails de la Demande</h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="detail-section">
-                    <h3>Informations Personnelles</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Nom complet:</strong>
-                            <span>Mohamed Ben Ali</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Âge:</strong>
-                            <span>42 ans</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Gouvernorat:</strong>
-                            <span>Ariana</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Ville:</strong>
-                            <span>La Gazelle</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Situation familiale:</strong>
-                            <span>En famille avec 3 enfants</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Type d'Aide</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Catégorie:</strong>
-                            <span class="type-badge alimentaire">🍽️ Aide alimentaire</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Urgence:</strong>
-                            <span class="urgence-badge tres-urgent">🔴 Très urgent (24-48h)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Description</h3>
-                    <div class="detail-description">
-                        <p><strong>Situation:</strong></p>
-                        <p>Je suis père de 3 enfants et je traverse actuellement une période difficile après avoir perdu mon emploi il y a 2 mois. Mes économies sont épuisées et j'ai du mal à nourrir ma famille.</p>
-                        
-                        <p><strong>Demande exacte:</strong></p>
-                        <p>Je demande une aide alimentaire pour ma famille (riz, pâtes, huile, lait pour enfants) pour tenir au moins 2 semaines le temps de trouver un nouveau travail.</p>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Contact</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Téléphone:</strong>
-                            <span>+216 98 765 432</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Email:</strong>
-                            <span>mohamed.benali@email.com</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Préférence:</strong>
-                            <span>📞 Appel téléphonique</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Disponibilité:</strong>
-                            <span>Matin, Après-midi</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Confidentialité</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Visibilité:</strong>
-                            <span>✅ Publique</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Anonymat:</strong>
-                            <span>Non</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <h3>Actions de traitement</h3>
-                    <div class="modal-actions">
-                        <select class="status-select">
-                            <option value="nouveau">Nouveau</option>
-                            <option value="en-cours">En cours</option>
-                            <option value="traite">Traité</option>
-                            <option value="refuse">Refusé</option>
-                        </select>
-                        <button class="btn-save">💾 Enregistrer le statut</button>
-                        <button class="btn-contact">📞 Contacter</button>
-                        <button class="btn-assign">👥 Assigner à un groupe</button>
-                    </div>
-                </div>
+                <!-- Contenu dynamique -->
             </div>
         </div>
     </div>

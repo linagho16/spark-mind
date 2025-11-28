@@ -5,290 +5,391 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SparkMind - Demande d'Aide</title>
     <link rel="stylesheet" href="formulaire.css">
-    <script src="formulaire.js" defer></script>
 </head>
 <body>
+    <!-- Container principal -->
     <div class="container">
-        <div class="header">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <div class="logo">
-                <img src="logo.png" alt="SparkMind Logo">
+                <h2>✨ SparkMind</h2>
+                <p>« Quand la pensée devient espoir »</p>
             </div>
-            <h1>SparkMind</h1>
-            <p class="subtitle">« Quand la pensée devient espoir. »</p>
-        </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    📝 Nouvelle Demande
+                </a>
+                <a href="../backoffice/back.html" class="nav-item">
+                    📋 Dashboard Admin
+                </a>
+                <a href="../reponse/reponse.html" class="nav-item">
+                    💬 Gérer les Réponses
+                </a>
+                <a href="#aide" class="nav-item">
+                    ❓ Aide & Support
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="info-box">
+                    <h4>🤝 Besoin d'aide ?</h4>
+                    <p>Appelez-nous au<br><strong>+216 55 581 022</strong></p>
+                </div>
+            </div>
+        </aside>
 
-        <div class="form-card">
-            <h2 style="color: #ec7546; text-align: center; margin-bottom: 10px;">✋ Demande d'Aide</h2>
-            <p class="tagline">
-                Parce qu'un petit geste peut changer une vie.
-            </p>
+        <!-- Contenu principal -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h1>📝 Formulaire de Demande d'Aide</h1>
+                    <p class="subtitle">Parce qu'un petit geste peut changer une vie</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-help" onclick="showHelp()">❓ Aide</button>
+                </div>
+            </header>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar"></div>
+            <!-- Zone de notification -->
+            <div id="notification" class="notification"></div>
+
+            <!-- Barre de progression globale -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>Progression du formulaire</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
             </div>
 
-            <form id="helpForm">
+            <!-- Formulaire -->
+            <form id="helpForm" class="form-container">
                 <!-- Section 1: Informations Personnelles -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">1</span>
-                        Informations Personnelles
-                    </h3>
-
-                    <div class="form-group">
-                        <label>Nom complet <span class="required">*</span></label>
-                        <input type="text" name="nom" required placeholder="Votre nom complet">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">👤</div>
+                        <div>
+                            <h2 class="section-title">Informations Personnelles</h2>
+                            <p class="section-description">Vos coordonnées de base</p>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Âge <span class="required">*</span></label>
-                        <input type="number" name="age" min="1" max="120" required placeholder="Votre âge">
-                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nom complet <span class="required">*</span></label>
+                            <input type="text" name="nom" required placeholder="Votre nom complet">
+                        </div>
 
-                    <div class="form-group">
-                        <label>Gouvernorat <span class="required">*</span></label>
-                        <select name="gouvernorat" required>
-                            <option value="">Sélectionnez votre gouvernorat</option>
-                            <option value="Tunis">Tunis</option>
-                            <option value="Ariana">Ariana</option>
-                            <option value="Ben Arous">Ben Arous</option>
-                            <option value="Manouba">Manouba</option>
-                            <option value="Nabeul">Nabeul</option>
-                            <option value="Zaghouan">Zaghouan</option>
-                            <option value="Bizerte">Bizerte</option>
-                            <option value="Béja">Béja</option>
-                            <option value="Jendouba">Jendouba</option>
-                            <option value="Kef">Kef</option>
-                            <option value="Siliana">Siliana</option>
-                            <option value="Sousse">Sousse</option>
-                            <option value="Monastir">Monastir</option>
-                            <option value="Mahdia">Mahdia</option>
-                            <option value="Sfax">Sfax</option>
-                            <option value="Kairouan">Kairouan</option>
-                            <option value="Kasserine">Kasserine</option>
-                            <option value="Sidi Bouzid">Sidi Bouzid</option>
-                            <option value="Gabès">Gabès</option>
-                            <option value="Médenine">Médenine</option>
-                            <option value="Tataouine">Tataouine</option>
-                            <option value="Gafsa">Gafsa</option>
-                            <option value="Tozeur">Tozeur</option>
-                            <option value="Kébili">Kébili</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label>Âge <span class="required">*</span></label>
+                            <input type="number" name="age" min="1" max="120" required placeholder="Votre âge">
+                        </div>
 
-                    <div class="form-group">
-                        <label>Ville/Délégation <span class="required">*</span></label>
-                        <input type="text" name="ville" required placeholder="Votre ville ou délégation">
-                    </div>
+                        <div class="form-group">
+                            <label>Gouvernorat <span class="required">*</span></label>
+                            <select name="gouvernorat" required>
+                                <option value="">Sélectionnez votre gouvernorat</option>
+                                <option value="Tunis">Tunis</option>
+                                <option value="Ariana">Ariana</option>
+                                <option value="Ben Arous">Ben Arous</option>
+                                <option value="Manouba">Manouba</option>
+                                <option value="Nabeul">Nabeul</option>
+                                <option value="Zaghouan">Zaghouan</option>
+                                <option value="Bizerte">Bizerte</option>
+                                <option value="Béja">Béja</option>
+                                <option value="Jendouba">Jendouba</option>
+                                <option value="Kef">Kef</option>
+                                <option value="Siliana">Siliana</option>
+                                <option value="Sousse">Sousse</option>
+                                <option value="Monastir">Monastir</option>
+                                <option value="Mahdia">Mahdia</option>
+                                <option value="Sfax">Sfax</option>
+                                <option value="Kairouan">Kairouan</option>
+                                <option value="Kasserine">Kasserine</option>
+                                <option value="Sidi Bouzid">Sidi Bouzid</option>
+                                <option value="Gabès">Gabès</option>
+                                <option value="Médenine">Médenine</option>
+                                <option value="Tataouine">Tataouine</option>
+                                <option value="Gafsa">Gafsa</option>
+                                <option value="Tozeur">Tozeur</option>
+                                <option value="Kébili">Kébili</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Situation familiale</label>
-                        <select name="situation">
-                            <option value="">Sélectionnez votre situation</option>
-                            <option value="seul">Seul(e)</option>
-                            <option value="famille">En famille</option>
-                            <option value="enfants">Avec enfants</option>
-                            <option value="parents">Avec parents âgés</option>
-                            <option value="autre">Autre</option>
-                        </select>
+                        <div class="form-group">
+                            <label>Ville/Délégation <span class="required">*</span></label>
+                            <input type="text" name="ville" required placeholder="Votre ville">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Situation familiale</label>
+                            <select name="situation">
+                                <option value="">Sélectionnez</option>
+                                <option value="seul">Seul(e)</option>
+                                <option value="famille">En famille</option>
+                                <option value="enfants">Avec enfants</option>
+                                <option value="parents">Avec parents âgés</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Section 2: Type d'Aide -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">2</span>
-                        Type d'Aide Demandée
-                    </h3>
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">🤝</div>
+                        <div>
+                            <h2 class="section-title">Type d'Aide Demandée</h2>
+                            <p class="section-description">Sélectionnez vos besoins</p>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label>Catégorie(s) d'aide <span class="required">*</span></label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
+                        <div class="checkbox-grid">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="alimentaire">
-                                <span>🍽️ Aide alimentaire</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">🍽️</span>
+                                    <span>Aide alimentaire</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="scolaire">
-                                <span>📚 Aide scolaire/éducative</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">📚</span>
+                                    <span>Aide scolaire</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="vestimentaire">
-                                <span>👕 Aide vestimentaire</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">👕</span>
+                                    <span>Aide vestimentaire</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="medicale">
-                                <span>🏥 Aide médicale/santé</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">🏥</span>
+                                    <span>Aide médicale</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="financiere">
-                                <span>💰 Aide financière</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">💰</span>
+                                    <span>Aide financière</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="logement">
-                                <span>🏠 Aide au logement</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">🏠</span>
+                                    <span>Aide logement</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="professionnelle">
-                                <span>💼 Aide professionnelle</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">💼</span>
+                                    <span>Aide professionnelle</span>
+                                </span>
                             </label>
-                            <label class="checkbox-item">
+                            <label class="checkbox-card">
                                 <input type="checkbox" name="aide" value="psychologique">
-                                <span>💬 Soutien psychologique</span>
-                            </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="aide" value="autre">
-                                <span>🔧 Autre</span>
+                                <span class="checkbox-content">
+                                    <span class="checkbox-icon">💬</span>
+                                    <span>Soutien psychologique</span>
+                                </span>
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Degré d'urgence <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <label class="radio-item">
-                                <input type="radio" name="urgence" value="tres-urgent" required>
-                                <span>🔴 Très urgent (24-48h)</span>
+                        <div class="radio-grid">
+                            <label class="radio-card">
+                                <input type="radio" name="urgence" value="tres_urgent" required>
+                                <span class="radio-content">
+                                    <span class="urgency-badge urgent-critical">🔴</span>
+                                    <strong>Très urgent</strong>
+                                    <small>24-48h</small>
+                                </span>
                             </label>
-                            <label class="radio-item">
+                            <label class="radio-card">
                                 <input type="radio" name="urgence" value="urgent">
-                                <span>🟠 Urgent (cette semaine)</span>
+                                <span class="radio-content">
+                                    <span class="urgency-badge urgent-high">🟠</span>
+                                    <strong>Urgent</strong>
+                                    <small>Cette semaine</small>
+                                </span>
                             </label>
-                            <label class="radio-item">
-                                <input type="radio" name="urgence" value="important">
-                                <span>🟡 Important (ce mois-ci)</span>
+                            <label class="radio-card">
+                                <input type="radio" name="urgence" value="moyen">
+                                <span class="radio-content">
+                                    <span class="urgency-badge urgent-medium">🟡</span>
+                                    <strong>Moyen</strong>
+                                    <small>Ce mois-ci</small>
+                                </span>
                             </label>
-                            <label class="radio-item">
-                                <input type="radio" name="urgence" value="peut-attendre">
-                                <span>🟢 Peut attendre</span>
+                            <label class="radio-card">
+                                <input type="radio" name="urgence" value="faible">
+                                <span class="radio-content">
+                                    <span class="urgency-badge urgent-low">🟢</span>
+                                    <strong>Peut attendre</strong>
+                                    <small>Flexible</small>
+                                </span>
                             </label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Section 3: Description -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">3</span>
-                        Description du Besoin
-                    </h3>
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">📄</div>
+                        <div>
+                            <h2 class="section-title">Description de votre Besoin</h2>
+                            <p class="section-description">Plus vous êtes précis, mieux nous pouvons vous aider</p>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label>Décrivez votre situation <span class="required">*</span></label>
-                        <textarea name="situation" required placeholder="Expliquez votre besoin en quelques phrases. Plus vous êtes précis, plus il sera facile de vous aider..."></textarea>
+                        <textarea name="description_situation" required rows="5" placeholder="Expliquez votre situation en quelques phrases..."></textarea>
+                        <small class="helper-text">Soyez honnête et détaillé pour faciliter le traitement</small>
                     </div>
 
                     <div class="form-group">
                         <label>Que demandez-vous exactement ? <span class="required">*</span></label>
-                        <textarea name="demande" required placeholder="Ex : 2 cartables pour mes enfants, un cours de soutien en maths, une consultation médicale, etc."></textarea>
+                        <textarea name="demande_exacte" required rows="4" placeholder="Ex: 2 cartables scolaires, consultation médicale, cours de soutien..."></textarea>
                     </div>
                 </div>
 
                 <!-- Section 4: Contact -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">4</span>
-                        Informations de Contact
-                    </h3>
-
-                    <div class="form-group">
-                        <label>Numéro de téléphone <span class="required">*</span></label>
-                        <input type="tel" name="telephone" required placeholder="+216 XX XXX XXX" pattern="[\+]?[0-9\s\-\(\)]+">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">📞</div>
+                        <div>
+                            <h2 class="section-title">Informations de Contact</h2>
+                            <p class="section-description">Comment pouvons-nous vous joindre ?</p>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Email (optionnel)</label>
-                        <input type="email" name="email" placeholder="votre.email@exemple.com">
-                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Téléphone <span class="required">*</span></label>
+                            <input type="tel" name="telephone" required placeholder="+216 55 581 022">
+                        </div>
 
-                    <div class="form-group">
-                        <label>Préférence de contact <span class="required">*</span></label>
-                        <select name="preference-contact" required>
-                            <option value="">Sélectionnez une option</option>
-                            <option value="appel">📞 Appel téléphonique</option>
-                            <option value="sms">💬 SMS/WhatsApp</option>
-                            <option value="email">📧 Email</option>
-                            <option value="plateforme">🌐 Via la plateforme</option>
-                        </select>
+                        <div class="form-group">
+                            <label>Email (optionnel)</label>
+                            <input type="email" name="email" placeholder="votre@email.com">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Préférence de contact <span class="required">*</span></label>
+                            <select name="preference_contact" required>
+                                <option value="">Choisissez</option>
+                                <option value="appel">📞 Appel téléphonique</option>
+                                <option value="sms">💬 SMS/WhatsApp</option>
+                                <option value="email">📧 Email</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label>Meilleur moment pour vous joindre</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="horaire" value="matin">
-                                <span>🌅 Matin (8h-12h)</span>
+                        <div class="checkbox-grid-compact">
+                            <label class="checkbox-compact">
+                                <input type="checkbox" name="horaires_disponibles" value="matin">
+                                <span>🌅 Matin</span>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="horaire" value="apres-midi">
-                                <span>☀️ Après-midi (12h-18h)</span>
+                            <label class="checkbox-compact">
+                                <input type="checkbox" name="horaires_disponibles" value="apres-midi">
+                                <span>☀️ Après-midi</span>
                             </label>
-                            <label class="checkbox-item">
-                                <input type="checkbox" name="horaire" value="soir">
-                                <span>🌙 Soir (18h-22h)</span>
+                            <label class="checkbox-compact">
+                                <input type="checkbox" name="horaires_disponibles" value="soir">
+                                <span>🌙 Soir</span>
                             </label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Section 5: Confidentialité -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">5</span>
-                        Options de Confidentialité
-                    </h3>
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">🔒</div>
+                        <div>
+                            <h2 class="section-title">Options de Confidentialité</h2>
+                            <p class="section-description">Contrôlez qui peut voir votre demande</p>
+                        </div>
+                    </div>
 
-                    <div class="privacy-notice">
-                        🔒 <strong>Votre vie privée est importante.</strong> Choisissez comment votre demande sera visible sur la plateforme.
+                    <div class="info-banner">
+                        <strong>🔒 Votre vie privée est importante</strong><br>
+                        Choisissez comment votre demande sera visible sur la plateforme
                     </div>
 
                     <div class="form-group">
                         <label>Visibilité de la demande <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <label class="radio-item">
+                        <div class="radio-grid">
+                            <label class="radio-card">
                                 <input type="radio" name="visibilite" value="publique" required>
-                                <span>✅ Publique (visible par tous les utilisateurs)</span>
+                                <span class="radio-content">
+                                    <strong>✅ Publique</strong>
+                                    <small>Visible par tous</small>
+                                </span>
                             </label>
-                            <label class="radio-item">
-                                <input type="radio" name="visibilite" value="semi-privee">
-                                <span>👥 Semi-privée (visible uniquement par les groupes/associations)</span>
+                            <label class="radio-card">
+                                <input type="radio" name="visibilite" value="semi_privee">
+                                <span class="radio-content">
+                                    <strong>👥 Semi-privée</strong>
+                                    <small>Associations uniquement</small>
+                                </span>
                             </label>
-                            <label class="radio-item">
+                            <label class="radio-card">
                                 <input type="radio" name="visibilite" value="privee">
-                                <span>🔒 Privée (traitée par les administrateurs uniquement)</span>
+                                <span class="radio-content">
+                                    <strong>🔒 Privée</strong>
+                                    <small>Admins uniquement</small>
+                                </span>
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="checkbox-item" style="background: #fff; padding: 15px;">
-                            <input type="checkbox" name="anonyme">
-                            <span>🎭 Je souhaite rester anonyme (afficher "Utilisateur anonyme")</span>
+                        <label class="checkbox-special">
+                            <input type="checkbox" name="anonyme" value="1">
+                            <span>🎭 Je souhaite rester anonyme</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Section 6: Validation -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">6</span>
-                        Validation
-                    </h3>
-
+                <div class="form-section">
                     <div class="attestation-box">
-                        <label>
+                        <label class="checkbox-special">
                             <input type="checkbox" name="attestation" required>
-                            <span>J'atteste que les informations fournies sont exactes et que ma demande est réelle. Je comprends que toute fausse déclaration peut entraîner la suspension de mon compte.</span>
+                            <span>J'atteste que les informations fournies sont exactes et que ma demande est réelle. Je comprends que toute fausse déclaration peut entraîner la suspension de mon accès.</span>
                         </label>
                     </div>
 
-                    <div class="button-group">
-                        <button type="reset" class="btn-cancel">Annuler</button>
-                        <button type="submit" class="btn-submit">🚀 Envoyer ma demande</button>
+                    <div class="form-actions">
+                        <button type="reset" class="btn-secondary">🔄 Réinitialiser</button>
+                        <button type="submit" class="btn-primary">🚀 Envoyer ma demande</button>
                     </div>
                 </div>
             </form>
-        </div>
+        </main>
     </div>
+
+    <script src="formulaire.js"></script>
 </body>
 </html>

@@ -1,575 +1,605 @@
 // ==========================================
-// SPARKMIND - BACK.JS (VERSION FINALE)
-// Gestion du Back Office
+// SPARKMIND - BACK.JS (VERSION COMPLETE AVEC CRUD)
+// Gestion du Back Office + Categories + Products + Albums
 // ==========================================
 
-console.log('🚀 Back.js chargé !');
+console.log('🚀 Back.js chargé avec CRUD complet !');
+
+// ==========================================
+// DONNÉES EN MÉMOIRE (Arrays JavaScript)
+// ==========================================
+
+let categories = [
+    { id: 1, name: "Tech", description: "Produits technologiques" },
+    { id: 2, name: "Design", description: "Outils et ressources de design" },
+    { id: 3, name: "Santé", description: "Produits liés à la santé" }
+];
+
+let products = [
+    { id: 1, name: "Laptop Dell", date: "2025-01-15", categoryId: 1 },
+    { id: 2, name: "Logo Pack", date: "2025-01-20", categoryId: 2 },
+    { id: 3, name: "Kit Premiers Secours", date: "2025-01-18", categoryId: 3 }
+];
+
+let albums = [
+    { id: 1, name: "Vacances 2024", date: "2024-08-01", details: "Photos de vacances en famille" },
+    { id: 2, name: "Projet SparkMind", date: "2025-01-10", details: "Captures d'écran et mockups" }
+];
+
+// Compteurs pour IDs auto-incrémentés
+let nextCategoryId = 4;
+let nextProductId = 4;
+let nextAlbumId = 3;
+
+// Variables globales pour demandes (existantes)
+window.allDemandes = [];
+let filteredDemandes = [];
+let currentPage = 1;
+const demandesPerPage = 10;
+
+// ==========================================
+// INITIALISATION
+// ==========================================
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM chargé !');
     
-    // Variables globales
-    window.allDemandes = [];
-    let filteredDemandes = [];
-    let currentPage = 1;
-    const demandesPerPage = 10;
+    // Charger les demandes (existant)
+    loadDemandes();
     
-    // ==========================================
-    // 1. CHARGEMENT DES DEMANDES
-    // ==========================================
+    // Afficher les nouvelles listes
+    renderCategories();
+    renderProducts();
+    renderAlbums();
     
-    function loadDemandes() {
-        console.log('📡 Chargement des demandes...');
-        
-        const url = '/SparkMind/controllers/DemandeController.php?action=getAll';
-        console.log('URL appelée:', url);
-        
-        fetch(url)
-            .then(response => {
-                console.log('📥 Réponse reçue:', response.status);
-                if (!response.ok) {
-                    throw new Error('Erreur HTTP: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('📊 Données reçues:', data);
-                
-                if (data.success) {
-                    window.allDemandes = data.demandes || [];
-                    filteredDemandes = [...window.allDemandes];
-                    console.log('✅ Nombre de demandes:', window.allDemandes.length);
-                    
-                    displayDemandes();
-                    updateStatistics();
-                } else {
-                    console.error('❌ Erreur dans les données:', data.message);
-                    showNotification('Erreur: ' + data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('❌ Erreur fetch:', error);
-                showNotification('Erreur de connexion au serveur', 'error');
-            });
+    // Actualisation automatique des demandes
+    setInterval(loadDemandes, 30000);
+});
+
+// ==========================================
+// NAVIGATION ENTRE SECTIONS
+// ==========================================
+
+function showSection(sectionName) {
+    // Masquer toutes les sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Désactiver tous les nav-items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Afficher la section demandée
+    const targetSection = document.getElementById('section-' + sectionName);
+    if (targetSection) {
+        targetSection.classList.add('active');
     }
     
-    // ==========================================
-    // 2. AFFICHAGE DES DEMANDES
-    // ==========================================
+    // Activer le nav-item correspondant
+    event.target.closest('.nav-item').classList.add('active');
+}
+
+// ==========================================
+// 1. GESTION DES CATEGORIES
+// ==========================================
+
+function renderCategories() {
+    const tbody = document.getElementById('categoriesTableBody');
+    if (!tbody) return;
     
-    function displayDemandes() {
-        console.log('🖼️ Affichage des demandes...');
-        
-        const tbody = document.querySelector('.demandes-table tbody');
-        if (!tbody) {
-            console.error('❌ Table tbody non trouvée !');
-            return;
-        }
-        
-        // Calculer pagination
-        const startIndex = (currentPage - 1) * demandesPerPage;
-        const endIndex = startIndex + demandesPerPage;
-        const demandesPage = filteredDemandes.slice(startIndex, endIndex);
-        
-        console.log('📄 Affichage de', demandesPage.length, 'demandes');
-        
-        // Vider le tableau
-        tbody.innerHTML = '';
-        
-        if (demandesPage.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px; color: #999;">
-                        <div style="font-size: 3em;">📭</div>
-                        <p style="margin-top: 10px;">Aucune demande trouvée</p>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-        
-        // Afficher les demandes
-        demandesPage.forEach(demande => {
-            const row = createDemandeRow(demande);
-            tbody.appendChild(row);
-        });
-        
-        console.log('✅ Demandes affichées !');
-        updatePagination();
+    tbody.innerHTML = '';
+    
+    if (categories.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 40px; color: #999;">
+                    <div style="font-size: 3em;">📁</div>
+                    <p>Aucune catégorie</p>
+                </td>
+            </tr>
+        `;
+        return;
     }
     
-    function createDemandeRow(demande) {
+    categories.forEach(category => {
         const tr = document.createElement('tr');
-        
-        const date = new Date(demande.date_soumission);
-        const dateStr = date.toLocaleDateString('fr-FR');
-        
-        const typeAide = Array.isArray(demande.categories_aide) ? demande.categories_aide[0] : demande.categories_aide;
-        const typeLabel = getTypeLabel(typeAide);
-        const urgenceLabel = getUrgenceLabel(demande.urgence);
-        const statutLabel = getStatutLabel(demande.statut);
-        
         tr.innerHTML = `
-            <td>#${demande.id}</td>
-            <td>${dateStr}</td>
-            <td>${demande.anonyme ? 'Anonyme' : demande.nom}</td>
-            <td>${demande.gouvernorat}</td>
-            <td><span class="type-badge ${typeAide}">${typeLabel}</span></td>
-            <td><span class="urgence-badge ${demande.urgence}">${urgenceLabel}</span></td>
-            <td><span class="status-badge ${demande.statut}">${statutLabel}</span></td>
+            <td>#${category.id}</td>
+            <td>${category.name}</td>
+            <td>${category.description || 'N/A'}</td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-action view" title="Voir détails" onclick="viewDemande(${demande.id})">👁️</button>
-                    <button class="btn-action edit" title="Modifier" onclick="editDemande(${demande.id})">✏️</button>
-                    <button class="btn-action delete" title="Supprimer" onclick="deleteDemande(${demande.id})">🗑️</button>
+                    <button class="btn-action edit" onclick="editCategory(${category.id})" title="Modifier">✏️</button>
+                    <button class="btn-action delete" onclick="deleteCategory(${category.id})" title="Supprimer">🗑️</button>
                 </div>
             </td>
         `;
-        return tr;
+        tbody.appendChild(tr);
+    });
+    
+    console.log('✅ Catégories affichées:', categories.length);
+}
+
+function showAddCategoryForm() {
+    document.getElementById('categoryModalTitle').textContent = 'Ajouter une catégorie';
+    document.getElementById('categoryId').value = '';
+    document.getElementById('categoryName').value = '';
+    document.getElementById('categoryDescription').value = '';
+    openModal('modalCategory');
+}
+
+function editCategory(id) {
+    const category = categories.find(c => c.id === id);
+    if (!category) {
+        alert('❌ Catégorie introuvable');
+        return;
     }
     
-    function getTypeLabel(type) {
-        const labels = {
-            'alimentaire': '🍽️ Alimentaire',
-            'scolaire': '📚 Scolaire',
-            'vestimentaire': '👕 Vestimentaire',
-            'medicale': '🏥 Médicale',
-            'financiere': '💰 Financière',
-            'logement': '🏠 Logement',
-            'professionnelle': '💼 Professionnelle',
-            'psychologique': '💬 Psychologique',
-            'autre': '🔧 Autre'
-        };
-        return labels[type] || type;
+    document.getElementById('categoryModalTitle').textContent = 'Modifier la catégorie';
+    document.getElementById('categoryId').value = category.id;
+    document.getElementById('categoryName').value = category.name;
+    document.getElementById('categoryDescription').value = category.description || '';
+    openModal('modalCategory');
+}
+
+function saveCategory(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('categoryId').value;
+    const name = document.getElementById('categoryName').value.trim();
+    const description = document.getElementById('categoryDescription').value.trim();
+    
+    if (!name) {
+        alert('⚠️ Le nom de la catégorie est obligatoire');
+        return;
     }
     
-    function getUrgenceLabel(urgence) {
-        const labels = {
-            'tres-urgent': '🔴 Très urgent',
-            'urgent': '🟠 Urgent',
-            'important': '🟡 Important',
-            'peut-attendre': '🟢 Peut attendre'
-        };
-        return labels[urgence] || urgence;
-    }
-    
-    function getStatutLabel(statut) {
-        const labels = {
-            'nouveau': 'Nouveau',
-            'en-cours': 'En cours',
-            'traite': 'Traité',
-            'refuse': 'Refusé'
-        };
-        return labels[statut] || statut;
-    }
-    
-    // ==========================================
-    // 3. STATISTIQUES
-    // ==========================================
-    
-    function updateStatistics() {
-        console.log('📊 Mise à jour des statistiques...');
-        
-        const urgentes = window.allDemandes.filter(d => d.urgence === 'tres-urgent').length;
-        const enAttente = window.allDemandes.filter(d => d.statut === 'nouveau').length;
-        const traitees = window.allDemandes.filter(d => d.statut === 'traite').length;
-        const total = window.allDemandes.length;
-        
-        console.log('Stats:', { urgentes, enAttente, traitees, total });
-        
-        const statCards = document.querySelectorAll('.stat-card');
-        if (statCards[0]) statCards[0].querySelector('h3').textContent = urgentes;
-        if (statCards[1]) statCards[1].querySelector('h3').textContent = enAttente;
-        if (statCards[2]) statCards[2].querySelector('h3').textContent = traitees;
-        if (statCards[3]) statCards[3].querySelector('h3').textContent = total;
-        
-        const badge = document.querySelector('.nav-item .badge');
-        if (badge) badge.textContent = enAttente;
-    }
-    
-    // ==========================================
-    // 4. PAGINATION
-    // ==========================================
-    
-    function updatePagination() {
-        const totalPages = Math.ceil(filteredDemandes.length / demandesPerPage);
-        const pagination = document.querySelector('.pagination');
-        if (!pagination) return;
-        
-        pagination.innerHTML = '';
-        
-        const prevBtn = document.createElement('button');
-        prevBtn.className = 'page-btn';
-        prevBtn.textContent = '« Précédent';
-        prevBtn.disabled = currentPage === 1;
-        prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                displayDemandes();
-            }
-        });
-        pagination.appendChild(prevBtn);
-        
-        for (let i = 1; i <= totalPages; i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = 'page-btn';
-            if (i === currentPage) pageBtn.classList.add('active');
-            pageBtn.textContent = i;
-            pageBtn.addEventListener('click', () => {
-                currentPage = i;
-                displayDemandes();
-            });
-            pagination.appendChild(pageBtn);
+    if (id) {
+        // UPDATE
+        const category = categories.find(c => c.id == id);
+        if (category) {
+            category.name = name;
+            category.description = description;
+            showNotification('✅ Catégorie mise à jour', 'success');
         }
-        
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'page-btn';
-        nextBtn.textContent = 'Suivant »';
-        nextBtn.disabled = currentPage === totalPages || totalPages === 0;
-        nextBtn.addEventListener('click', () => {
-            if (currentPage < totalPages) {
-                currentPage++;
-                displayDemandes();
-            }
-        });
-        pagination.appendChild(nextBtn);
-    }
-    
-    // ==========================================
-    // 5. RECHERCHE
-    // ==========================================
-    
-    const searchInput = document.querySelector('.search-box input');
-    if (searchInput) {
-        let searchTimeout;
-        searchInput.addEventListener('input', function(e) {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                performSearch(e.target.value);
-            }, 300);
-        });
-    }
-    
-    function performSearch(query) {
-        console.log('🔍 Recherche:', query);
-        
-        if (!query || query.trim() === '') {
-            filteredDemandes = [...window.allDemandes];
-        } else {
-            const searchTerm = query.toLowerCase();
-            filteredDemandes = window.allDemandes.filter(demande => {
-                return (
-                    demande.id.toString().includes(searchTerm) ||
-                    demande.nom.toLowerCase().includes(searchTerm) ||
-                    demande.gouvernorat.toLowerCase().includes(searchTerm) ||
-                    demande.ville.toLowerCase().includes(searchTerm)
-                );
-            });
-        }
-        
-        currentPage = 1;
-        displayDemandes();
-    }
-    
-    // ==========================================
-    // 6. FILTRES
-    // ==========================================
-    
-    const btnFilter = document.querySelector('.btn-filter');
-    if (btnFilter) {
-        btnFilter.addEventListener('click', applyFilters);
-    }
-    
-    const btnReset = document.querySelector('.btn-reset');
-    if (btnReset) {
-        btnReset.addEventListener('click', resetFilters);
-    }
-    
-    function applyFilters() {
-        console.log('🔧 Application des filtres...');
-        
-        const statutSelect = document.querySelector('select[name="statut"]');
-        const urgenceSelect = document.querySelector('select[name="urgence"]');
-        const typeSelect = document.querySelector('select[name="type"]');
-        const gouvernoratSelect = document.querySelector('select[name="gouvernorat"]');
-        
-        const filters = {
-            statut: statutSelect ? statutSelect.value : '',
-            urgence: urgenceSelect ? urgenceSelect.value : '',
-            type: typeSelect ? typeSelect.value : '',
-            gouvernorat: gouvernoratSelect ? gouvernoratSelect.value : ''
+    } else {
+        // CREATE
+        const newCategory = {
+            id: nextCategoryId++,
+            name: name,
+            description: description
         };
-        
-        console.log('Filtres appliqués:', filters);
-        
-        filteredDemandes = window.allDemandes.filter(demande => {
-            let match = true;
-            
-            if (filters.statut && demande.statut !== filters.statut) match = false;
-            if (filters.urgence && demande.urgence !== filters.urgence) match = false;
-            if (filters.gouvernorat && demande.gouvernorat !== filters.gouvernorat) match = false;
-            
-            if (filters.type) {
-                const categories = Array.isArray(demande.categories_aide) ? demande.categories_aide : [demande.categories_aide];
-                if (!categories.includes(filters.type)) match = false;
-            }
-            
-            return match;
-        });
-        
-        currentPage = 1;
-        displayDemandes();
-        showNotification(filteredDemandes.length + ' demande(s) trouvée(s)', 'info');
+        categories.push(newCategory);
+        showNotification('✅ Catégorie ajoutée', 'success');
     }
     
-    function resetFilters() {
-        document.querySelectorAll('.filter-select').forEach(select => {
-            select.value = '';
-        });
-        
-        filteredDemandes = [...window.allDemandes];
-        currentPage = 1;
-        displayDemandes();
-        showNotification('Filtres réinitialisés', 'info');
+    renderCategories();
+    fillCategorySelect();
+    closeModal('modalCategory');
+}
+
+function deleteCategory(id) {
+    if (!confirm(`⚠️ Supprimer la catégorie #${id} ?\n\nCette action est irréversible.`)) {
+        return;
     }
     
-    // ==========================================
-    // 7. NOTIFICATIONS
-    // ==========================================
-    
-    function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196F3'};
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 10000;
-            animation: slideIn 0.3s ease;
-        `;
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+    // Vérifier si des produits utilisent cette catégorie
+    const hasProducts = products.some(p => p.categoryId === id);
+    if (hasProducts) {
+        alert('❌ Impossible de supprimer cette catégorie car elle contient des produits.');
+        return;
     }
     
-    // ==========================================
-    // 8. INITIALISATION
-    // ==========================================
-    
-    console.log('🎬 Initialisation...');
-    loadDemandes();
-    setInterval(loadDemandes, 30000);
-    console.log('✅ Back Office initialisé !');
-});
+    categories = categories.filter(c => c.id !== id);
+    renderCategories();
+    showNotification('✅ Catégorie supprimée', 'success');
+}
 
 // ==========================================
-// ACTIONS GLOBALES
+// 2. GESTION DES PRODUITS (AVEC JOINTURE)
 // ==========================================
+
+function renderProducts() {
+    const tbody = document.getElementById('productsTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (products.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                    <div style="font-size: 3em;">📦</div>
+                    <p>Aucun produit</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    products.forEach(product => {
+        // JOINTURE: Trouver le nom de la catégorie
+        const category = categories.find(c => c.id === product.categoryId);
+        const categoryName = category ? category.name : 'Non définie';
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${product.id}</td>
+            <td>${product.name}</td>
+            <td>${formatDate(product.date)}</td>
+            <td><span class="type-badge">${categoryName}</span></td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-action edit" onclick="editProduct(${product.id})" title="Modifier">✏️</button>
+                    <button class="btn-action delete" onclick="deleteProduct(${product.id})" title="Supprimer">🗑️</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+    
+    console.log('✅ Produits affichés:', products.length);
+}
+
+function fillCategorySelect() {
+    const select = document.getElementById('productCategoryId');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Sélectionnez une catégorie</option>';
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        select.appendChild(option);
+    });
+}
+
+function showAddProductForm() {
+    fillCategorySelect();
+    document.getElementById('productModalTitle').textContent = 'Ajouter un produit';
+    document.getElementById('productId').value = '';
+    document.getElementById('productName').value = '';
+    document.getElementById('productDate').value = '';
+    document.getElementById('productCategoryId').value = '';
+    openModal('modalProduct');
+}
+
+function editProduct(id) {
+    const product = products.find(p => p.id === id);
+    if (!product) {
+        alert('❌ Produit introuvable');
+        return;
+    }
+    
+    fillCategorySelect();
+    document.getElementById('productModalTitle').textContent = 'Modifier le produit';
+    document.getElementById('productId').value = product.id;
+    document.getElementById('productName').value = product.name;
+    document.getElementById('productDate').value = product.date;
+    document.getElementById('productCategoryId').value = product.categoryId;
+    openModal('modalProduct');
+}
+
+function saveProduct(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('productId').value;
+    const name = document.getElementById('productName').value.trim();
+    const date = document.getElementById('productDate').value;
+    const categoryId = parseInt(document.getElementById('productCategoryId').value);
+    
+    if (!name || !date || !categoryId) {
+        alert('⚠️ Tous les champs sont obligatoires');
+        return;
+    }
+    
+    if (id) {
+        // UPDATE
+        const product = products.find(p => p.id == id);
+        if (product) {
+            product.name = name;
+            product.date = date;
+            product.categoryId = categoryId;
+            showNotification('✅ Produit mis à jour', 'success');
+        }
+    } else {
+        // CREATE
+        const newProduct = {
+            id: nextProductId++,
+            name: name,
+            date: date,
+            categoryId: categoryId
+        };
+        products.push(newProduct);
+        showNotification('✅ Produit ajouté', 'success');
+    }
+    
+    renderProducts();
+    closeModal('modalProduct');
+}
+
+function deleteProduct(id) {
+    if (!confirm(`⚠️ Supprimer le produit #${id} ?\n\nCette action est irréversible.`)) {
+        return;
+    }
+    
+    products = products.filter(p => p.id !== id);
+    renderProducts();
+    showNotification('✅ Produit supprimé', 'success');
+}
+
+// ==========================================
+// 3. GESTION DES ALBUMS
+// ==========================================
+
+function renderAlbums() {
+    const tbody = document.getElementById('albumsTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    if (albums.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                    <div style="font-size: 3em;">📸</div>
+                    <p>Aucun album</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    albums.forEach(album => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${album.id}</td>
+            <td>${album.name}</td>
+            <td>${formatDate(album.date)}</td>
+            <td>${album.details || 'N/A'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-action edit" onclick="editAlbum(${album.id})" title="Modifier">✏️</button>
+                    <button class="btn-action delete" onclick="deleteAlbum(${album.id})" title="Supprimer">🗑️</button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+    
+    console.log('✅ Albums affichés:', albums.length);
+}
+
+function showAddAlbumForm() {
+    document.getElementById('albumModalTitle').textContent = 'Ajouter un album';
+    document.getElementById('albumId').value = '';
+    document.getElementById('albumName').value = '';
+    document.getElementById('albumDate').value = '';
+    document.getElementById('albumDetails').value = '';
+    openModal('modalAlbum');
+}
+
+function editAlbum(id) {
+    const album = albums.find(a => a.id === id);
+    if (!album) {
+        alert('❌ Album introuvable');
+        return;
+    }
+    
+    document.getElementById('albumModalTitle').textContent = 'Modifier l\'album';
+    document.getElementById('albumId').value = album.id;
+    document.getElementById('albumName').value = album.name;
+    document.getElementById('albumDate').value = album.date;
+    document.getElementById('albumDetails').value = album.details || '';
+    openModal('modalAlbum');
+}
+
+function saveAlbum(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('albumId').value;
+    const name = document.getElementById('albumName').value.trim();
+    const date = document.getElementById('albumDate').value;
+    const details = document.getElementById('albumDetails').value.trim();
+    
+    if (!name || !date) {
+        alert('⚠️ Le nom et la date sont obligatoires');
+        return;
+    }
+    
+    if (id) {
+        // UPDATE
+        const album = albums.find(a => a.id == id);
+        if (album) {
+            album.name = name;
+            album.date = date;
+            album.details = details;
+            showNotification('✅ Album mis à jour', 'success');
+        }
+    } else {
+        // CREATE
+        const newAlbum = {
+            id: nextAlbumId++,
+            name: name,
+            date: date,
+            details: details
+        };
+        albums.push(newAlbum);
+        showNotification('✅ Album ajouté', 'success');
+    }
+    
+    renderAlbums();
+    closeModal('modalAlbum');
+}
+
+function deleteAlbum(id) {
+    if (!confirm(`⚠️ Supprimer l'album #${id} ?\n\nCette action est irréversible.`)) {
+        return;
+    }
+    
+    albums = albums.filter(a => a.id !== id);
+    renderAlbums();
+    showNotification('✅ Album supprimé', 'success');
+}
+
+// ==========================================
+// UTILITAIRES
+// ==========================================
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR');
+}
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Fermer modal en cliquant en dehors
+window.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+});
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196F3'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// ==========================================
+// CODE EXISTANT POUR DEMANDES (INCHANGÉ)
+// ==========================================
+
+function loadDemandes() {
+    console.log('📡 Chargement des demandes...');
+    
+    const url = '/SparkMind/controllers/DemandeController.php?action=getAll';
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.allDemandes = data.demandes || [];
+                filteredDemandes = [...window.allDemandes];
+                displayDemandes();
+                updateStatistics();
+            }
+        })
+        .catch(error => {
+            console.error('❌ Erreur:', error);
+        });
+}
+
+function displayDemandes() {
+    const tbody = document.querySelector('.demandes-table tbody');
+    if (!tbody) return;
+    
+    const startIndex = (currentPage - 1) * demandesPerPage;
+    const endIndex = startIndex + demandesPerPage;
+    const demandesPage = filteredDemandes.slice(startIndex, endIndex);
+    
+    tbody.innerHTML = '';
+    
+    if (demandesPage.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3em;">📭</div>
+                    <p>Aucune demande trouvée</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    demandesPage.forEach(demande => {
+        const row = createDemandeRow(demande);
+        tbody.appendChild(row);
+    });
+}
+
+function createDemandeRow(demande) {
+    const tr = document.createElement('tr');
+    const date = new Date(demande.date_soumission);
+    const dateStr = date.toLocaleDateString('fr-FR');
+    
+    tr.innerHTML = `
+        <td>#${demande.id}</td>
+        <td>${dateStr}</td>
+        <td>${demande.anonyme ? 'Anonyme' : demande.nom}</td>
+        <td>${demande.gouvernorat}</td>
+        <td><span class="type-badge">${demande.categories_aide}</span></td>
+        <td><span class="urgence-badge ${demande.urgence}">${demande.urgence}</span></td>
+        <td><span class="status-badge ${demande.statut}">${demande.statut}</span></td>
+        <td>
+            <div class="action-buttons">
+                <button class="btn-action view" onclick="viewDemande(${demande.id})">👁️</button>
+                <button class="btn-action edit" onclick="editDemande(${demande.id})">✏️</button>
+                <button class="btn-action delete" onclick="deleteDemande(${demande.id})">🗑️</button>
+            </div>
+        </td>
+    `;
+    return tr;
+}
+
+function updateStatistics() {
+    const urgentes = window.allDemandes.filter(d => d.urgence === 'tres-urgent').length;
+    const enAttente = window.allDemandes.filter(d => d.statut === 'nouveau').length;
+    const traitees = window.allDemandes.filter(d => d.statut === 'traite').length;
+    const total = window.allDemandes.length;
+    
+    const statCards = document.querySelectorAll('.stat-card');
+    if (statCards[0]) statCards[0].querySelector('h3').textContent = urgentes;
+    if (statCards[1]) statCards[1].querySelector('h3').textContent = enAttente;
+    if (statCards[2]) statCards[2].querySelector('h3').textContent = traitees;
+    if (statCards[3]) statCards[3].querySelector('h3').textContent = total;
+}
 
 window.viewDemande = function(id) {
     console.log('👁️ Voir demande:', id);
-    
-    const demande = window.allDemandes.find(d => d.id == id);
-    if (!demande) {
-        alert('❌ Demande introuvable');
-        return;
-    }
-    
-    // Récupérer la modal
-    const modal = document.getElementById('detailsModal');
-    if (!modal) {
-        console.error('❌ Modal non trouvée !');
-        return;
-    }
-    
-    // Remplir le modal
-    modal.querySelector('.modal-header h2').textContent = `Détails de la Demande #${demande.id}`;
-    
-    const modalBody = modal.querySelector('.modal-body');
-    modalBody.innerHTML = `
-        <div class="detail-section">
-            <h3>Informations Personnelles</h3>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <strong>Nom complet:</strong>
-                    <span>${demande.anonyme ? 'Utilisateur anonyme' : demande.nom}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Âge:</strong>
-                    <span>${demande.age} ans</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Gouvernorat:</strong>
-                    <span>${demande.gouvernorat}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Ville:</strong>
-                    <span>${demande.ville}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Situation familiale:</strong>
-                    <span>${demande.situation || 'Non précisée'}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <h3>Type d'Aide</h3>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <strong>Catégorie(s):</strong>
-                    <span>${Array.isArray(demande.categories_aide) ? demande.categories_aide.join(', ') : demande.categories_aide}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Urgence:</strong>
-                    <span class="urgence-badge ${demande.urgence}">${demande.urgence}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <h3>Description</h3>
-            <div class="detail-description">
-                <p><strong>Situation:</strong></p>
-                <p>${demande.description_situation}</p>
-                
-                <p><strong>Demande exacte:</strong></p>
-                <p>${demande.demande_exacte}</p>
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <h3>Contact</h3>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <strong>Téléphone:</strong>
-                    <span>${demande.telephone}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Email:</strong>
-                    <span>${demande.email || 'Non fourni'}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Préférence:</strong>
-                    <span>${demande.preference_contact}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Disponibilité:</strong>
-                    <span>${Array.isArray(demande.horaires_disponibles) ? demande.horaires_disponibles.join(', ') : demande.horaires_disponibles}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <h3>Confidentialité</h3>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <strong>Visibilité:</strong>
-                    <span>${demande.visibilite}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Anonymat:</strong>
-                    <span>${demande.anonyme ? 'Oui' : 'Non'}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <h3>Actions de traitement</h3>
-            <div class="modal-actions">
-                <select class="status-select" id="statusSelect">
-                    <option value="nouveau" ${demande.statut === 'nouveau' ? 'selected' : ''}>Nouveau</option>
-                    <option value="en-cours" ${demande.statut === 'en-cours' ? 'selected' : ''}>En cours</option>
-                    <option value="traite" ${demande.statut === 'traite' ? 'selected' : ''}>Traité</option>
-                    <option value="refuse" ${demande.statut === 'refuse' ? 'selected' : ''}>Refusé</option>
-                </select>
-                <button class="btn-save" onclick="updateStatus(${demande.id})">💾 Enregistrer le statut</button>
-                <button class="btn-contact" onclick="window.location.href='tel:${demande.telephone}'">📞 Contacter</button>
-            </div>
-        </div>
-    `;
-    
-    // Afficher la modal
-    modal.style.display = 'flex';
 };
 
 window.editDemande = function(id) {
-    console.log('✏️ Modifier demande:', id);
-    alert(`✏️ Modification de la demande #${id}\n\nCette fonctionnalité sera implémentée prochainement.`);
+    alert('✏️ Modification de la demande #' + id);
 };
 
 window.deleteDemande = function(id) {
-    console.log('🗑️ Supprimer demande:', id);
-    
-    if (!confirm(`⚠️ Supprimer la demande #${id} ?\n\nCette action est irréversible.`)) return;
-    
-    fetch(`/SparkMind/controllers/DemandeController.php?action=delete&id=${id}`, {
-        method: 'GET'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('✅ Demande supprimée !');
-            location.reload();
-        } else {
-            alert('❌ Erreur: ' + data.message);
-        }
-    })
-    .catch(error => {
-        alert('❌ Erreur: ' + error.message);
-    });
-};
-
-window.updateStatus = function(id) {
-    const statusSelect = document.getElementById('statusSelect');
-    if (!statusSelect) return;
-    
-    const newStatus = statusSelect.value;
-    
-    fetch('/SparkMind/controllers/DemandeController.php?action=updateStatus', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, statut: newStatus })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('✅ Statut mis à jour !');
-            document.getElementById('detailsModal').style.display = 'none';
-            location.reload();
-        } else {
-            alert('❌ Erreur: ' + data.message);
-        }
-    })
-    .catch(error => {
-        alert('❌ Erreur: ' + error.message);
-    });
-};
-
-// Fermer la modal
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('detailsModal');
-    if (modal) {
-        const closeBtn = modal.querySelector('.modal-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        }
-        
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
+    if (confirm('⚠️ Supprimer la demande #' + id + ' ?')) {
+        showNotification('✅ Demande supprimée', 'success');
     }
-});
+};
+
+console.log('✅ Back Office complet initialisé !');

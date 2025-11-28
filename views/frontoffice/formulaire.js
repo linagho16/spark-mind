@@ -1,412 +1,488 @@
-// ==========================================
-// SPARKMIND - FORMULAIRE.JS
-// Gestion du formulaire de demande d'aide
-// ==========================================
+// Configuration de l'API
+const API_BASE = '../../controllers/DemandeController.php';
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Éléments du formulaire
+// Variables globales
+let formData = {};
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('✅ SparkMind - Formulaire de demande initialisé');
+    initializeForm();
+    loadSavedData();
+    setupEventListeners();
+    updateProgress();
+});
+
+// Initialiser le formulaire
+function initializeForm() {
     const form = document.getElementById('helpForm');
-    const progressBar = document.getElementById('progressBar');
+    if (!form) {
+        console.error('❌ Formulaire non trouvé');
+        return;
+    }
+}
+
+// Configurer les écouteurs d'événements
+function setupEventListeners() {
+    const form = document.getElementById('helpForm');
     const inputs = form.querySelectorAll('input, select, textarea');
     
-    // ==========================================
-    // 1. AUTO-SAUVEGARDE DANS LOCALSTORAGE
-    // ==========================================
-    
-    // Charger les données sauvegardées
-    function loadSavedData() {
-        inputs.forEach(input => {
-            const savedValue = localStorage.getItem(`sparkmind_${input.name}`);
-            
-            if (savedValue) {
-                if (input.type === 'checkbox') {
-                    input.checked = savedValue === 'true';
-                } else if (input.type === 'radio') {
-                    if (input.value === savedValue) {
-                        input.checked = true;
-                    }
-                } else {
-                    input.value = savedValue;
-                }
-            }
-        });
-        
-        updateProgress();
-    }
-    
-    // Sauvegarder les données à chaque changement
+    // Auto-sauvegarde et mise à jour de la progression
     inputs.forEach(input => {
-        input.addEventListener('change', function() {
-            if (input.type === 'checkbox') {
-                localStorage.setItem(`sparkmind_${input.name}`, input.checked);
-            } else {
-                localStorage.setItem(`sparkmind_${input.name}`, input.value);
-            }
+        input.addEventListener('change', () => {
+            saveFormData();
             updateProgress();
         });
         
-        // Pour les champs texte, sauvegarder aussi pendant la frappe
+        // Pour les champs texte, sauvegarder pendant la frappe
         if (input.tagName === 'TEXTAREA' || input.type === 'text') {
-            input.addEventListener('input', function() {
-                localStorage.setItem(`sparkmind_${input.name}`, input.value);
+            input.addEventListener('input', () => {
+                saveFormData();
             });
         }
-    });
-    
-    // ==========================================
-    // 2. BARRE DE PROGRESSION
-    // ==========================================
-    
-    function updateProgress() {
-        if (!progressBar) return;
         
-        let totalFields = 0;
-        let filledFields = 0;
-        
-        inputs.forEach(input => {
-            // Ne compter que les champs requis
-            if (input.required) {
-                totalFields++;
-                
-                if (input.type === 'checkbox' && input.checked) {
-                    filledFields++;
-                } else if (input.type === 'radio') {
-                    const radioGroup = form.querySelectorAll(`input[name="${input.name}"]`);
-                    const isChecked = Array.from(radioGroup).some(r => r.checked);
-                    if (isChecked && input.checked) {
-                        filledFields++;
-                    }
-                } else if (input.value && input.value.trim() !== '') {
-                    filledFields++;
-                }
-            }
+        // Validation en temps réel
+        input.addEventListener('blur', () => {
+            validateField(input);
         });
         
-        const progress = totalFields > 0 ? (filledFields / totalFields) * 100 : 0;
-        progressBar.style.width = progress + '%';
+        input.addEventListener('focus', () => {
+            clearFieldError(input);
+        });
+    });
+    
+    // Soumission du formulaire
+    form.addEventListener('submit', handleSubmit);
+    
+    // Réinitialisation
+    form.addEventListener('reset', handleReset);
+    
+    // Auto-formatage du téléphone
+    const phoneInput = form.querySelector('input[name="telephone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', formatPhoneNumber);
     }
+}
+
+// Mettre à jour la barre de progression
+function updateProgress() {
+    const form = document.getElementById('helpForm');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
     
-    // ==========================================
-    // 3. VALIDATION DU FORMULAIRE
-    // ==========================================
+    if (!form || !progressBar) return;
     
-    // Validation du numéro de téléphone tunisien
-    function validatePhoneTN(phone) {
-        // Format accepté: +216 XX XXX XXX ou 216XXXXXXXX ou XXXXXXXX
-        const patterns = [
-            /^\+216\s?\d{2}\s?\d{3}\s?\d{3}$/,
-            /^216\d{8}$/,
-            /^\d{8}$/
-        ];
-        return patterns.some(pattern => pattern.test(phone.replace(/\s/g, '')));
-    }
+    const requiredInputs = form.querySelectorAll('[required]');
+    let totalFields = 0;
+    let filledFields = 0;
     
-    // Validation de l'email
-    function validateEmail(email) {
-        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return pattern.test(email);
-    }
+    // Grouper les radio buttons par nom
+    const radioGroups = {};
     
-    // Afficher un message d'erreur
-    function showError(input, message) {
-        // Supprimer l'ancien message d'erreur s'il existe
-        const existingError = input.parentElement.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-        
-        // Créer un nouveau message d'erreur
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.color = '#ec7546';
-        errorDiv.style.fontSize = '0.9em';
-        errorDiv.style.marginTop = '5px';
-        errorDiv.textContent = message;
-        
-        input.parentElement.appendChild(errorDiv);
-        input.style.borderColor = '#ec7546';
-    }
-    
-    // Supprimer le message d'erreur
-    function clearError(input) {
-        const errorDiv = input.parentElement.querySelector('.error-message');
-        if (errorDiv) {
-            errorDiv.remove();
-        }
-        input.style.borderColor = '#e0e0e0';
-    }
-    
-    // Validation en temps réel
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            if (input.required && !input.value.trim()) {
-                showError(input, 'Ce champ est obligatoire');
-            } else if (input.name === 'telephone' && input.value) {
-                if (!validatePhoneTN(input.value)) {
-                    showError(input, 'Format invalide. Ex: +216 XX XXX XXX');
-                } else {
-                    clearError(input);
-                }
-            } else if (input.name === 'email' && input.value) {
-                if (!validateEmail(input.value)) {
-                    showError(input, 'Email invalide');
-                } else {
-                    clearError(input);
+    requiredInputs.forEach(input => {
+        if (input.type === 'radio') {
+            if (!radioGroups[input.name]) {
+                radioGroups[input.name] = form.querySelectorAll(`input[name="${input.name}"]`);
+                totalFields++;
+            }
+        } else if (input.type === 'checkbox') {
+            // Pour les checkboxes de catégories d'aide
+            if (input.name === 'aide') {
+                if (!radioGroups['aide']) {
+                    radioGroups['aide'] = form.querySelectorAll('input[name="aide"]');
+                    totalFields++;
                 }
             } else {
-                clearError(input);
+                totalFields++;
             }
-        });
-        
-        input.addEventListener('focus', function() {
-            clearError(input);
-        });
+        } else {
+            totalFields++;
+        }
     });
     
-    // ==========================================
-    // 4. SOUMISSION DU FORMULAIRE
-    // ==========================================
-    
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Validation finale
-        let isValid = true;
-        let firstError = null;
-        
-        // Vérifier que au moins une catégorie d'aide est sélectionnée
-        const aideCheckboxes = form.querySelectorAll('input[name="aide"]:checked');
-        if (aideCheckboxes.length === 0) {
-            alert('⚠️ Veuillez sélectionner au moins une catégorie d\'aide.');
-            const firstAideCheckbox = form.querySelector('input[name="aide"]');
-            firstAideCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        
-        // Vérifier tous les champs requis
-        inputs.forEach(input => {
-            if (input.required && !input.value.trim() && input.type !== 'checkbox' && input.type !== 'radio') {
-                if (isValid) {
-                    firstError = input;
-                }
-                isValid = false;
-                showError(input, 'Ce champ est obligatoire');
-            }
-        });
-        
-        // Vérifier les radio buttons requis
-        const radioGroups = {};
-        form.querySelectorAll('input[type="radio"][required]').forEach(radio => {
-            if (!radioGroups[radio.name]) {
-                radioGroups[radio.name] = form.querySelectorAll(`input[name="${radio.name}"]`);
-            }
-        });
-        
-        Object.values(radioGroups).forEach(group => {
+    // Compter les champs remplis
+    requiredInputs.forEach(input => {
+        if (input.type === 'radio') {
+            const group = radioGroups[input.name];
             const isChecked = Array.from(group).some(r => r.checked);
-            if (!isChecked) {
-                isValid = false;
-                if (!firstError) {
-                    firstError = group[0];
+            if (isChecked && input.checked) {
+                filledFields++;
+            }
+        } else if (input.type === 'checkbox') {
+            if (input.name === 'aide') {
+                const aideCheckboxes = form.querySelectorAll('input[name="aide"]:checked');
+                if (aideCheckboxes.length > 0 && input === aideCheckboxes[0]) {
+                    filledFields++;
                 }
-                alert('⚠️ Veuillez sélectionner une option pour tous les champs obligatoires.');
+            } else if (input.checked) {
+                filledFields++;
             }
-        });
+        } else if (input.value && input.value.trim() !== '') {
+            filledFields++;
+        }
+    });
+    
+    const progress = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
+    progressBar.style.width = progress + '%';
+    if (progressPercent) {
+        progressPercent.textContent = progress + '%';
+    }
+}
+
+// Sauvegarder les données du formulaire
+function saveFormData() {
+    const form = document.getElementById('helpForm');
+    const inputs = form.querySelectorAll('input, select, textarea');
+    
+    inputs.forEach(input => {
+        const key = `sparkmind_${input.name}`;
         
-        // Vérifier le téléphone
-        const phoneInput = form.querySelector('input[name="telephone"]');
-        if (phoneInput.value && !validatePhoneTN(phoneInput.value)) {
-            isValid = false;
-            if (!firstError) {
-                firstError = phoneInput;
+        if (input.type === 'checkbox') {
+            if (input.name === 'aide' || input.name === 'horaires_disponibles') {
+                // Pour les checkboxes multiples, sauvegarder un tableau
+                const checked = Array.from(form.querySelectorAll(`input[name="${input.name}"]:checked`))
+                    .map(cb => cb.value);
+                localStorage.setItem(key, JSON.stringify(checked));
+            } else {
+                localStorage.setItem(key, input.checked);
             }
-            showError(phoneInput, 'Format de téléphone invalide');
-        }
-        
-        // Vérifier l'email s'il est rempli
-        const emailInput = form.querySelector('input[name="email"]');
-        if (emailInput.value && !validateEmail(emailInput.value)) {
-            isValid = false;
-            if (!firstError) {
-                firstError = emailInput;
+        } else if (input.type === 'radio') {
+            if (input.checked) {
+                localStorage.setItem(key, input.value);
             }
-            showError(emailInput, 'Format d\'email invalide');
+        } else {
+            localStorage.setItem(key, input.value);
         }
+    });
+}
+
+// Charger les données sauvegardées
+function loadSavedData() {
+    const form = document.getElementById('helpForm');
+    const inputs = form.querySelectorAll('input, select, textarea');
+    
+    inputs.forEach(input => {
+        const key = `sparkmind_${input.name}`;
+        const savedValue = localStorage.getItem(key);
         
-        // Vérifier l'attestation
-        const attestation = form.querySelector('input[name="attestation"]');
-        if (!attestation.checked) {
-            alert('⚠️ Vous devez attester que les informations sont exactes.');
-            attestation.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        
-        // Si validation échoue, scroller vers la première erreur
-        if (!isValid) {
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (savedValue) {
+            if (input.type === 'checkbox') {
+                if (input.name === 'aide' || input.name === 'horaires_disponibles') {
+                    try {
+                        const values = JSON.parse(savedValue);
+                        if (values.includes(input.value)) {
+                            input.checked = true;
+                        }
+                    } catch (e) {
+                        input.checked = savedValue === 'true';
+                    }
+                } else {
+                    input.checked = savedValue === 'true';
+                }
+            } else if (input.type === 'radio') {
+                if (input.value === savedValue) {
+                    input.checked = true;
+                }
+            } else {
+                input.value = savedValue;
             }
-            return;
         }
-        
-        // Collecter les données du formulaire
-        const formData = new FormData(form);
-        const data = {
-            nom: formData.get('nom'),
-            age: formData.get('age'),
-            gouvernorat: formData.get('gouvernorat'),
-            ville: formData.get('ville'),
-            situation: formData.get('situation'),
-            categories_aide: formData.getAll('aide'),
-            urgence: formData.get('urgence'),
-            description_situation: formData.get('situation'),
-            demande_exacte: formData.get('demande'),
-            telephone: formData.get('telephone'),
-            email: formData.get('email'),
-            preference_contact: formData.get('preference-contact'),
-            horaires_disponibles: formData.getAll('horaire'),
-            visibilite: formData.get('visibilite'),
-            anonyme: formData.get('anonyme') === 'on',
-            date_soumission: new Date().toISOString()
-        };
-        
-        // Afficher un indicateur de chargement
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
-        submitButton.textContent = '⏳ Envoi en cours...';
-        submitButton.disabled = true;
-        
-        // Envoyer les données au serveur
-        fetch('/SparkMind/controllers/DemandeController.php?action=create', {
+    });
+    
+    updateProgress();
+}
+
+// Valider un champ
+function validateField(input) {
+    clearFieldError(input);
+    
+    if (input.required && !input.value.trim() && input.type !== 'checkbox' && input.type !== 'radio') {
+        showFieldError(input, 'Ce champ est obligatoire');
+        return false;
+    }
+    
+    if (input.name === 'telephone' && input.value) {
+        if (!validatePhone(input.value)) {
+            showFieldError(input, 'Format invalide. Ex: +216 XX XXX XXX');
+            return false;
+        }
+    }
+    
+    if (input.name === 'email' && input.value) {
+        if (!validateEmail(input.value)) {
+            showFieldError(input, 'Email invalide');
+            return false;
+        }
+    }
+    
+    if (input.name === 'age' && input.value) {
+        const age = parseInt(input.value);
+        if (age < 1 || age > 120) {
+            showFieldError(input, 'Âge invalide');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Valider le téléphone tunisien
+function validatePhone(phone) {
+    const cleanPhone = phone.replace(/\s/g, '');
+    const patterns = [
+        /^\+216\d{8}$/,
+        /^216\d{8}$/,
+        /^\d{8}$/
+    ];
+    return patterns.some(pattern => pattern.test(cleanPhone));
+}
+
+// Valider l'email
+function validateEmail(email) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+}
+
+// Afficher une erreur de champ
+function showFieldError(input, message) {
+    input.classList.add('error');
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = '⚠️ ' + message;
+    
+    input.parentElement.appendChild(errorDiv);
+}
+
+// Effacer l'erreur de champ
+function clearFieldError(input) {
+    input.classList.remove('error');
+    
+    const errorDiv = input.parentElement.querySelector('.error-message');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+}
+
+// Formater le numéro de téléphone
+function formatPhoneNumber(e) {
+    let value = e.target.value.replace(/\s/g, '');
+    
+    // Ajouter +216 si nécessaire
+    if (value.length === 8 && !value.startsWith('+216') && !value.startsWith('216')) {
+        value = '+216' + value;
+    }
+    
+    // Formater avec des espaces
+    if (value.startsWith('+216')) {
+        value = value.replace(/^\+216/, '+216 ');
+        value = value.replace(/(\+216\s)(\d{2})(\d{3})(\d{3})/, '$1$2 $3 $4');
+    }
+    
+    e.target.value = value;
+}
+
+// Gérer la soumission du formulaire
+async function handleSubmit(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    
+    // Validation complète
+    if (!validateForm(form)) {
+        return;
+    }
+    
+    // Collecter les données
+    const formData = collectFormData(form);
+    
+    console.log('📤 Envoi des données:', formData);
+    
+    // Désactiver le bouton de soumission
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = '⏳ Envoi en cours...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch(`${API_BASE}?action=create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                // Succès - Générer un numéro de demande
-                const demandeId = result.id || Math.floor(Math.random() * 10000);
-                
-                // Afficher le message de succès
-                alert(`✅ Votre demande a été envoyée avec succès!\n\nNuméro de demande: #${demandeId}\n\nVous recevrez une confirmation par ${data.preference_contact} sous peu.\n\nMerci pour votre confiance en SparkMind.`);
-                
-                // Vider le localStorage
-                inputs.forEach(input => {
-                    localStorage.removeItem(`sparkmind_${input.name}`);
-                });
-                
-                // Réinitialiser le formulaire
-                form.reset();
-                updateProgress();
-                
-                // Scroller vers le haut
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Erreur du serveur
-                alert('❌ Une erreur est survenue lors de l\'envoi de votre demande.\n\n' + (result.message || 'Veuillez réessayer plus tard.'));
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('❌ Une erreur de connexion est survenue.\n\nVérifiez votre connexion internet et réessayez.');
-        })
-        .finally(() => {
-            // Restaurer le bouton
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
+            body: JSON.stringify(formData)
         });
-    });
-    
-    // ==========================================
-    // 5. BOUTON RÉINITIALISER
-    // ==========================================
-    
-    const resetButton = form.querySelector('button[type="reset"]');
-    if (resetButton) {
-        resetButton.addEventListener('click', function(e) {
-            e.preventDefault();
+        
+        const data = await response.json();
+        console.log('📨 Réponse du serveur:', data);
+        
+        if (data.success) {
+            showNotification(`✅ Votre demande a été envoyée avec succès!\n\nNuméro de demande: #${data.id || 'XXX'}\n\nVous recevrez une confirmation sous peu.`, 'success');
             
-            if (confirm('⚠️ Êtes-vous sûr de vouloir réinitialiser le formulaire?\n\nToutes les données seront perdues.')) {
-                // Vider le localStorage
-                inputs.forEach(input => {
-                    localStorage.removeItem(`sparkmind_${input.name}`);
-                });
-                
-                // Réinitialiser le formulaire
-                form.reset();
-                
-                // Supprimer tous les messages d'erreur
-                form.querySelectorAll('.error-message').forEach(error => error.remove());
-                
-                // Réinitialiser les bordures
-                inputs.forEach(input => {
-                    input.style.borderColor = '#e0e0e0';
-                });
-                
-                // Réinitialiser la barre de progression
-                updateProgress();
-                
-                // Scroller vers le haut
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        });
+            // Nettoyer le localStorage
+            clearFormData();
+            
+            // Réinitialiser le formulaire
+            form.reset();
+            updateProgress();
+            
+            // Scroller vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            showNotification('❌ ' + (data.message || 'Erreur lors de l\'envoi de votre demande'), 'error');
+        }
+    } catch (error) {
+        console.error('❌ Erreur:', error);
+        showNotification('❌ Erreur de connexion au serveur', 'error');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
+}
+
+// Valider tout le formulaire
+function validateForm(form) {
+    let isValid = true;
+    let firstError = null;
     
-    // ==========================================
-    // 6. AMÉLIORATION DE L'EXPÉRIENCE UTILISATEUR
-    // ==========================================
-    
-    // Auto-formatage du numéro de téléphone
-    const phoneInput = form.querySelector('input[name="telephone"]');
-    if (phoneInput) {
-        phoneInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\s/g, '');
-            
-            // Ajouter automatiquement +216 si l'utilisateur tape 8 chiffres
-            if (value.length === 8 && !value.startsWith('+216') && !value.startsWith('216')) {
-                value = '+216 ' + value;
+    // Vérifier les champs requis
+    const requiredInputs = form.querySelectorAll('[required]');
+    requiredInputs.forEach(input => {
+        if (input.type !== 'checkbox' && input.type !== 'radio') {
+            if (!input.value.trim()) {
+                if (!firstError) firstError = input;
+                showFieldError(input, 'Ce champ est obligatoire');
+                isValid = false;
+            } else if (!validateField(input)) {
+                if (!firstError) firstError = input;
+                isValid = false;
             }
-            
-            // Formater avec des espaces
-            if (value.startsWith('+216')) {
-                value = value.replace(/^\+216/, '+216 ');
-                value = value.replace(/(\+216\s)(\d{2})(\d{3})(\d{3})/, '$1$2 $3 $4');
-            }
-            
-            e.target.value = value;
-        });
-    }
-    
-    // Animation de focus sur les sections
-    const sections = form.querySelectorAll('.section');
-    sections.forEach(section => {
-        const firstInput = section.querySelector('input, select, textarea');
-        if (firstInput) {
-            firstInput.addEventListener('focus', function() {
-                sections.forEach(s => s.style.opacity = '0.6');
-                section.style.opacity = '1';
-                section.style.transition = 'opacity 0.3s ease';
-            });
-            
-            firstInput.addEventListener('blur', function() {
-                sections.forEach(s => s.style.opacity = '1');
-            });
         }
     });
     
-    // ==========================================
-    // 7. INITIALISATION
-    // ==========================================
+    // Vérifier les catégories d'aide
+    const aideCheckboxes = form.querySelectorAll('input[name="aide"]:checked');
+    if (aideCheckboxes.length === 0) {
+        showNotification('⚠️ Veuillez sélectionner au moins une catégorie d\'aide', 'error');
+        const firstAide = form.querySelector('input[name="aide"]');
+        if (firstAide && !firstError) firstError = firstAide;
+        isValid = false;
+    }
     
-    // Charger les données sauvegardées au chargement de la page
-    loadSavedData();
+    // Vérifier les radio buttons requis
+    const radioGroups = {};
+    form.querySelectorAll('input[type="radio"][required]').forEach(radio => {
+        if (!radioGroups[radio.name]) {
+            radioGroups[radio.name] = form.querySelectorAll(`input[name="${radio.name}"]`);
+        }
+    });
     
-    // Message de bienvenue (optionnel)
-    console.log('✅ SparkMind - Formulaire initialisé avec succès');
-    console.log('📝 Auto-sauvegarde activée');
-    console.log('🔒 Validation en temps réel activée');
-});
+    Object.entries(radioGroups).forEach(([name, group]) => {
+        const isChecked = Array.from(group).some(r => r.checked);
+        if (!isChecked) {
+            showNotification(`⚠️ Veuillez sélectionner une option pour: ${name}`, 'error');
+            if (!firstError) firstError = group[0];
+            isValid = false;
+        }
+    });
+    
+    // Vérifier l'attestation
+    const attestation = form.querySelector('input[name="attestation"]');
+    if (!attestation.checked) {
+        showNotification('⚠️ Vous devez attester que les informations sont exactes', 'error');
+        if (!firstError) firstError = attestation;
+        isValid = false;
+    }
+    
+    // Scroller vers la première erreur
+    if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    return isValid;
+}
+
+// Collecter les données du formulaire
+function collectFormData(form) {
+    const formDataObj = new FormData(form);
+    
+    // Construire l'objet de données
+    const data = {
+        nom: formDataObj.get('nom') || '',
+        age: formDataObj.get('age') || '',
+        gouvernorat: formDataObj.get('gouvernorat') || '',
+        ville: formDataObj.get('ville') || '',
+        situation_familiale: formDataObj.get('situation') || '',
+        categories_aide: formDataObj.getAll('aide').join(','),
+        urgence: formDataObj.get('urgence') || '',
+        description_situation: formDataObj.get('description_situation') || '',
+        demande_exacte: formDataObj.get('demande_exacte') || '',
+        telephone: formDataObj.get('telephone') || '',
+        email: formDataObj.get('email') || '',
+        preference_contact: formDataObj.get('preference_contact') || '',
+        horaires_disponibles: formDataObj.getAll('horaires_disponibles').join(','),
+        visibilite: formDataObj.get('visibilite') || '',
+        anonyme: formDataObj.get('anonyme') ? 1 : 0,
+        statut: 'en_attente'
+    };
+    
+    return data;
+}
+
+// Gérer la réinitialisation
+function handleReset(e) {
+    e.preventDefault();
+    
+    if (confirm('⚠️ Êtes-vous sûr de vouloir réinitialiser le formulaire?\n\nToutes les données seront perdues.')) {
+        const form = e.target;
+        
+        // Nettoyer le localStorage
+        clearFormData();
+        
+        // Réinitialiser le formulaire
+        form.reset();
+        
+        // Effacer toutes les erreurs
+        form.querySelectorAll('.error-message').forEach(error => error.remove());
+        form.querySelectorAll('.error').forEach(input => input.classList.remove('error'));
+        
+        // Réinitialiser la progression
+        updateProgress();
+        
+        // Scroller vers le haut
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        showNotification('🔄 Formulaire réinitialisé', 'info');
+    }
+}
+
+// Nettoyer les données du localStorage
+function clearFormData() {
+    const form = document.getElementById('helpForm');
+    const inputs = form.querySelectorAll('input, select, textarea');
+    
+    inputs.forEach(input => {
+        localStorage.removeItem(`sparkmind_${input.name}`);
+    });
+}
+
+// Afficher une notification
+function showNotification(message, type = 'info') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = `notification ${type} show`;
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 5000);
+}
+
+// Fonction d'aide
+function showHelp() {
+    alert(`📋 Aide - Formulaire de Demande\n\n` +
+          `1. Remplissez tous les champs obligatoires (*)\n` +
+          `2. Sélectionnez au moins une catégorie d'aide\n` +
+          `3. Décrivez précisément votre situation\n` +
+          `4. Vos données sont sauvegardées automatiquement\n\n` +
+          `Pour toute question, contactez-nous au:\n+216 55 581 22`);
+}

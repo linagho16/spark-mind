@@ -300,7 +300,7 @@
     <!-- HEADER STYLE FRONT OFFICE -->
     <header class="main-header top-nav">
       <div class="brand-block">
-        <img src="logo.jpg" alt="Logo SPARKMIND" class="logo-img">
+        <img src="images/logo.jpg" alt="Logo SPARKMIND" class="logo-img">
         <div class="brand-text">
           <span class="brand-name">SPARKMIND</span>
           <span class="brand-tagline">Quand la pensée devient espoir</span>

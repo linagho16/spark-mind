@@ -18,7 +18,6 @@
     
     <aside class="sidebar">
       <a class="brand" href="index.php?page=main" title="Retour au site">
-        <!-- ✅ chemin corrigé pour le logo -->
         <img src="images/logo.jpg" alt="Logo SPARKMIND" class="logo" />
         <span class="brand-name">SPARKMIND</span>
       </a>
@@ -31,27 +30,8 @@
           <span>Utilisateurs</span>
         </a>
 
-        <a class="item" data-section="help-asks">
-          <span>Demandes d’aide</span>
-        </a>
-        <a class="item" data-section="help-offers">
-          <span>Offres d’aide</span>
-        </a>
-        <a class="item" data-section="anonymous">
-          <span>Discussions anonymes</span>
-        </a>
-        <a class="item" data-section="reports">
-          <span>Signalements</span>
-        </a>
-        <a class="item" data-section="content">
-          <span>Contenus & Modération</span>
-        </a>
-        <a class="item" data-section="messages">
-          <span>Messages</span>
-        </a>
-        <a class="item" data-section="settings">
-          <span>Paramètres</span>
-        </a>
+ 
+
       </nav>
 
       <div class="sidebar-foot">

@@ -530,7 +530,7 @@
       filter: brightness(1.02);
     }
 
-    /* Responsive léger pour cette page */
+    
     @media (max-width:768px){
       .space-hero{
         border-radius:20px;
@@ -566,19 +566,19 @@
       </div>
     </header>
 
-    <!-- Citation -->
+    
     <h2 class="page-quote">
       « Quand la pensée devient espoir. »
     </h2>
 
     <main class="space-main">
 
-      <!-- Hero principal -->
+      
       <section class="space-hero">
 
 
 
-        <!-- Contenu principal -->
+        
         <div class="space-content">
 
           <div class="space-left">

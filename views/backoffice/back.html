@@ -17,22 +17,22 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a href="#demandes" class="nav-item active" onclick="showSection('demandes')">
+            <a href="#demandes" class="nav-item active" onclick="showSection(event, 'demandes')">
                 <span class="nav-icon">📊</span>
                 <span>Demandes d'aide</span>
-                <span class="badge">12</span>
+                <span class="badge" id="badgeEnAttente">0</span>
             </a>
-            <a href="#categories" class="nav-item" onclick="showSection('categories')">
+            <a href="#categories" class="nav-item" onclick="showSection(event, 'categories')">
                 <span class="nav-icon">📁</span>
-                <span>Catégories</span>
+                <span>Catégories d'aide</span>
             </a>
-            <a href="#produits" class="nav-item" onclick="showSection('produits')">
-                <span class="nav-icon">📦</span>
-                <span>Produits</span>
+            <a href="#gouvernorats" class="nav-item" onclick="showSection(event, 'gouvernorats')">
+                <span class="nav-icon">🗺️</span>
+                <span>Par Gouvernorat</span>
             </a>
-            <a href="#albums" class="nav-item" onclick="showSection('albums')">
-                <span class="nav-icon">📸</span>
-                <span>Albums</span>
+            <a href="#evolution" class="nav-item" onclick="showSection(event, 'evolution')">
+                <span class="nav-icon">📈</span>
+                <span>Évolution</span>
             </a>
             <a href="#" class="nav-item logout">
                 <span class="nav-icon">🚪</span>
@@ -44,7 +44,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- ========================================
-             SECTION 1: DEMANDES D'AIDE (EXISTANTE)
+             SECTION 1: DEMANDES D'AIDE
              ======================================== -->
         <section id="section-demandes" class="content-section active">
             <!-- Top Bar -->
@@ -67,29 +67,29 @@
                 <div class="stat-card urgent">
                     <div class="stat-icon">🔴</div>
                     <div class="stat-info">
-                        <h3>3</h3>
+                        <h3 id="statUrgentes">0</h3>
                         <p>Demandes urgentes</p>
                     </div>
                 </div>
                 <div class="stat-card pending">
                     <div class="stat-icon">⏳</div>
                     <div class="stat-info">
-                        <h3>12</h3>
+                        <h3 id="statEnAttente">0</h3>
                         <p>En attente</p>
                     </div>
                 </div>
                 <div class="stat-card processed">
                     <div class="stat-icon">✅</div>
                     <div class="stat-info">
-                        <h3>47</h3>
+                        <h3 id="statTraitees">0</h3>
                         <p>Traitées</p>
                     </div>
                 </div>
                 <div class="stat-card total">
                     <div class="stat-icon">📈</div>
                     <div class="stat-info">
-                        <h3>62</h3>
-                        <p>Total ce mois</p>
+                        <h3 id="statTotal">0</h3>
+                        <p>Total</p>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@
             <div class="filters-section">
                 <div class="filter-group">
                     <label>Statut:</label>
-                    <select class="filter-select" name="statut">
+                    <select class="filter-select" id="filterStatut">
                         <option value="">Tous</option>
                         <option value="nouveau">Nouveau</option>
                         <option value="en-cours">En cours</option>
@@ -106,8 +106,24 @@
                         <option value="refuse">Refusé</option>
                     </select>
                 </div>
-                <button class="btn-filter">Filtrer</button>
-                <button class="btn-reset">Réinitialiser</button>
+                <div class="filter-group">
+                    <label>Urgence:</label>
+                    <select class="filter-select" id="filterUrgence">
+                        <option value="">Toutes</option>
+                        <option value="tres-urgent">Très urgent</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="important">Important</option>
+                        <option value="peut-attendre">Peut attendre</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Gouvernorat:</label>
+                    <select class="filter-select" id="filterGouvernorat">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <button class="btn-filter" onclick="applyFilters()">Filtrer</button>
+                <button class="btn-reset" onclick="resetFilters()">Réinitialiser</button>
             </div>
 
             <!-- Demandes Table -->
@@ -125,36 +141,38 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="demandesTableBody">
                         <!-- Données dynamiques -->
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination -->
-            <div class="pagination">
-                <button class="page-btn" disabled>« Précédent</button>
-                <button class="page-btn active">1</button>
-                <button class="page-btn">Suivant »</button>
-            </div>
+            <div class="pagination" id="paginationDemandes"></div>
         </section>
 
         <!-- ========================================
-             SECTION 2: CATEGORIES (NOUVELLE)
+             SECTION 2: CATEGORIES D'AIDE
              ======================================== -->
         <section id="section-categories" class="content-section">
             <div class="top-bar">
-                <h1>📁 Gestion des Catégories</h1>
-                <button class="btn-add" onclick="showAddCategoryForm()">➕ Ajouter une catégorie</button>
+                <h1>📁 Demandes par Catégorie d'Aide</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+
+            <div class="stats-container" id="categoriesStats">
+                <!-- Statistiques par catégorie -->
             </div>
 
             <div class="table-container">
                 <table class="categories-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Description</th>
+                            <th>Catégorie</th>
+                            <th>Nombre de demandes</th>
+                            <th>Urgentes</th>
+                            <th>En attente</th>
+                            <th>Traitées</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -166,26 +184,27 @@
         </section>
 
         <!-- ========================================
-             SECTION 3: PRODUITS (NOUVELLE)
+             SECTION 3: PAR GOUVERNORAT
              ======================================== -->
-        <section id="section-produits" class="content-section">
+        <section id="section-gouvernorats" class="content-section">
             <div class="top-bar">
-                <h1>📦 Gestion des Produits</h1>
-                <button class="btn-add" onclick="showAddProductForm()">➕ Ajouter un produit</button>
+                <h1>🗺️ Demandes par Gouvernorat</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
             </div>
 
             <div class="table-container">
-                <table class="products-table">
+                <table class="gouvernorats-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Date</th>
-                            <th>Catégorie (JOIN)</th>
+                            <th>Gouvernorat</th>
+                            <th>Nombre de demandes</th>
+                            <th>Urgentes</th>
+                            <th>En attente</th>
+                            <th>Traitées</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="productsTableBody">
+                    <tbody id="gouvernoratsTableBody">
                         <!-- Données dynamiques -->
                     </tbody>
                 </table>
@@ -193,137 +212,121 @@
         </section>
 
         <!-- ========================================
-             SECTION 4: ALBUMS (NOUVELLE)
+             SECTION 4: ÉVOLUTION
              ======================================== -->
-        <section id="section-albums" class="content-section">
+        <section id="section-evolution" class="content-section">
             <div class="top-bar">
-                <h1>📸 Gestion des Albums</h1>
-                <button class="btn-add" onclick="showAddAlbumForm()">➕ Ajouter un album</button>
+                <h1>📈 Évolution des Demandes</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
             </div>
 
-            <div class="table-container">
-                <table class="albums-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Date</th>
-                            <th>Détails</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="albumsTableBody">
-                        <!-- Données dynamiques -->
-                    </tbody>
-                </table>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <h3 id="statAujourdhui">0</h3>
+                        <p>Aujourd'hui</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📆</div>
+                    <div class="stat-info">
+                        <h3 id="statSemaine">0</h3>
+                        <p>Cette semaine</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="statMois">0</h3>
+                        <p>Ce mois</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="statMoyenne">0</h3>
+                        <p>Moyenne / jour</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Demandes par mois (6 derniers mois)</h3>
+                <div id="evolutionChart" class="evolution-chart">
+                    <!-- Graphique simple en barres -->
+                </div>
             </div>
         </section>
     </div>
 
-    <!-- ========================================
-         MODALS ET FORMULAIRES
-         ======================================== -->
-
-    <!-- Modal: Add/Edit Category -->
-    <div id="modalCategory" class="modal">
-        <div class="modal-content">
+    <!-- Modal Modification Statut - NOUVEAU -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content status-modal-content">
             <div class="modal-header">
-                <h2 id="categoryModalTitle">Ajouter une catégorie</h2>
-                <button class="modal-close" onclick="closeModal('modalCategory')">&times;</button>
+                <h2>✏️ Modifier le Statut</h2>
+                <button class="modal-close" onclick="closeModal('statusModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="formCategory" onsubmit="saveCategory(event)">
-                    <input type="hidden" id="categoryId">
-                    <div class="form-group">
-                        <label>Nom de la catégorie <span class="required">*</span></label>
-                        <input type="text" id="categoryName" required placeholder="Ex: Tech, Design, Santé...">
+                <p style="margin-bottom: 20px; color: #666;">
+                    Sélectionnez le nouveau statut pour la demande <strong>#<span id="currentDemandeId">-</span></strong>
+                </p>
+                
+                <div class="status-options">
+                    <div class="status-option nouveau" onclick="selectStatus(this, 'nouveau')">
+                        <div class="status-option-icon">🆕</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Nouveau</div>
+                            <div class="status-option-description">La demande vient d'être reçue et n'a pas encore été examinée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
                     </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="categoryDescription" rows="4" placeholder="Description de la catégorie..."></textarea>
+
+                    <div class="status-option en-cours" onclick="selectStatus(this, 'en-cours')">
+                        <div class="status-option-icon">⏳</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">En cours</div>
+                            <div class="status-option-description">La demande est en cours de traitement par notre équipe</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
                     </div>
-                    <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closeModal('modalCategory')">Annuler</button>
-                        <button type="submit" class="btn-save">💾 Enregistrer</button>
+
+                    <div class="status-option traite" onclick="selectStatus(this, 'traite')">
+                        <div class="status-option-icon">✅</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Traité</div>
+                            <div class="status-option-description">La demande a été complètement traitée et résolue</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
                     </div>
-                </form>
+
+                    <div class="status-option refuse" onclick="selectStatus(this, 'refuse')">
+                        <div class="status-option-icon">❌</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Refusé</div>
+                            <div class="status-option-description">La demande ne peut pas être acceptée pour le moment</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" onclick="closeModal('statusModal')">Annuler</button>
+                <button class="btn-modal confirm" id="confirmStatusBtn" onclick="confirmStatusChange()" disabled>
+                    Confirmer le changement
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal: Add/Edit Product -->
-    <div id="modalProduct" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="productModalTitle">Ajouter un produit</h2>
-                <button class="modal-close" onclick="closeModal('modalProduct')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="formProduct" onsubmit="saveProduct(event)">
-                    <input type="hidden" id="productId">
-                    <div class="form-group">
-                        <label>Nom du produit <span class="required">*</span></label>
-                        <input type="text" id="productName" required placeholder="Nom du produit">
-                    </div>
-                    <div class="form-group">
-                        <label>Date <span class="required">*</span></label>
-                        <input type="date" id="productDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Catégorie <span class="required">*</span></label>
-                        <select id="productCategoryId" required>
-                            <option value="">Sélectionnez une catégorie</option>
-                            <!-- Options remplies dynamiquement -->
-                        </select>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closeModal('modalProduct')">Annuler</button>
-                        <button type="submit" class="btn-save">💾 Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Add/Edit Album -->
-    <div id="modalAlbum" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="albumModalTitle">Ajouter un album</h2>
-                <button class="modal-close" onclick="closeModal('modalAlbum')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="formAlbum" onsubmit="saveAlbum(event)">
-                    <input type="hidden" id="albumId">
-                    <div class="form-group">
-                        <label>Nom de l'album <span class="required">*</span></label>
-                        <input type="text" id="albumName" required placeholder="Nom de l'album">
-                    </div>
-                    <div class="form-group">
-                        <label>Date <span class="required">*</span></label>
-                        <input type="date" id="albumDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Détails</label>
-                        <textarea id="albumDetails" rows="4" placeholder="Détails de l'album..."></textarea>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closeModal('modalAlbum')">Annuler</button>
-                        <button type="submit" class="btn-save">💾 Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Détails Demande (existante) -->
+    <!-- Modal Détails Demande -->
     <div class="modal" id="detailsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Détails de la Demande</h2>
+                <h2 id="modalTitle">Détails de la Demande</h2>
                 <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modalBody">
                 <!-- Contenu dynamique -->
             </div>
         </div>

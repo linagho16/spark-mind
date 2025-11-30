@@ -34,13 +34,18 @@ switch ($page) {
         $authController->register();
         break;
 
-    case 'profile':
+     case 'profile':
         $profileController->show();
+        break;
+
+    case 'delete_account':
+        $profileController->delete();
         break;
 
     case 'logout':
         $authController->logout();
         break;
+
 
     case 'admin_home':
         $adminController->home();

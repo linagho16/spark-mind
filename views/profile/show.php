@@ -150,8 +150,17 @@
       <div class="actions">
         <a href="index.php?page=main" class="btn-ghost">⬅ Retour</a>
         <a href="index.php?page=register" class="btn-secondary">Modifier</a>
-        <a href="index.php?page=front_step" class="logout-btn">🔓 Déconnexion</a>
+        <a href="index.php?page=logout" class="logout-btn">🔓 Déconnexion</a>
+
+        <form action="index.php?page=delete_account" method="post" 
+              onsubmit="return confirm('Voulez-vous vraiment supprimer définitivement votre compte ?');"
+              style="display:inline-block; margin-left: 1rem;">
+          <button type="submit" class="logout-btn" style="background-color:#c0392b;">
+            🗑 Supprimer mon compte
+          </button>
+        </form>
       </div>
+
 
     </section>
 

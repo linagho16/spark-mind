@@ -46,6 +46,12 @@ class User
         return $stmt->fetch();
     }
 
+    public function deleteById(int $id): bool
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
+
     public function findAll()
     {
         $sql = "SELECT id, nom, prenom, email, role, created_at 

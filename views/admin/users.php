@@ -314,6 +314,9 @@
         <button class="btn-nav" onclick="window.location.href='index.php?page=logout'">
           🚪 Déconnexion
         </button>
+                <button class="btn-nav" onclick="window.location.href='index.php?page=admin_home'">
+          🚪 Retour
+        </button>
       </div>
     </header>
 

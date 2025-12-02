@@ -29,10 +29,11 @@
         <a class="item" href="index.php?page=admin_users">
           <span>Utilisateurs</span>
         </a>
-
- 
-
+        <a class="item" href="index.php?page=admin_notifications">
+          <span>Notifications</span>
+        </a>
       </nav>
+
 
       <div class="sidebar-foot">
         <a class="link" href="index.php?page=front">← Front Office</a>

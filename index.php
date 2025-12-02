@@ -1,3 +1,5 @@
+
+
 <?php
 // Point d'entrée unique MVC pour tout le site SPARKMIND
 
@@ -7,11 +9,15 @@ require_once __DIR__ . '/controllers/HomeController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/ProfileController.php';
 require_once __DIR__ . '/controllers/AdminController.php';
+require_once __DIR__ . '/controllers/NotificationController.php';
+
 
 $homeController    = new HomeController();
 $authController    = new AuthController();
 $profileController = new ProfileController();
+$notificationController = new NotificationController();
 $adminController   = new AdminController();
+
 
 switch ($page) {
     case 'front':
@@ -72,6 +78,27 @@ switch ($page) {
     case 'reset_password':
         $authController->resetPassword();
         break;
+    case 'notifications':
+        $notificationController->front();
+        break;
+
+    case 'notif_action':
+        $notificationController->action();
+        break;
+
+    case 'admin_notifications':
+        $adminController->notifications();
+        break;
+
+    case 'admin_help_requests':
+        $adminController->helpRequests();
+        break;
+
+    case 'admin_help_request_action':
+        $adminController->helpRequestAction();
+        break;
+
+
 
 
     default:

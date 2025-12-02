@@ -85,7 +85,7 @@
 </head>
 
 <body>
-  */barre du haut */
+  
   <header class="main-header top-nav" aria-label="Logo du site">
     <div class="brand-block">
       <a href="index.php?page=main" class="logo-link" title="Retour à l’accueil">
@@ -129,7 +129,6 @@
 
         <label class="field">
           <a href="index.php?page=forgot_password" class="link-forgot">Mot de passe oublié ?</a>
-
           <div class="password-wrapper">
             <input
               type="password"

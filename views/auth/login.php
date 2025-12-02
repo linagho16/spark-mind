@@ -16,15 +16,14 @@
   <title>SPARKMIND — Connexion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Polices -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Style de la page de login -->
+  
   <link rel="stylesheet" href="login.css">
 
-  <!-- Barre en haut identique aux autres pages -->
+  
   <style>
     .top-nav {
       position: sticky;
@@ -86,7 +85,7 @@
 </head>
 
 <body>
-  <!-- BARRE EN HAUT AVEC LOGO + NOM DU SITE -->
+  */barre du haut */
   <header class="main-header top-nav" aria-label="Logo du site">
     <div class="brand-block">
       <a href="index.php?page=main" class="logo-link" title="Retour à l’accueil">
@@ -99,7 +98,7 @@
     </div>
   </header>
 
-  <!-- Contenu -->
+  
   <main class="wrap">
     <section class="card">
       <h1 class="title">Connexion</h1>
@@ -129,7 +128,8 @@
         </label>
 
         <label class="field">
-          <span>Mot de passe</span>
+          <a href="index.php?page=forgot_password" class="link-forgot">Mot de passe oublié ?</a>
+
           <div class="password-wrapper">
             <input
               type="password"
@@ -139,9 +139,7 @@
               minlength="8"
               id="passwordInput"
             />
-            <span class="toggle-password" onclick="togglePassword()">
-              👁️
-            </span>
+            <span class="toggle-password" onclick="togglePassword()">👁️</span>
           </div>
         </label>
 

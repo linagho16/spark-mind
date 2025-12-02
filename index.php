@@ -34,9 +34,19 @@ switch ($page) {
         $authController->register();
         break;
 
-     case 'profile':
+    case 'profile':
         $profileController->show();
         break;
+        
+    case 'profile_edit':
+        $profileController->edit();
+        break;
+
+    case 'upload_photo':
+        $profileController->uploadPhoto();
+        break;
+
+    
 
     case 'delete_account':
         $profileController->delete();
@@ -54,6 +64,15 @@ switch ($page) {
     case 'admin_users':
         $adminController->users();
         break;
+
+    case 'forgot_password':
+        $authController->forgotPassword();
+        break;
+
+    case 'reset_password':
+        $authController->resetPassword();
+        break;
+
 
     default:
         // page par défaut : front office

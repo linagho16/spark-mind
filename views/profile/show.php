@@ -113,7 +113,7 @@
     </div>
 
     <div class="header-actions">
-      <a href="index.php?page=logout" class="logout-btn">
+      <a href="index.php?page=front_step" class="logout-btn">
         🔓 Déconnexion
       </a>
     </div>
@@ -126,8 +126,11 @@
 
       <div class="photo-section">
         <!-- Pour l’instant on garde une image fixe -->
-        <img src="profil.jpg" alt="Photo de profil" class="profile-img">
-        <button class="change-btn">Changer la photo</button>
+       
+        <img src="<?= !empty($user['photo']) ? $user['photo'] : 'profil.jpg' ?>" 
+        class="profile-img" 
+        alt="Photo de profil">
+
       </div>
 
       <!-- 🔹 Nom + rôle dynamiques -->
@@ -149,8 +152,9 @@
 
       <div class="actions">
         <a href="index.php?page=main" class="btn-ghost">⬅ Retour</a>
-        <a href="index.php?page=register" class="btn-secondary">Modifier</a>
-        <a href="index.php?page=logout" class="logout-btn">🔓 Déconnexion</a>
+        <a href="index.php?page=profile_edit" class="btn-secondary">Modifier</a>
+
+      
 
         <form action="index.php?page=delete_account" method="post" 
               onsubmit="return confirm('Voulez-vous vraiment supprimer définitivement votre compte ?');"

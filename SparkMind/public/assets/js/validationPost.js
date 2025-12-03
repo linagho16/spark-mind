@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!form || !textarea) return;
 
   const charCount = form.querySelector('.charCount');
+  if (!charCount) {
+    console.warn('charCount element not found');
+    return;
+  }
   const max = parseInt(charCount.getAttribute('data-max') || '280', 10);
 
   textarea.addEventListener('input', () => {

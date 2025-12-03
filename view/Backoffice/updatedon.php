@@ -1,11 +1,11 @@
 <?php
 // updatedon.php - Add this at the VERY TOP
-session_start();
 
 // Check if don data is passed (from controller)
 if (!isset($don)) {
     // If accessed directly, redirect to dons list
-    header('Location: ../index.php?action=dons&message=not_found');
+    // But use the CORRECT URL since you don't have index.php
+    header('Location: /aide_solitaire/controller/donC.php?action=dons&message=not_found');
     exit;
 }
 ?>
@@ -450,43 +450,51 @@ if (!isset($don)) {
     </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="logo">
-            <h2>🕊️ Admin</h2>
-        </div>
-        <nav class="nav-menu">
-            <a href="/aide_solitaire/index.php?action=dashboard" class="nav-item">
-                <span class="icon">📊</span>
-                <span>Dashboard</span>
-            </a>
-            <a href="/aide_solitaire/index.php?action=dons" class="nav-item">
-                <span class="icon">🎁</span>
-                <span>Dons</span>
-            </a>
-            <a href="/aide_solitaire/index.php?action=statistics" class="nav-item">
-                <span class="icon">📈</span>
-                <span>Statistiques</span>
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <a href="#" class="nav-item">
-                <span class="icon">🚪</span>
-                <span>Déconnexion</span>
-            </a>
-        </div>
-    </aside>
+    <!-- Sidebar Navigation - FIXED -->
+   <aside class="sidebar">
+    <div class="logo">
+        <h2>🕊️ Admin</h2>
+    </div>
+    <nav class="nav-menu">
+        <!-- Dashboard -->
+        <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+        <!-- Dons -->
+        <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item">
+            <span class="icon">🎁</span>
+            <span>Dons</span>
+        </a>
+        <!-- Groupes (ADDED) -->
+        <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item">
+            <span class="icon">👥</span>
+            <span>Groupes</span>
+        </a>
+        <!-- Statistiques -->
+        <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item">
+            <span class="icon">📈</span>
+            <span>Statistiques</span>
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" class="nav-item">
+            <span class="icon">🚪</span>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Top Header -->
+        <!-- Top Header - FIXED -->
         <header class="top-header">
             <div class="header-left">
                 <h1>Modifier le Don #<?php echo $don['id']; ?></h1>
                 <p>Modifiez les informations de ce don</p>
             </div>
             <div class="header-right">
-                <a href="/aide_solitaire/index.php?action=dons" class="btn-cancel">
+                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-cancel">
                     ← Retour à la liste
                 </a>
             </div>
@@ -517,7 +525,7 @@ if (!isset($don)) {
 
         <div class="form-container">
             <!-- FIXED FORM ACTION -->
-            <form method="POST" action="/aide_solitaire/index.php?action=update_don&id=<?php echo $don['id']; ?>">
+            <form method="POST" action="/aide_solitaire/controller/donC.php?action=edit_don&id=<?php echo $don['id']; ?>">
                 <div class="form-grid">
                     <!-- Type de Don -->
                     <div class="form-group">
@@ -597,9 +605,9 @@ if (!isset($don)) {
                     </div>
                 </div>
 
-                <!-- Actions -->
+                <!-- Actions - FIXED -->
                 <div class="form-actions">
-                    <a href="/aide_solitaire/index.php?action=dons" class="btn-cancel">
+                    <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-cancel">
                         Annuler
                     </a>
                     <button type="submit" class="btn-save">

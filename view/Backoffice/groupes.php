@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Dons - Dashboard Admin</title>
+    <title>Gestion des Groupes - Dashboard Admin</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* SIDEBAR - Style cohérent avec le Frontoffice */
         .sidebar {
             width: 260px;
             background: linear-gradient(135deg, #1f8c87, #7eddd5);
@@ -96,7 +95,7 @@
             width: calc(100% - 260px);
         }
 
-        /* TOP HEADER - Style cohérent */
+        /* TOP HEADER */
         .top-header {
             display: flex;
             justify-content: space-between;
@@ -166,7 +165,7 @@
             background-color: rgba(255,255,255,0.4);
         }
 
-        /* BOUTONS - Style cohérent */
+        /* BOUTONS */
         .btn-primary {
             background: linear-gradient(135deg, #1f8c87, #7eddd5);
             color: white;
@@ -188,7 +187,7 @@
             box-shadow: 0 6px 20px rgba(31, 140, 135, 0.4);
         }
 
-        /* FILTRES - Style amélioré */
+        /* FILTRES */
         .filters {
             background: white;
             padding: 2rem;
@@ -270,7 +269,7 @@
             box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
         }
 
-        /* MESSAGES - Style cohérent */
+        /* MESSAGES */
         .message-alert {
             padding: 1.5rem;
             border-radius: 12px;
@@ -314,34 +313,7 @@
             box-shadow: 0 4px 15px rgba(31, 140, 135, 0.3);
         }
 
-        .export-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-export {
-            background: linear-gradient(135deg, #7d5aa6, #b58ce0);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(125, 90, 166, 0.3);
-        }
-
-        .btn-export:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(125, 90, 166, 0.4);
-        }
-
-        /* TABLEAU - Style amélioré */
+        /* TABLEAU */
         .table-container {
             background: white;
             border-radius: 20px;
@@ -417,7 +389,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* BADGES - Style cohérent */
+        /* BADGES */
         .badge {
             padding: 0.5rem 1rem;
             border-radius: 20px;
@@ -428,6 +400,11 @@
 
         .badge-active {
             background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-inactive {
+            background: linear-gradient(135deg, #6c757d, #495057);
             color: white;
         }
 
@@ -463,12 +440,6 @@
         }
 
         /* RESPONSIVE */
-        @media (max-width: 1200px) {
-            .filters {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
             .sidebar {
                 width: 70px;
@@ -522,7 +493,9 @@
         }
     </style>
 </head>
-<!-- SIDEBAR NAVIGATION - Add this to your backoffice files -->
+<body>
+    <!-- Sidebar Navigation -->
+    <!-- SIDEBAR NAVIGATION - Add this to your backoffice files -->
 <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
@@ -625,20 +598,18 @@
         </a>
     </div>
 </div>
-
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Top Header - Style cohérent -->
+        <!-- Top Header -->
         <header class="top-header">
             <div class="header-left">
-                <h1>Gestion des Dons</h1>
-                <p>Gérez tous les dons du système</p>
+                <h1>Gestion des Groupes</h1>
+                <p>Gérez tous les groupes de solidarité</p>
             </div>
             <div class="header-right">
-                <!-- FIXED: Changed from index.php to controller/donC.php -->
-                <a href="/aide_solitaire/controller/donC.php?action=create_don" class="btn-primary">+ Nouveau Don</a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="btn-primary">+ Nouveau Groupe</a>
                 <div class="user-profile">
-                    <span class="notification-badge">3</span>
+                    <span class="notification-badge">2</span>
                     <div class="avatar">👤</div>
                 </div>
             </div>
@@ -648,11 +619,11 @@
         <?php if (isset($_GET['message'])): ?>
             <?php
             $messages = [
-                'created' => ['type' => 'success', 'text' => 'Don créé avec succès!'],
-                'updated' => ['type' => 'success', 'text' => 'Don modifié avec succès!'],
-                'deleted' => ['type' => 'success', 'text' => 'Don supprimé avec succès!'],
+                'created' => ['type' => 'success', 'text' => 'Groupe créé avec succès!'],
+                'updated' => ['type' => 'success', 'text' => 'Groupe modifié avec succès!'],
+                'deleted' => ['type' => 'success', 'text' => 'Groupe supprimé avec succès!'],
                 'error' => ['type' => 'error', 'text' => 'Une erreur est survenue!'],
-                'not_found' => ['type' => 'error', 'text' => 'Don non trouvé!']
+                'not_found' => ['type' => 'error', 'text' => 'Groupe non trouvé!']
             ];
             $message = $messages[$_GET['message']] ?? null;
             ?>
@@ -664,21 +635,21 @@
         <?php endif; ?>
 
         <!-- Filters -->
-        <!-- FIXED: Changed action to controller/donC.php -->
-        <form method="GET" action="/aide_solitaire/controller/donC.php">
-            <input type="hidden" name="action" value="dons">
+        <form method="GET" action="/aide_solitaire/controller/groupeC.php"></form>
+            <input type="hidden" name="action" value="groupes">
             <div class="filters">
                 <div class="filter-group">
-                    <label class="filter-label">Type de don</label>
-                    <select class="filter-select" name="type_don">
+                    <label class="filter-label">Type de groupe</label>
+                    <select class="filter-select" name="type">
                         <option value="">Tous les types</option>
-                        <option value="Vêtements" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Vêtements' ? 'selected' : ''; ?>>Vêtements</option>
-                        <option value="Nourriture" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Nourriture' ? 'selected' : ''; ?>>Nourriture</option>
-                        <option value="Médicaments" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Médicaments' ? 'selected' : ''; ?>>Médicaments</option>
-                        <option value="Équipement" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Équipement' ? 'selected' : ''; ?>>Équipement</option>
-                        <option value="Argent" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Argent' ? 'selected' : ''; ?>>Argent</option>
-                        <option value="Services" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Services' ? 'selected' : ''; ?>>Services</option>
-                        <option value="Autre" <?php echo isset($_GET['type_don']) && $_GET['type_don'] == 'Autre' ? 'selected' : ''; ?>>Autre</option>
+                        <option value="Santé" <?php echo isset($_GET['type']) && $_GET['type'] == 'Santé' ? 'selected' : ''; ?>>🏥 Santé</option>
+                        <option value="Éducation" <?php echo isset($_GET['type']) && $_GET['type'] == 'Éducation' ? 'selected' : ''; ?>>📚 Éducation</option>
+                        <option value="Seniors" <?php echo isset($_GET['type']) && $_GET['type'] == 'Seniors' ? 'selected' : ''; ?>>👵 Seniors</option>
+                        <option value="Jeunesse" <?php echo isset($_GET['type']) && $_GET['type'] == 'Jeunesse' ? 'selected' : ''; ?>>👦 Jeunesse</option>
+                        <option value="Culture" <?php echo isset($_GET['type']) && $_GET['type'] == 'Culture' ? 'selected' : ''; ?>>🎨 Culture</option>
+                        <option value="Urgence" <?php echo isset($_GET['type']) && $_GET['type'] == 'Urgence' ? 'selected' : ''; ?>>🚨 Urgence</option>
+                        <option value="Animaux" <?php echo isset($_GET['type']) && $_GET['type'] == 'Animaux' ? 'selected' : ''; ?>>🐾 Animaux</option>
+                        <option value="Environnement" <?php echo isset($_GET['type']) && $_GET['type'] == 'Environnement' ? 'selected' : ''; ?>>🌿 Environnement</option>
                     </select>
                 </div>
                 
@@ -699,98 +670,115 @@
                     </select>
                 </div>
 
+                <div class="filter-group">
+                    <label class="filter-label">Statut</label>
+                    <select class="filter-select" name="statut">
+                        <option value="">Tous les statuts</option>
+                        <option value="actif" <?php echo isset($_GET['statut']) && $_GET['statut'] == 'actif' ? 'selected' : ''; ?>>Actif</option>
+                        <option value="inactif" <?php echo isset($_GET['statut']) && $_GET['statut'] == 'inactif' ? 'selected' : ''; ?>>Inactif</option>
+                        <option value="en_attente" <?php echo isset($_GET['statut']) && $_GET['statut'] == 'en_attente' ? 'selected' : ''; ?>>En attente</option>
+                    </select>
+                </div>
+
                 <button type="submit" class="btn-apply">🔍 Appliquer</button>
-                <!-- FIXED: Changed from index.php to controller/donC.php -->
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-reset">🔄 Réinitialiser</a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-reset">🔄 Réinitialiser</a>
             </div>
         </form>
 
-        <!-- Stats and Export -->
+        <!-- Stats and Info -->
         <div class="stats-bar">
             <div class="total-count">
-                📊 Total: <?php echo isset($dons) ? count($dons) : 0; ?> don(s)
-            </div>
-            <div class="export-buttons">
-                <button class="btn-export" onclick="printTable()">🖨️ Imprimer</button>
-                <button class="btn-export" onclick="exportToCSV()">📥 CSV</button>
+                👥 Total: 
+                <?php 
+                if (isset($groupes) && is_array($groupes)) {
+                    echo count($groupes) . ' groupe(s)';
+                } else {
+                    echo '0 groupe(s)';
+                }
+                ?>
             </div>
         </div>
 
-        <!-- Dons Table -->
+        <!-- Groupes Table -->
         <div class="table-container">
-            <?php if (!isset($dons) || empty($dons)): ?>
+            <?php if (!isset($groupes) || empty($groupes)): ?>
                 <div class="empty-state">
-                    <div class="icon">📭</div>
-                    <h3>Aucun don trouvé</h3>
-                    <p>Aucun don ne correspond à vos critères de recherche.</p>
-                    <!-- FIXED: Changed from index.php to controller/donC.php -->
-                    <a href="/aide_solitaire/controller/donC.php?action=create_don" class="btn-primary" style="margin-top: 1rem;">➕ Ajouter le premier don</a>
+                    <div class="icon">👥</div>
+                    <h3>Aucun groupe trouvé</h3>
+                    <p>Aucun groupe ne correspond à vos critères de recherche.</p>
+                    <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="btn-primary" style="margin-top: 1rem;">➕ Créer le premier groupe</a>
                 </div>
             <?php else: ?>
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Nom</th>
                             <th>Type</th>
-                            <th>Quantité</th>
-                            <th>État</th>
                             <th>Région</th>
-                            <th>Date</th>
+                            <th>Responsable</th>
+                            <th>Membres</th>
+                            <th>Statut</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($dons as $don): ?>
+                        <?php foreach ($groupes as $groupe): ?>
                         <tr>
-                            <td><strong>#<?php echo $don['id']; ?></strong></td>
+                            <td><strong>#<?php echo $groupe['id']; ?></strong></td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <span style="font-size: 1.2rem;">
                                         <?php 
                                         $icons = [
-                                            'Vêtements' => '👕',
-                                            'Nourriture' => '🍞',
-                                            'Médicaments' => '💊',
-                                            'Équipement' => '🔧',
-                                            'Argent' => '💰',
-                                            'Services' => '🤝',
-                                            'Autre' => '🎁'
+                                            'Santé' => '🏥',
+                                            'Éducation' => '📚',
+                                            'Seniors' => '👵',
+                                            'Jeunesse' => '👦',
+                                            'Culture' => '🎨',
+                                            'Urgence' => '🚨',
+                                            'Animaux' => '🐾',
+                                            'Environnement' => '🌿',
+                                            'Religieux' => '🌙',
+                                            'Social' => '🤝'
                                         ];
-                                        echo $icons[$don['type_don']] ?? '🎁';
+                                        echo $icons[$groupe['type']] ?? '👥';
                                         ?>
                                     </span>
-                                    <?php echo htmlspecialchars($don['type_don']); ?>
+                                    <div>
+                                        <strong><?php echo htmlspecialchars($groupe['nom']); ?></strong>
+                                        <br>
+                                        <small style="color: #666;"><?php echo htmlspecialchars($groupe['email']); ?></small>
+                                    </div>
                                 </div>
                             </td>
-                            <td><?php echo htmlspecialchars($don['quantite']); ?></td>
+                            <td><?php echo htmlspecialchars($groupe['type']); ?></td>
+                            <td><?php echo htmlspecialchars($groupe['region']); ?></td>
+                            <td><?php echo htmlspecialchars($groupe['responsable']); ?></td>
                             <td>
-                                <?php if (!empty($don['etat_object'])): ?>
-                                    <span class="badge badge-active"><?php echo htmlspecialchars($don['etat_object']); ?></span>
+                                <span style="background: #e1e5e9; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">
+                                    <?php echo $groupe['membres_count']; ?> membres
+                                </span>
+                            </td>
+                            <td>
+                                <?php if ($groupe['statut'] == 'actif'): ?>
+                                    <span class="badge badge-active">Actif</span>
+                                <?php elseif ($groupe['statut'] == 'inactif'): ?>
+                                    <span class="badge badge-inactive">Inactif</span>
                                 <?php else: ?>
-                                    <span class="badge badge-pending">N/A</span>
+                                    <span class="badge badge-pending">En attente</span>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <span class="badge badge-active"><?php echo htmlspecialchars($don['region']); ?></span>
-                            </td>
-                            <td>
-                                <small><?php echo date('d/m/Y', strtotime($don['date_don'])); ?></small>
-                                <br>
-                                <small style="color: #666;"><?php echo date('H:i', strtotime($don['date_don'])); ?></small>
-                            </td>
-                            <td>
                                 <div class="table-actions">
-                                    <!-- FIXED: Changed from index.php to controller/donC.php -->
-                                    <a href="/aide_solitaire/controller/donC.php?action=view_don&id=<?php echo $don['id']; ?>" class="btn-icon btn-view" title="Voir">
-                                        👁️
+                                    <a href="/aide_solitaire/controller/groupeC.php?action=view_groupe&id=<?php echo $groupe['id']; ?>" class="btn-icon btn-view" title="Voir">👁️</a>
+                                        
                                     </a>
-                                    <a href="/aide_solitaire/controller/donC.php?action=edit_don&id=<?php echo $don['id']; ?>" class="btn-icon btn-edit" title="Modifier">
-                                        ✏️
+                                    <a href="/aide_solitaire/controller/groupeC.php?action=edit_groupe&id=<?php echo $groupe['id']; ?>" class="btn-icon btn-edit" title="Modifier">✏️</a>
+                                        
                                     </a>
-                                    <a href="/aide_solitaire/controller/donC.php?action=delete_don&id=<?php echo $don['id']; ?>" class="btn-icon btn-delete" title="Supprimer" 
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce don ?')">
-                                        🗑️
-                                    </a>
+                                    <a href="/aide_solitaire/controller/groupeC.php?action=delete_groupe&id=<?php echo $groupe['id']; ?>" class="btn-icon btn-delete" title="Supprimer" 
+                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?')">🗑️</a>
                                 </div>
                             </td>
                         </tr>
@@ -802,46 +790,6 @@
     </main>
 
     <script>
-        function printTable() {
-            window.print();
-        }
-
-        function exportToCSV() {
-            <?php if (isset($dons) && !empty($dons)): ?>
-            const rows = [
-                ['ID', 'Type', 'Quantité', 'État', 'Région', 'Date', 'Description']
-            ];
-            
-            <?php foreach ($dons as $don): ?>
-            rows.push([
-                '<?php echo $don['id']; ?>',
-                '<?php echo $don['type_don']; ?>',
-                '<?php echo $don['quantite']; ?>',
-                '<?php echo $don['etat_object']; ?>',
-                '<?php echo $don['region']; ?>',
-                '<?php echo date('d/m/Y H:i', strtotime($don['date_don'])); ?>',
-                '<?php echo isset($don['description']) ? addslashes($don['description']) : ''; ?>'
-            ]);
-            <?php endforeach; ?>
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            rows.forEach(function(rowArray) {
-                let row = rowArray.map(field => `"${field}"`).join(",");
-                csvContent += row + "\r\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "dons_<?php echo date('Y-m-d'); ?>.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            <?php else: ?>
-            alert('Aucun don à exporter!');
-            <?php endif; ?>
-        }
-
         // Auto-hide messages after 5 seconds
         setTimeout(function() {
             const messages = document.querySelectorAll('.message-alert');

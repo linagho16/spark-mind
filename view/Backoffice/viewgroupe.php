@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Don - Dashboard Admin</title>
+    <title>Détails du Groupe - Dashboard Admin</title>
     <style>
         * {
             margin: 0;
@@ -128,45 +127,6 @@
             gap: 1.5rem;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            position: relative;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #ec7546;
-            color: white;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 50%;
-            font-weight: 600;
-            z-index: 10;
-        }
-
-        .avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 2px solid rgba(255,255,255,0.6);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .avatar:hover {
-            transform: scale(1.1);
-            background-color: rgba(255,255,255,0.4);
-        }
-
         /* DETAILS CONTAINER */
         .details-container {
             background: white;
@@ -179,27 +139,49 @@
 
         .details-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
             padding-bottom: 1.5rem;
             border-bottom: 2px solid #f1f3f5;
         }
 
-        .don-icon {
+        .groupe-icon {
             font-size: 3rem;
             margin-right: 1.5rem;
         }
 
-        .don-title h2 {
+        .groupe-title h2 {
             font-size: 1.8rem;
             color: #2c3e50;
             margin-bottom: 0.5rem;
         }
 
-        .don-title .don-id {
+        .groupe-title .groupe-id {
             color: #7f8c8d;
             font-size: 1.1rem;
+        }
+
+        .groupe-status {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
         }
 
         .details-grid {
@@ -240,22 +222,14 @@
             text-align: right;
         }
 
-        .badge {
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .badge-active {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .badge-pending {
-            background-color: #fff3cd;
-            color: #856404;
+        .contact-icon {
+            font-size: 1.2rem;
         }
 
         .description-section {
@@ -275,42 +249,11 @@
             color: #495057;
         }
 
-        .photo-section {
-            margin: 2rem 0;
-        }
-
-        .photo-section h3 {
-            margin-bottom: 1rem;
-            color: #2c3e50;
-        }
-
-        .photo-container {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .photo-item {
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .photo-item img {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 8px;
-        }
-
-        .no-photo {
+        .no-description {
             color: #6c757d;
             font-style: italic;
-            padding: 2rem;
             text-align: center;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 2px dashed #dee2e6;
+            padding: 1rem;
         }
 
         .action-buttons {
@@ -364,6 +307,27 @@
             box-shadow: 0 6px 20px rgba(31, 140, 135, 0.4);
         }
 
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
         /* RESPONSIVE */
         @media (max-width: 1200px) {
             .details-grid {
@@ -405,15 +369,21 @@
                 padding: 1.5rem;
             }
 
-            .details-grid {
-                grid-template-columns: 1fr;
+            .details-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .groupe-status {
+                align-self: flex-start;
             }
 
             .action-buttons {
                 flex-direction: column;
             }
 
-            .btn-back, .btn-edit {
+            .btn-back, .btn-edit, .btn-delete {
                 width: 100%;
                 text-align: center;
                 justify-content: center;
@@ -423,158 +393,173 @@
 </head>
 <body>
     <!-- Sidebar Navigation -->
-   <aside class="sidebar">
-    <div class="logo">
-        <h2>🕊️ Admin</h2>
-    </div>
-    <nav class="nav-menu">
-        <!-- Dashboard -->
-        <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item">
-            <span class="icon">📊</span>
-            <span>Dashboard</span>
-        </a>
-        <!-- Dons -->
-        <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item">
-            <span class="icon">🎁</span>
-            <span>Dons</span>
-        </a>
-        <!-- Groupes (ADDED) -->
-        <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item">
-            <span class="icon">👥</span>
-            <span>Groupes</span>
-        </a>
-        <!-- Statistiques -->
-        <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item">
-            <span class="icon">📈</span>
-            <span>Statistiques</span>
-        </a>
-    </nav>
-    <div class="sidebar-footer">
-        <a href="#" class="nav-item">
-            <span class="icon">🚪</span>
-            <span>Déconnexion</span>
-        </a>
-    </div>
-</aside>
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>🕊️ Admin</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item">
+                <span class="icon">🎁</span>
+                <span>Dons</span>
+            </a>
+            <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item active">
+                <span class="icon">👥</span>
+                <span>Groupes</span>
+            </a>
+            <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item">
+                <span class="icon">📈</span>
+                <span>Statistiques</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item">
+                <span class="icon">🚪</span>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Header -->
         <header class="top-header">
             <div class="header-left">
-                <h1>Détails du Don</h1>
-                <p>Informations complètes sur ce don</p>
+                <h1>Détails du Groupe</h1>
+                <p>Informations complètes sur ce groupe de solidarité</p>
             </div>
             <div class="header-right">
-                <div class="user-profile">
-                    <div class="avatar">👤</div>
-                </div>
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-back">
+                    ← Retour à la liste
+                </a>
             </div>
         </header>
 
         <!-- Details Container -->
         <div class="details-container">
-            <!-- Donation Header -->
+            <!-- Groupe Header -->
             <div class="details-header">
-                <div class="don-icon">
-                    <?php 
-                    $icons = [
-                        'Vêtements' => '👕',
-                        'Nourriture' => '🍞',
-                        'Médicaments' => '💊',
-                        'Équipement' => '🔧',
-                        'Argent' => '💰',
-                        'Services' => '🤝',
-                        'Autre' => '🎁'
-                    ];
-                    echo $icons[$don['type_don']] ?? '🎁';
-                    ?>
+                <div style="display: flex; align-items: center;">
+                    <div class="groupe-icon">
+                        <?php 
+                        $icons = [
+                            'Santé' => '🏥',
+                            'Éducation' => '📚',
+                            'Seniors' => '👵',
+                            'Jeunesse' => '👦',
+                            'Culture' => '🎨',
+                            'Urgence' => '🚨',
+                            'Animaux' => '🐾',
+                            'Environnement' => '🌿',
+                            'Religieux' => '🌙',
+                            'Social' => '🤝'
+                        ];
+                        echo $icons[$groupe['type']] ?? '👥';
+                        ?>
+                    </div>
+                    <div class="groupe-title">
+                        <h2><?php echo htmlspecialchars($groupe['nom']); ?></h2>
+                        <div class="groupe-id">Groupe #<?php echo $groupe['id']; ?></div>
+                    </div>
                 </div>
-                <div class="don-title">
-                    <h2><?php echo htmlspecialchars($don['type_don']); ?></h2>
-                    <div class="don-id">Don #<?php echo $don['id']; ?></div>
+                <div class="groupe-status status-<?php echo $groupe['statut'] ?? 'actif'; ?>">
+                    <?php 
+                    $statusText = [
+                        'actif' => 'Actif',
+                        'inactif' => 'Inactif', 
+                        'en_attente' => 'En attente'
+                    ];
+                    echo $statusText[$groupe['statut']] ?? 'Actif';
+                    ?>
                 </div>
             </div>
 
             <!-- Main Details Grid -->
             <div class="details-grid">
-                <!-- Basic Information -->
+                <!-- Groupe Information -->
                 <div class="detail-section">
-                    <h3>Informations de base</h3>
+                    <h3>Informations du groupe</h3>
                     <div class="detail-item">
                         <span class="detail-label">ID:</span>
-                        <span class="detail-value">#<?php echo $don['id']; ?></span>
+                        <span class="detail-value">#<?php echo $groupe['id']; ?></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nom:</span>
+                        <span class="detail-value"><?php echo htmlspecialchars($groupe['nom']); ?></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Type:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['type_don']); ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Quantité:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['quantite']); ?></span>
+                        <span class="detail-value">
+                            <?php 
+                            $typeIcon = $icons[$groupe['type']] ?? '👥';
+                            echo $typeIcon . ' ' . htmlspecialchars($groupe['type']);
+                            ?>
+                        </span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Région:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['region']); ?></span>
-                    </div>
-                    <?php if (!empty($don['etat_object'])): ?>
-                    <div class="detail-item">
-                        <span class="detail-label">État:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['etat_object']); ?></span>
-                    </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Date Information -->
-                <div class="detail-section">
-                    <h3>Dates et statut</h3>
-                    <div class="detail-item">
-                        <span class="detail-label">Date de création:</span>
-                        <span class="detail-value"><?php echo date('d/m/Y à H:i', strtotime($don['date_don'])); ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Dernière modification:</span>
-                        <span class="detail-value">
-                            <?php echo isset($don['date_modification']) ? date('d/m/Y à H:i', strtotime($don['date_modification'])) : 'Jamais'; ?>
-                        </span>
+                        <span class="detail-value"><?php echo htmlspecialchars($groupe['region']); ?></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Statut:</span>
                         <span class="detail-value">
-                            <span class="badge badge-active"><?php echo ucfirst($don['statut'] ?? 'actif'); ?></span>
+                            <span class="groupe-status status-<?php echo $groupe['statut'] ?? 'actif'; ?>" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">
+                                <?php echo $statusText[$groupe['statut']] ?? 'Actif'; ?>
+                            </span>
                         </span>
                     </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="detail-section">
+                    <h3>Contact et responsable</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Responsable:</span>
+                        <span class="detail-value"><?php echo htmlspecialchars($groupe['responsable']); ?></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">
+                            <div class="contact-info">
+                                <span class="contact-icon">📧</span>
+                                <?php echo htmlspecialchars($groupe['email']); ?>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Téléphone:</span>
+                        <span class="detail-value">
+                            <div class="contact-info">
+                                <span class="contact-icon">📞</span>
+                                <?php echo htmlspecialchars($groupe['telephone']); ?>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Date de création:</span>
+                        <span class="detail-value"><?php echo isset($groupe['created_at']) ? date('d/m/Y à H:i', strtotime($groupe['created_at'])) : 'Non disponible'; ?></span>
+                    </div>
+                    <?php if (isset($groupe['membres_count'])): ?>
+                    <div class="detail-item">
+                        <span class="detail-label">Nombre de membres:</span>
+                        <span class="detail-value"><?php echo $groupe['membres_count']; ?> membres</span>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <!-- Description -->
             <div class="description-section">
-                <h3>Description détaillée</h3>
+                <h3>Description du groupe</h3>
                 <div class="description-content">
-                    <?php echo nl2br(htmlspecialchars($don['description'])); ?>
-                </div>
-            </div>
-
-            <!-- Photos -->
-            <div class="photo-section">
-                <h3>Photos</h3>
-                <div class="photo-container">
-                    <?php if (!empty($don['photos'])): ?>
-                        <div class="photo-item">
-                            <?php if (file_exists($don['photos'])): ?>
-                                <img src="/aide_solitaire/<?php echo $don['photos']; ?>" alt="Photo du don" onerror="this.style.display='none'">
-                                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
-                                    <?php echo basename($don['photos']); ?>
-                                </div>
-                            <?php else: ?>
-                                <div class="no-photo">
-                                    ❌ Photo non trouvée<br>
-                                    <small><?php echo basename($don['photos']); ?></small>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+                    <?php if (!empty($groupe['description'])): ?>
+                        <?php echo nl2br(htmlspecialchars($groupe['description'])); ?>
                     <?php else: ?>
-                        <div class="no-photo">
-                            📷 Aucune photo disponible
+                        <div class="no-description">
+                            📝 Aucune description disponible pour ce groupe
                         </div>
                     <?php endif; ?>
                 </div>
@@ -582,11 +567,15 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-back">
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-back">
                     ← Retour à la liste
                 </a>
-                <a href="/aide_solitaire/controller/donC.php?action=edit_don&id=<?php echo $don['id']; ?>" class="btn-edit">
-                    ✏️ Modifier ce don
+                <a href="/aide_solitaire/controller/groupeC.php?action=edit_groupe&id=<?php echo $groupe['id']; ?>" class="btn-edit">
+                    ✏️ Modifier ce groupe
+                </a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=delete_groupe&id=<?php echo $groupe['id']; ?>" class="btn-delete"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce groupe ?')">
+                    🗑️ Supprimer ce groupe
                 </a>
             </div>
         </div>

@@ -20,16 +20,20 @@ class DonModel {
     }
 
     public function createDon($data) {
-        $stmt = $this->pdo->prepare("INSERT INTO dons (type_don, quantite, etat_object, photos, region, description) VALUES (?, ?, ?, ?, ?, ?)");
-        return $stmt->execute([
-            $data['type_don'],
-            $data['quantite'],
-            $data['etat_object'],
-            $data['photos'],
-            $data['region'],
-            $data['description']
-        ]);
-    }
+    // Add default status if not provided
+    $statut = $data['statut'] ?? 'en_attente';
+    
+    $stmt = $this->pdo->prepare("INSERT INTO dons (type_don, quantite, etat_object, photos, region, description, statut) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    return $stmt->execute([
+        $data['type_don'],
+        $data['quantite'],
+        $data['etat_object'],
+        $data['photos'],
+        $data['region'],
+        $data['description'],
+        $statut
+    ]);
+}
 
     public function updateDon($id, $data) {
         $stmt = $this->pdo->prepare("UPDATE dons SET type_don = ?, quantite = ?, etat_object = ?, photos = ?, region = ?, description = ? WHERE id = ?");
@@ -73,35 +77,38 @@ class DonModel {
     }
 
     // Get donations with filters
-    public function getDonsWithFilters($filters = []) {
-        $sql = "SELECT * FROM dons WHERE 1=1";
-        $params = [];
+   // In your getDonsWithFilters method, update the FrontOffice logic:
+public function getDonsWithFilters($filters = []) {
+    $sql = "SELECT * FROM dons WHERE 1=1";
+    $params = [];
 
-        if (!empty($filters['type_don'])) {
-            $sql .= " AND type_don = ?";
-            $params[] = $filters['type_don'];
-        }
-
-        if (!empty($filters['region'])) {
-            $sql .= " AND region = ?";
-            $params[] = $filters['region'];
-        }
-
-        if (!empty($filters['date_from'])) {
-            $sql .= " AND DATE(date_don) >= ?";
-            $params[] = $filters['date_from'];
-        }
-
-        if (!empty($filters['date_to'])) {
-            $sql .= " AND DATE(date_don) <= ?";
-            $params[] = $filters['date_to'];
-        }
-
-        $sql .= " ORDER BY date_don DESC";
-
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll();
+    if (!empty($filters['type_don'])) {
+        $sql .= " AND type_don = ?";
+        $params[] = $filters['type_don'];
     }
+    
+    if (!empty($filters['region'])) {
+        $sql .= " AND region = ?";
+        $params[] = $filters['region'];
+    }
+    
+    // IMPORTANT: For FrontOffice, show both 'actif' and 'en_attente' donations
+    if (!empty($filters['statut'])) {
+        if ($filters['statut'] === 'frontoffice') {
+            // For frontoffice, show both active and pending donations
+            $sql .= " AND (statut = 'actif' OR statut = 'en_attente')";
+        } else {
+            // For backoffice filtering by specific status
+            $sql .= " AND statut = ?";
+            $params[] = $filters['statut'];
+        }
+    }
+
+    $sql .= " ORDER BY date_don DESC";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll();
+}
 }
 ?>

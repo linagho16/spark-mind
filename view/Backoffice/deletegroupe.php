@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un Don - Dashboard Admin</title>
+    <title>Supprimer Groupe - Dashboard Admin</title>
     <style>
-        /* Same styles as your existing Backoffice files */
         * {
             margin: 0;
             padding: 0;
@@ -167,50 +166,86 @@
             box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
         }
 
-        .form-container {
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .confirmation-container {
             background: white;
             padding: 3rem;
             border-radius: 20px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            text-align: center;
         }
 
-        .form-group {
+        .warning-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            color: #dc3545;
+        }
+
+        .confirmation-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .confirmation-message {
+            font-size: 1.1rem;
+            color: #666;
             margin-bottom: 2rem;
+            line-height: 1.6;
         }
 
-        .form-label {
-            display: block;
-            margin-bottom: 0.75rem;
+        .groupe-details {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .detail-label {
             font-weight: 600;
             color: #333;
-            font-size: 1rem;
+            width: 150px;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 1rem;
-            background: white;
-            transition: all 0.3s ease;
+        .detail-value {
+            color: #666;
+            flex: 1;
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: #1f8c87;
-            box-shadow: 0 0 0 3px rgba(31, 140, 135, 0.1);
-        }
-
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+        .confirmation-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
         }
 
         @media (max-width: 768px) {
@@ -243,38 +278,28 @@
                 gap: 1.5rem;
             }
 
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .form-container {
+            .confirmation-container {
                 padding: 1.5rem;
             }
-        }
 
-        .error-message {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            border-left: 6px solid #ef4444;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
+            .detail-row {
+                flex-direction: column;
+            }
 
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e1e5e9;
+            .detail-label {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .confirmation-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
-    <!-- SIDEBAR NAVIGATION - Add this to your backoffice files -->
+   <!-- SIDEBAR NAVIGATION - Add this to your backoffice files -->
 <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
@@ -383,93 +408,108 @@
         <!-- Top Header -->
         <header class="top-header">
             <div class="header-left">
-                <h1>Ajouter un Nouveau Don</h1>
-                <p>Créez un nouveau don pour aider ceux qui en ont besoin</p>
+                <h1>Supprimer un Groupe</h1>
+                <p>Confirmez la suppression du groupe #<?php echo htmlspecialchars($groupe['id'] ?? ''); ?></p>
             </div>
             <div class="header-right">
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">← Retour aux dons</a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-secondary">← Retour à la liste</a>
             </div>
         </header>
 
-        <!-- Error Message -->
-        <?php if (isset($error) && $error): ?>
-            <div class="error-message">
-                ⚠️ <?php echo $error; ?>
+        <!-- Confirmation Box -->
+        <div class="confirmation-container">
+            <div class="warning-icon">⚠️</div>
+            
+            <h2 class="confirmation-title">Êtes-vous sûr de vouloir supprimer ce groupe ?</h2>
+            
+            <p class="confirmation-message">
+                Cette action est irréversible. Toutes les informations relatives à ce groupe seront définitivement supprimées.
+            </p>
+
+            <!-- Group Details -->
+            <div class="groupe-details">
+                <h3 style="color: #333; margin-bottom: 1.5rem;">Détails du groupe à supprimer</h3>
+                
+                <div class="detail-row">
+                    <div class="detail-label">ID :</div>
+                    <div class="detail-value"><strong>#<?php echo htmlspecialchars($groupe['id'] ?? ''); ?></strong></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Nom :</div>
+                    <div class="detail-value"><?php echo htmlspecialchars($groupe['nom'] ?? ''); ?></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Type :</div>
+                    <div class="detail-value">
+                        <?php 
+                        $icons = [
+                            'Santé' => '🏥',
+                            'Éducation' => '📚',
+                            'Seniors' => '👵',
+                            'Jeunesse' => '👦',
+                            'Culture' => '🎨',
+                            'Urgence' => '🚨',
+                            'Animaux' => '🐾',
+                            'Environnement' => '🌿'
+                        ];
+                        echo ($icons[$groupe['type']] ?? '👥') . ' ' . htmlspecialchars($groupe['type'] ?? '');
+                        ?>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Région :</div>
+                    <div class="detail-value"><?php echo htmlspecialchars($groupe['region'] ?? ''); ?></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Responsable :</div>
+                    <div class="detail-value"><?php echo htmlspecialchars($groupe['responsable'] ?? ''); ?></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Email :</div>
+                    <div class="detail-value"><?php echo htmlspecialchars($groupe['email'] ?? ''); ?></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Téléphone :</div>
+                    <div class="detail-value"><?php echo htmlspecialchars($groupe['telephone'] ?? ''); ?></div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Statut :</div>
+                    <div class="detail-value">
+                        <?php if (($groupe['statut'] ?? '') == 'actif'): ?>
+                            <span style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">Actif</span>
+                        <?php elseif (($groupe['statut'] ?? '') == 'inactif'): ?>
+                            <span style="background: linear-gradient(135deg, #6c757d, #495057); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">Inactif</span>
+                        <?php else: ?>
+                            <span style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">En attente</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <?php if (!empty($groupe['description'])): ?>
+                <div class="detail-row">
+                    <div class="detail-label">Description :</div>
+                    <div class="detail-value"><?php echo nl2br(htmlspecialchars($groupe['description'] ?? '')); ?></div>
+                </div>
+                <?php endif; ?>
+                
+                <div class="detail-row" style="border-bottom: none; padding-bottom: 0;">
+                    <div class="detail-label">Créé le :</div>
+                    <div class="detail-value"><?php echo isset($groupe['created_at']) ? date('d/m/Y à H:i', strtotime($groupe['created_at'])) : 'Date non disponible'; ?></div>
+                </div>
             </div>
-        <?php endif; ?>
 
-        <!-- Creation Form -->
-        <div class="form-container">
-            <form method="POST" action="/aide_solitaire/controller/donC.php?action=create_don" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Type de don *</label>
-                        <select name="type_don" class="form-control" required>
-                            <option value="">Sélectionner un type</option>
-                            <option value="Vêtements">👕 Vêtements</option>
-                            <option value="Nourriture">🍞 Nourriture</option>
-                            <option value="Médicaments">💊 Médicaments</option>
-                            <option value="Équipement">🔧 Équipement</option>
-                            <option value="Argent">💰 Argent</option>
-                            <option value="Services">🤝 Services</option>
-                            <option value="Autre">🎁 Autre</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Quantité *</label>
-                        <input type="number" name="quantite" class="form-control" required 
-                               min="1" placeholder="Ex: 5">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">État de l'objet</label>
-                        <select name="etat_object" class="form-control">
-                            <option value="">Ne s'applique pas</option>
-                            <option value="Neuf">Neuf</option>
-                            <option value="Bon état">Bon état</option>
-                            <option value="Usagé">Usagé</option>
-                            <option value="À réparer">À réparer</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Région *</label>
-                        <select name="region" class="form-control" required>
-                            <option value="">Sélectionner une région</option>
-                            <option value="Tunis">Tunis</option>
-                            <option value="Sfax">Sfax</option>
-                            <option value="Sousse">Sousse</option>
-                            <option value="Kairouan">Kairouan</option>
-                            <option value="Bizerte">Bizerte</option>
-                            <option value="Gabès">Gabès</option>
-                            <option value="Ariana">Ariana</option>
-                            <option value="Gafsa">Gafsa</option>
-                            <option value="Monastir">Monastir</option>
-                            <option value="Autre">Autre</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Photo(s) (optionnel)</label>
-                    <input type="file" name="photos" class="form-control" accept="image/*">
-                    <small style="color: #666; display: block; margin-top: 0.5rem;">
-                        Formats acceptés: JPG, PNG, GIF (max 2MB)
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Description détaillée</label>
-                    <textarea name="description" class="form-control" 
-                              placeholder="Décrivez votre don, ses spécificités, comment il peut aider..."></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">➕ Ajouter le don</button>
-                    <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">Annuler</a>
+            <!-- Confirmation Actions -->
+            <form method="POST" action="/aide_solitaire/controller/groupeC.php?action=delete_groupe&id=<?php echo $groupe['id'] ?? ''; ?>">
+                <div class="confirmation-actions">
+                    <button type="submit" class="btn-danger">🗑️ Oui, supprimer définitivement</button>
+                    <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-secondary">Non, annuler</a>
                 </div>
             </form>
         </div>

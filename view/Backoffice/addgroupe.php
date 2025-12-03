@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un Don - Dashboard Admin</title>
+    <title>Créer un Groupe - Dashboard Admin</title>
     <style>
-        /* Same styles as your existing Backoffice files */
         * {
             margin: 0;
             padding: 0;
@@ -383,11 +382,11 @@
         <!-- Top Header -->
         <header class="top-header">
             <div class="header-left">
-                <h1>Ajouter un Nouveau Don</h1>
-                <p>Créez un nouveau don pour aider ceux qui en ont besoin</p>
+                <h1>Créer un Nouveau Groupe</h1>
+                <p>Ajoutez un nouveau groupe de solidarité</p>
             </div>
             <div class="header-right">
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">← Retour aux dons</a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-secondary">← Retour</a>
             </div>
         </header>
 
@@ -400,41 +399,33 @@
 
         <!-- Creation Form -->
         <div class="form-container">
-            <form method="POST" action="/aide_solitaire/controller/donC.php?action=create_don" enctype="multipart/form-data">
+            <form method="POST" action="/aide_solitaire/controller/groupeC.php?action=create_groupe">
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Type de don *</label>
-                        <select name="type_don" class="form-control" required>
-                            <option value="">Sélectionner un type</option>
-                            <option value="Vêtements">👕 Vêtements</option>
-                            <option value="Nourriture">🍞 Nourriture</option>
-                            <option value="Médicaments">💊 Médicaments</option>
-                            <option value="Équipement">🔧 Équipement</option>
-                            <option value="Argent">💰 Argent</option>
-                            <option value="Services">🤝 Services</option>
-                            <option value="Autre">🎁 Autre</option>
-                        </select>
+                        <label class="form-label">Nom du groupe *</label>
+                        <input type="text" name="nom" class="form-control" required 
+                               placeholder="Ex: Association Solidarité Tunis">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Quantité *</label>
-                        <input type="number" name="quantite" class="form-control" required 
-                               min="1" placeholder="Ex: 5">
+                        <label class="form-label">Type de groupe *</label>
+                        <select name="type" class="form-control" required>
+                            <option value="">Sélectionner un type</option>
+                            <option value="Santé">🏥 Santé</option>
+                            <option value="Éducation">📚 Éducation</option>
+                            <option value="Seniors">👵 Seniors</option>
+                            <option value="Jeunesse">👦 Jeunesse</option>
+                            <option value="Culture">🎨 Culture</option>
+                            <option value="Urgence">🚨 Urgence</option>
+                            <option value="Animaux">🐾 Animaux</option>
+                            <option value="Environnement">🌿 Environnement</option>
+                            <option value="Religieux">🌙 Religieux</option>
+                            <option value="Social">🤝 Social</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">État de l'objet</label>
-                        <select name="etat_object" class="form-control">
-                            <option value="">Ne s'applique pas</option>
-                            <option value="Neuf">Neuf</option>
-                            <option value="Bon état">Bon état</option>
-                            <option value="Usagé">Usagé</option>
-                            <option value="À réparer">À réparer</option>
-                        </select>
-                    </div>
-                    
                     <div class="form-group">
                         <label class="form-label">Région *</label>
                         <select name="region" class="form-control" required>
@@ -451,25 +442,37 @@
                             <option value="Autre">Autre</option>
                         </select>
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Responsable *</label>
+                        <input type="text" name="responsable" class="form-control" required 
+                               placeholder="Ex: Mohamed Ali">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-control" required 
+                               placeholder="exemple@association.tn">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Téléphone *</label>
+                        <input type="tel" name="telephone" class="form-control" required 
+                               placeholder="Ex: +216 12 345 678">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Photo(s) (optionnel)</label>
-                    <input type="file" name="photos" class="form-control" accept="image/*">
-                    <small style="color: #666; display: block; margin-top: 0.5rem;">
-                        Formats acceptés: JPG, PNG, GIF (max 2MB)
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Description détaillée</label>
+                    <label class="form-label">Description du groupe</label>
                     <textarea name="description" class="form-control" 
-                              placeholder="Décrivez votre don, ses spécificités, comment il peut aider..."></textarea>
+                              placeholder="Décrivez les activités et objectifs du groupe..."></textarea>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">➕ Ajouter le don</button>
-                    <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">Annuler</a>
+                    <button type="submit" class="btn-primary">➕ Créer le groupe</button>
+                    <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-secondary">Annuler</a>
                 </div>
             </form>
         </div>

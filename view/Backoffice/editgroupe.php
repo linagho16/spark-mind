@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un Don - Dashboard Admin</title>
+    <title>Modifier Groupe - Dashboard Admin</title>
     <style>
-        /* Same styles as your existing Backoffice files */
         * {
             margin: 0;
             padding: 0;
@@ -270,6 +269,24 @@
             padding-top: 2rem;
             border-top: 1px solid #e1e5e9;
         }
+
+        .groupe-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 6px solid #1f8c87;
+        }
+
+        .groupe-info h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .groupe-info p {
+            color: #666;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -383,11 +400,12 @@
         <!-- Top Header -->
         <header class="top-header">
             <div class="header-left">
-                <h1>Ajouter un Nouveau Don</h1>
-                <p>Créez un nouveau don pour aider ceux qui en ont besoin</p>
+                <h1>Modifier le Groupe</h1>
+                <p>Modifiez les informations du groupe #<?php echo htmlspecialchars($groupe['id'] ?? ''); ?></p>
             </div>
             <div class="header-right">
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">← Retour aux dons</a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-secondary">← Retour à la liste</a>
+                <a href="/aide_solitaire/controller/groupeC.php?action=view_groupe&id=<?php echo $groupe['id'] ?? ''; ?>" class="btn-primary">👁️ Voir</a>
             </div>
         </header>
 
@@ -398,78 +416,103 @@
             </div>
         <?php endif; ?>
 
-        <!-- Creation Form -->
+        <!-- Group Info -->
+        <div class="groupe-info">
+            <h3>Groupe #<?php echo htmlspecialchars($groupe['id'] ?? ''); ?> - <?php echo htmlspecialchars($groupe['nom'] ?? ''); ?></h3>
+            <p>Créé le: <?php echo isset($groupe['created_at']) ? date('d/m/Y', strtotime($groupe['created_at'])) : 'Date non disponible'; ?></p>
+        </div>
+
+        <!-- Edit Form -->
         <div class="form-container">
-            <form method="POST" action="/aide_solitaire/controller/donC.php?action=create_don" enctype="multipart/form-data">
+            <form method="POST" action="/aide_solitaire/controller/groupeC.php?action=edit_groupe&id=<?php echo $groupe['id'] ?? ''; ?>">
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Type de don *</label>
-                        <select name="type_don" class="form-control" required>
-                            <option value="">Sélectionner un type</option>
-                            <option value="Vêtements">👕 Vêtements</option>
-                            <option value="Nourriture">🍞 Nourriture</option>
-                            <option value="Médicaments">💊 Médicaments</option>
-                            <option value="Équipement">🔧 Équipement</option>
-                            <option value="Argent">💰 Argent</option>
-                            <option value="Services">🤝 Services</option>
-                            <option value="Autre">🎁 Autre</option>
-                        </select>
+                        <label class="form-label">Nom du groupe *</label>
+                        <input type="text" name="nom" class="form-control" required 
+                               value="<?php echo htmlspecialchars($groupe['nom'] ?? ''); ?>"
+                               placeholder="Ex: Association Solidarité Tunis">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Quantité *</label>
-                        <input type="number" name="quantite" class="form-control" required 
-                               min="1" placeholder="Ex: 5">
+                        <label class="form-label">Type de groupe *</label>
+                        <select name="type" class="form-control" required>
+                            <option value="">Sélectionner un type</option>
+                            <option value="Santé" <?php echo ($groupe['type'] ?? '') == 'Santé' ? 'selected' : ''; ?>>🏥 Santé</option>
+                            <option value="Éducation" <?php echo ($groupe['type'] ?? '') == 'Éducation' ? 'selected' : ''; ?>>📚 Éducation</option>
+                            <option value="Seniors" <?php echo ($groupe['type'] ?? '') == 'Seniors' ? 'selected' : ''; ?>>👵 Seniors</option>
+                            <option value="Jeunesse" <?php echo ($groupe['type'] ?? '') == 'Jeunesse' ? 'selected' : ''; ?>>👦 Jeunesse</option>
+                            <option value="Culture" <?php echo ($groupe['type'] ?? '') == 'Culture' ? 'selected' : ''; ?>>🎨 Culture</option>
+                            <option value="Urgence" <?php echo ($groupe['type'] ?? '') == 'Urgence' ? 'selected' : ''; ?>>🚨 Urgence</option>
+                            <option value="Animaux" <?php echo ($groupe['type'] ?? '') == 'Animaux' ? 'selected' : ''; ?>>🐾 Animaux</option>
+                            <option value="Environnement" <?php echo ($groupe['type'] ?? '') == 'Environnement' ? 'selected' : ''; ?>>🌿 Environnement</option>
+                            <option value="Religieux" <?php echo ($groupe['type'] ?? '') == 'Religieux' ? 'selected' : ''; ?>>🌙 Religieux</option>
+                            <option value="Social" <?php echo ($groupe['type'] ?? '') == 'Social' ? 'selected' : ''; ?>>🤝 Social</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">État de l'objet</label>
-                        <select name="etat_object" class="form-control">
-                            <option value="">Ne s'applique pas</option>
-                            <option value="Neuf">Neuf</option>
-                            <option value="Bon état">Bon état</option>
-                            <option value="Usagé">Usagé</option>
-                            <option value="À réparer">À réparer</option>
-                        </select>
-                    </div>
-                    
                     <div class="form-group">
                         <label class="form-label">Région *</label>
                         <select name="region" class="form-control" required>
                             <option value="">Sélectionner une région</option>
-                            <option value="Tunis">Tunis</option>
-                            <option value="Sfax">Sfax</option>
-                            <option value="Sousse">Sousse</option>
-                            <option value="Kairouan">Kairouan</option>
-                            <option value="Bizerte">Bizerte</option>
-                            <option value="Gabès">Gabès</option>
-                            <option value="Ariana">Ariana</option>
-                            <option value="Gafsa">Gafsa</option>
-                            <option value="Monastir">Monastir</option>
-                            <option value="Autre">Autre</option>
+                            <option value="Tunis" <?php echo ($groupe['region'] ?? '') == 'Tunis' ? 'selected' : ''; ?>>Tunis</option>
+                            <option value="Sfax" <?php echo ($groupe['region'] ?? '') == 'Sfax' ? 'selected' : ''; ?>>Sfax</option>
+                            <option value="Sousse" <?php echo ($groupe['region'] ?? '') == 'Sousse' ? 'selected' : ''; ?>>Sousse</option>
+                            <option value="Kairouan" <?php echo ($groupe['region'] ?? '') == 'Kairouan' ? 'selected' : ''; ?>>Kairouan</option>
+                            <option value="Bizerte" <?php echo ($groupe['region'] ?? '') == 'Bizerte' ? 'selected' : ''; ?>>Bizerte</option>
+                            <option value="Gabès" <?php echo ($groupe['region'] ?? '') == 'Gabès' ? 'selected' : ''; ?>>Gabès</option>
+                            <option value="Ariana" <?php echo ($groupe['region'] ?? '') == 'Ariana' ? 'selected' : ''; ?>>Ariana</option>
+                            <option value="Gafsa" <?php echo ($groupe['region'] ?? '') == 'Gafsa' ? 'selected' : ''; ?>>Gafsa</option>
+                            <option value="Monastir" <?php echo ($groupe['region'] ?? '') == 'Monastir' ? 'selected' : ''; ?>>Monastir</option>
+                            <option value="Autre" <?php echo ($groupe['region'] ?? '') == 'Autre' ? 'selected' : ''; ?>>Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Responsable *</label>
+                        <input type="text" name="responsable" class="form-control" required 
+                               value="<?php echo htmlspecialchars($groupe['responsable'] ?? ''); ?>"
+                               placeholder="Ex: Mohamed Ali">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-control" required 
+                               value="<?php echo htmlspecialchars($groupe['email'] ?? ''); ?>"
+                               placeholder="exemple@association.tn">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Téléphone *</label>
+                        <input type="tel" name="telephone" class="form-control" required 
+                               value="<?php echo htmlspecialchars($groupe['telephone'] ?? ''); ?>"
+                               placeholder="Ex: +216 12 345 678">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Statut *</label>
+                        <select name="statut" class="form-control" required>
+                            <option value="actif" <?php echo ($groupe['statut'] ?? '') == 'actif' ? 'selected' : ''; ?>>Actif</option>
+                            <option value="inactif" <?php echo ($groupe['statut'] ?? '') == 'inactif' ? 'selected' : ''; ?>>Inactif</option>
+                            <option value="en_attente" <?php echo ($groupe['statut'] ?? '') == 'en_attente' ? 'selected' : ''; ?>>En attente</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Photo(s) (optionnel)</label>
-                    <input type="file" name="photos" class="form-control" accept="image/*">
-                    <small style="color: #666; display: block; margin-top: 0.5rem;">
-                        Formats acceptés: JPG, PNG, GIF (max 2MB)
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Description détaillée</label>
+                    <label class="form-label">Description du groupe</label>
                     <textarea name="description" class="form-control" 
-                              placeholder="Décrivez votre don, ses spécificités, comment il peut aider..."></textarea>
+                              placeholder="Décrivez les activités et objectifs du groupe..."><?php echo htmlspecialchars($groupe['description'] ?? ''); ?></textarea>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">➕ Ajouter le don</button>
-                    <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">Annuler</a>
+                    <button type="submit" class="btn-primary">💾 Enregistrer les modifications</button>
+                    <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn-secondary">Annuler</a>
                 </div>
             </form>
         </div>

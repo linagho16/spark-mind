@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Gestion des Catégories avec Protection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .scenario-box {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .scenario-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Messages d'alerte */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 92, 67, 0.3);
+        }
+
+        .alert-icon {
+            font-size: 1.5em;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .badge-success {
+            background: #2ed573;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🛡️ Test - Protection Contrainte d'Intégrité</h1>
+
+        <!-- Scénario 1 -->
+        <div class="scenario-box">
+            <div class="scenario-title">
+                ❌ Scénario 1: Suppression Bloquée
+                <span class="badge badge-danger">ERREUR ATTENDUE</span>
+            </div>
+            <div class="scenario-description">
+                Tentative de suppression d'une catégorie qui contient <strong>7 produits</strong>.
+                Le système doit empêcher la suppression et afficher un message d'erreur.
+            </div>
+            <button class="test-button" onclick="showError()">Tester la suppression</button>
+            <div id="result1"></div>
+        </div>
+
+        <!-- Scénario 2 -->
+        <div class="scenario-box">
+            <div class="scenario-title">
+                ✅ Scénario 2: Suppression Réussie
+                <span class="badge badge-success">SUCCÈS ATTENDU</span>
+            </div>
+            <div class="scenario-description">
+                Tentative de suppression d'une catégorie qui ne contient <strong>aucun produit</strong>.
+                Le système doit autoriser la suppression et afficher un message de succès.
+            </div>
+            <button class="test-button" onclick="showSuccess()">Tester la suppression</button>
+            <div id="result2"></div>
+        </div>
+
+        <!-- Scénario 3 -->
+        <div class="scenario-box">
+            <div class="scenario-title">
+                🔍 Scénario 3: Vérification du Nombre de Produits
+            </div>
+            <div class="scenario-description">
+                Utilisation de la méthode <code>countProductsInCategory()</code> pour vérifier combien de produits sont
+                dans une catégorie.
+            </div>
+            <div class="code-block">
+                $categorieC = new CategorieC();<br>
+                $count = $categorieC->countProductsInCategory(5);<br>
+                echo "Cette catégorie contient $count produits";
+            </div>
+            <button class="test-button" onclick="showCount()">Afficher le résultat</button>
+            <div id="result3"></div>
+        </div>
+
+        <!-- Flux du code -->
+        <div class="scenario-box">
+            <div class="scenario-title">
+                📋 Flux de Vérification
+            </div>
+            <div class="scenario-description">
+                Le code vérifie automatiquement les produits liés avant toute suppression :
+            </div>
+            <div class="code-block">
+                1. L'utilisateur clique sur le bouton "Supprimer" 🗑️<br>
+                2. Confirmation JavaScript : "Êtes-vous sûr ?"<br>
+                3. Redirection vers supprimerCategorie.php?id=X<br>
+                4. CategorieC->deleteCategorie(X) est appelé<br>
+                5. <strong>VÉRIFICATION :</strong> COUNT(*) FROM produit WHERE category = X<br>
+                6a. Si count > 0 → Exception avec message<br>
+                6b. Si count = 0 → Suppression autorisée<br>
+                7. Redirection vers listeCategories.php avec message
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showError() {
+            const result = document.getElementById('result1');
+            result.innerHTML = `
+                <div class="alert alert-error">
+                    <span class="alert-icon">⚠</span>
+                    <span>Impossible de supprimer cette catégorie. Elle contient encore 7 produit(s). Veuillez d'abord supprimer ou réassigner les produits.</span>
+                </div>
+            `;
+            setTimeout(() => {
+                result.querySelector('.alert').style.transition = 'opacity 0.5s ease';
+                result.querySelector('.alert').style.opacity = '0';
+                setTimeout(() => result.innerHTML = '', 500);
+            }, 5000);
+        }
+
+        function showSuccess() {
+            const result = document.getElementById('result2');
+            result.innerHTML = `
+                <div class="alert alert-success">
+                    <span class="alert-icon">✓</span>
+                    <span>Catégorie supprimée avec succès !</span>
+                </div>
+            `;
+            setTimeout(() => {
+                result.querySelector('.alert').style.transition = 'opacity 0.5s ease';
+                result.querySelector('.alert').style.opacity = '0';
+                setTimeout(() => result.innerHTML = '', 500);
+            }, 5000);
+        }
+
+        function showCount() {
+            const result = document.getElementById('result3');
+            result.innerHTML = `
+                <div class="alert alert-success">
+                    <span class="alert-icon">📊</span>
+                    <span>Cette catégorie contient 7 produits</span>
+                </div>
+            `;
+            setTimeout(() => {
+                result.querySelector('.alert').style.transition = 'opacity 0.5s ease';
+                result.querySelector('.alert').style.opacity = '0';
+                setTimeout(() => result.innerHTML = '', 500);
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

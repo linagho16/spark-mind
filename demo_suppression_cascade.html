@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Suppression en Cascade</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 2.8em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 1.2em;
+        }
+
+        .demo-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .demo-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #667eea;
+            box-shadow: 0 0 0 4px white;
+        }
+
+        .step.active::before {
+            background: #667eea;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(102, 126, 234, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 4px white, 0 0 0 12px rgba(102, 126, 234, 0.1);
+            }
+        }
+
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .warning-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-item {
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .comparison-item.old {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            color: white;
+        }
+
+        .comparison-item.new {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .products-list {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .products-list h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .product-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .deleted {
+            text-decoration: line-through;
+            opacity: 0.5;
+            color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔥 Suppression en Cascade</h1>
+        <p class="subtitle">Démonstration du Nouveau Comportement</p>
+
+        <!-- Comparaison Avant/Après -->
+        <div class="demo-box">
+            <h2 class="demo-title">📊 Comparaison : Avant vs Après</h2>
+
+            <div class="comparison">
+                <div class="comparison-item old">
+                    <h3>❌ AVANT (Bloqué)</h3>
+                    <p style="margin: 20px 0; font-size: 1.1em;">
+                        "Impossible de supprimer cette catégorie. Elle contient encore 7 produit(s)."
+                    </p>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>Résultat :</strong><br>
+                        ✗ Catégorie NON supprimée<br>
+                        ✓ Produits conservés
+                    </div>
+                </div>
+
+                <div class="comparison-item new">
+                    <h3>✅ APRÈS (Cascade)</h3>
+                    <p style="margin: 20px 0; font-size: 1.1em;">
+                        "Catégorie supprimée avec succès ! (7 produit(s) supprimé(s) également)"
+                    </p>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>Résultat :</strong><br>
+                        ✓ Catégorie supprimée<br>
+                        ✓ Produits supprimés
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Démonstration Interactive -->
+        <div class="demo-box">
+            <h2 class="demo-title">🎬 Démonstration Interactive</h2>
+
+            <div class="info-box">
+                <h3>📦 Catégorie : "Électronique"</h3>
+                <p>Contient actuellement <strong>7 produits</strong></p>
+            </div>
+
+            <div class="products-list">
+                <h4>📋 Liste des Produits dans cette Catégorie :</h4>
+                <div class="product-item" id="prod1">
+                    <span>📱</span>
+                    <span>Smartphone XYZ</span>
+                </div>
+                <div class="product-item" id="prod2">
+                    <span>💻</span>
+                    <span>Ordinateur Portable ABC</span>
+                </div>
+                <div class="product-item" id="prod3">
+                    <span>🎧</span>
+                    <span>Écouteurs Sans Fil</span>
+                </div>
+                <div class="product-item" id="prod4">
+                    <span>⌚</span>
+                    <span>Montre Connectée</span>
+                </div>
+                <div class="product-item" id="prod5">
+                    <span>📷</span>
+                    <span>Appareil Photo Numérique</span>
+                </div>
+                <div class="product-item" id="prod6">
+                    <span>🖱️</span>
+                    <span>Souris Gaming RGB</span>
+                </div>
+                <div class="product-item" id="prod7">
+                    <span>⌨️</span>
+                    <span>Clavier Mécanique</span>
+                </div>
+            </div>
+
+            <button class="btn-demo" onclick="demonstrateDelete()">
+                🗑️ Supprimer la Catégorie "Électronique"
+            </button>
+
+            <div id="timeline-container" style="display: none;">
+                <div class="timeline">
+                    <div class="step" id="step1">
+                        <span class="step-number">1</span>
+                        <strong>Confirmation demandée</strong>
+                        <div class="step-content">
+                            <div class="warning-box" style="margin: 0;">
+                                <h3>⚠️ ATTENTION</h3>
+                                <p>Voulez-vous vraiment supprimer cette catégorie ?</p>
+                                <p><strong>❗ TOUS les produits de cette catégorie seront également supprimés
+                                        définitivement !</strong></p>
+                                <p>Cette action est irréversible.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step2">
+                        <span class="step-number">2</span>
+                        <strong>Comptage des produits</strong>
+                        <div class="step-content">
+                            <div class="code-box" style="margin: 0; font-size: 0.9em;">
+                                SELECT COUNT(*) FROM produit WHERE category = 5<br>
+                                → Résultat: 7 produits trouvés
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step3">
+                        <span class="step-number">3</span>
+                        <strong>Suppression des produits</strong>
+                        <div class="step-content">
+                            <div class="code-box" style="margin: 0; font-size: 0.9em;">
+                                DELETE FROM produit WHERE category = 5<br>
+                                → 7 produit(s) supprimé(s)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step4">
+                        <span class="step-number">4</span>
+                        <strong>Suppression de la catégorie</strong>
+                        <div class="step-content">
+                            <div class="code-box" style="margin: 0; font-size: 0.9em;">
+                                DELETE FROM categorie WHERE idc = 5<br>
+                                → Catégorie supprimée
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step5">
+                        <span class="step-number">5</span>
+                        <strong>Message de succès</strong>
+                        <div class="step-content">
+                            <div class="success-box" style="margin: 0;">
+                                <h3>✓ Catégorie supprimée avec succès !</h3>
+                                <p><strong>(7 produit(s) supprimé(s) également)</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result-box" style="display: none; margin-top: 30px;">
+                <div class="success-box">
+                    <h3>✅ Opération Terminée</h3>
+                    <p>La catégorie "Électronique" et ses 7 produits ont été supprimés définitivement.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avertissements -->
+        <div class="demo-box">
+            <h2 class="demo-title">⚠️ Points Importants</h2>
+
+            <div class="warning-box">
+                <h3>🛑 Action Irréversible</h3>
+                <p><strong>Les données supprimées NE PEUVENT PAS être récupérées !</strong></p>
+                <ul style="margin-top: 15px; margin-left: 20px; line-height: 1.8;">
+                    <li>Aucune corbeille</li>
+                    <li>Aucun historique</li>
+                    <li>Suppression définitive</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Bonnes Pratiques</h3>
+                <ul style="margin-top: 15px; margin-left: 20px; line-height: 1.8;">
+                    <li>✓ Vérifier le contenu avant de supprimer</li>
+                    <li>✓ Faire des sauvegardes régulières</li>
+                    <li>✓ Lire attentivement le message de confirmation</li>
+                    <li>✓ Utiliser avec prudence</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function demonstrateDelete() {
+            if (!confirm('⚠️ ATTENTION ⚠️\n\nVoulez-vous vraiment supprimer cette catégorie ?\n\n❗ TOUS les produits de cette catégorie seront également supprimés définitivement !\n\nCette action est irréversible.\n\n(Cette démonstration est simulée)')) {
+                return;
+            }
+
+            document.getElementById('timeline-container').style.display = 'block';
+
+            // Animation des étapes
+            let currentStep = 1;
+            const steps = 5;
+
+            function activateStep(stepNum) {
+                const stepEl = document.getElementById('step' + stepNum);
+                if (stepEl) {
+                    stepEl.classList.add('active');
+                    stepEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // Activer les étapes progressivement
+            activateStep(1);
+
+            setTimeout(() => activateStep(2), 1500);
+
+            setTimeout(() => {
+                activateStep(3);
+                // Marquer les produits comme supprimés
+                for (let i = 1; i <= 7; i++) {
+                    setTimeout(() => {
+                        document.getElementById('prod' + i).classList.add('deleted');
+                    }, i * 200);
+                }
+            }, 3000);
+
+            setTimeout(() => activateStep(4), 5000);
+
+            setTimeout(() => {
+                activateStep(5);
+                document.getElementById('result-box').style.display = 'block';
+                document.getElementById('result-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 6500);
+        }
+    </script>
+</body>
+
+</html>

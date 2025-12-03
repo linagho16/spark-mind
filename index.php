@@ -1,25 +1,26 @@
-
-
 <?php
 // Point d'entrée unique MVC pour tout le site SPARKMIND
 
 $page = $_GET['page'] ?? 'front';
 
+/* ==== CONTROLLERS ==== */
 require_once __DIR__ . '/controllers/HomeController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/ProfileController.php';
 require_once __DIR__ . '/controllers/AdminController.php';
-require_once __DIR__ . '/controllers/NotificationController.php';
 
-
+/* ==== INSTANCES ==== */
 $homeController    = new HomeController();
 $authController    = new AuthController();
 $profileController = new ProfileController();
-$notificationController = new NotificationController();
 $adminController   = new AdminController();
 
-
+/* ==== ROUTEUR ==== */
 switch ($page) {
+
+    /* =======================
+       FRONT OFFICE
+    ======================= */
     case 'front':
         $homeController->front();
         break;
@@ -32,6 +33,9 @@ switch ($page) {
         $homeController->main();
         break;
 
+    /* =======================
+       AUTHENTIFICATION
+    ======================= */
     case 'login':
         $authController->login();
         break;
@@ -40,35 +44,8 @@ switch ($page) {
         $authController->register();
         break;
 
-    case 'profile':
-        $profileController->show();
-        break;
-        
-    case 'profile_edit':
-        $profileController->edit();
-        break;
-
-    case 'upload_photo':
-        $profileController->uploadPhoto();
-        break;
-
-    
-
-    case 'delete_account':
-        $profileController->delete();
-        break;
-
     case 'logout':
         $authController->logout();
-        break;
-
-
-    case 'admin_home':
-        $adminController->home();
-        break;
-
-    case 'admin_users':
-        $adminController->users();
         break;
 
     case 'forgot_password':
@@ -78,12 +55,35 @@ switch ($page) {
     case 'reset_password':
         $authController->resetPassword();
         break;
-    case 'notifications':
-        $notificationController->front();
+
+    /* =======================
+       PROFIL UTILISATEUR
+    ======================= */
+    case 'profile':
+        $profileController->show();
         break;
 
-    case 'notif_action':
-        $notificationController->action();
+    case 'profile_edit':
+        $profileController->edit();
+        break;
+
+    case 'upload_photo':
+        $profileController->uploadPhoto();
+        break;
+
+    case 'delete_account':
+        $profileController->delete();
+        break;
+
+    /* =======================
+       ADMINISTRATION (BACKOFFICE)
+    ======================= */
+    case 'admin_home':
+        $adminController->home();
+        break;
+
+    case 'admin_users':
+        $adminController->users();
         break;
 
     case 'admin_notifications':
@@ -98,11 +98,26 @@ switch ($page) {
         $adminController->helpRequestAction();
         break;
 
+    case 'admin_block_user':
+        $adminController->blockUser();
+        break;
 
+    case 'admin_activate_user':
+        $adminController->activateUser();
+        break;
 
+    case 'admin_user_profile':
+        $adminController->userProfile();
+        break;
 
+    case 'admin_delete_user':
+        $adminController->deleteUser();
+        break;
+
+    /* =======================
+       ROUTE PAR DÉFAUT
+    ======================= */
     default:
-        // page par défaut : front office
         header('Location: index.php?page=front');
         exit;
 }

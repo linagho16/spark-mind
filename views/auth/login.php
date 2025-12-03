@@ -162,7 +162,7 @@
             <input type="checkbox" name="remember">
             <span>Se souvenir de moi</span>
           </label>
-          <a class="link" href="#" title="Récupérer le mot de passe">Mot de passe oublié&nbsp;?</a>
+          
         </div>
 
         <button class="btn-primary" type="submit">Se connecter</button>

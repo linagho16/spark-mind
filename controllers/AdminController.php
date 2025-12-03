@@ -2,13 +2,10 @@
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/Notification.php';
 require_once __DIR__ . '/../models/HelpRequest.php';
+require_once __DIR__ . '/../services/MailService.php';
 
 class AdminController
 {
-    /**
-     * Vérifie que la personne est connectée en tant qu'ADMIN.
-     * Sinon redirection vers la page de login.
-     */
     private function ensureAdmin(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -24,38 +21,190 @@ class AdminController
         }
     }
 
-    /**
-     * Page d'accueil du backoffice (tableau de bord).
-     * Vue : views/admin/home.php
-     */
     public function home(): void
     {
         $this->ensureAdmin();
-
         include __DIR__ . '/../views/admin/home.php';
     }
 
     /**
-     * Liste des utilisateurs.
-     * Vue : views/admin/users.php
+     * Liste des utilisateurs avec filtrage site_role + filtre date.
      */
     public function users(): void
     {
         $this->ensureAdmin();
 
+        // 1) Ajout d'utilisateur (formulaire)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'] ?? '';
+
+            if ($action === 'create_user') {
+                $nom      = isset($_POST['nom'])     ? trim($_POST['nom'])     : '';
+                $prenom   = isset($_POST['prenom'])  ? trim($_POST['prenom'])  : '';
+                $email    = isset($_POST['email'])   ? trim($_POST['email'])   : '';
+                $password = $_POST['password']       ?? '';
+                $roleRaw  = $_POST['role']           ?? 'user';
+                $siteRoleRawForm = $_POST['site_role'] ?? 'seeker';
+
+                $allowedRolesTech = ['user', 'admin'];
+                $role = in_array($roleRaw, $allowedRolesTech, true) ? $roleRaw : 'user';
+
+                $allowedSiteRolesInsert = ['seeker', 'helper', 'both', 'speaker'];
+                $siteRoleInsert = in_array($siteRoleRawForm, $allowedSiteRolesInsert, true)
+                    ? $siteRoleRawForm
+                    : 'seeker';
+
+                User::createFromAdmin([
+                    'nom'       => $nom,
+                    'prenom'    => $prenom,
+                    'email'     => $email,
+                    'password'  => $password,
+                    'role'      => $role,
+                    'site_role' => $siteRoleInsert,
+                ]);
+
+                header("Location: index.php?page=admin_users");
+                exit;
+            }
+        }
+
         $userModel = new User();
 
-        // Ici pas de HTML5 : on ne lit rien venant du formulaire.
-        // Si plus tard tu ajoutes des filtres (GET), tu les valideras ici.
-        $users = $userModel->findAll();
+        // 2) Filtre rôle SPARKMIND
+        $siteRoleRaw = $_GET['site_role'] ?? 'all';
+        $siteRole    = is_string($siteRoleRaw) ? trim($siteRoleRaw) : 'all';
+
+        $allowedRoles = ['all', 'seeker', 'helper', 'both', 'speaker'];
+        if (!in_array($siteRole, $allowedRoles, true)) {
+            $siteRole = 'all';
+        }
+
+        // 3) Filtre date (today / yesterday / week / last_month / last_year / all)
+        $dateFilterRaw = $_GET['date'] ?? 'all';
+        $dateFilter    = is_string($dateFilterRaw) ? trim($dateFilterRaw) : 'all';
+
+        $allowedDateFilters = ['all', 'today', 'yesterday', 'week', 'last_month', 'last_year'];
+        if (!in_array($dateFilter, $allowedDateFilters, true)) {
+            $dateFilter = 'all';
+        }
+
+        // 4) Récupération filtrée
+        $users = $userModel->findAllBySiteRoleAndDate($siteRole, $dateFilter);
+
+        $currentSiteRole   = $siteRole;
+        $currentDateFilter = $dateFilter;
 
         include __DIR__ . '/../views/admin/users.php';
     }
 
     /**
-     * Page admin des notifications (stats acceptées/refusées/en attente).
-     * Vue : views/admin/notifications.php
+     * Voir le profil complet d'un utilisateur (mode admin).
+     * Route : index.php?page=admin_user_profile&id=123
      */
+    public function userProfile(): void
+    {
+        $this->ensureAdmin();
+
+        $idRaw = $_GET['id'] ?? null;
+        $id    = is_numeric($idRaw) ? (int)$idRaw : 0;
+
+        if ($id <= 0) {
+            header("Location: index.php?page=admin_users");
+            exit;
+        }
+
+        $userModel = new User();
+        $user      = $userModel->findById($id);
+
+        if (!$user) {
+            header("Location: index.php?page=admin_users");
+            exit;
+        }
+
+        include __DIR__ . '/../views/admin/user_profile.php';
+    }
+
+    /**
+     * Supprimer un utilisateur (définitivement).
+     * Route : index.php?page=admin_delete_user
+     */
+    public function deleteUser(): void
+    {
+        $this->ensureAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?page=admin_users");
+            exit;
+        }
+
+        $idRaw = $_POST['user_id'] ?? null;
+        $id    = is_numeric($idRaw) ? (int)$idRaw : 0;
+
+        if ($id > 0) {
+            $userModel = new User();
+            $userModel->deleteById($id);
+        }
+
+        header("Location: index.php?page=admin_users");
+        exit;
+    }
+
+    public function blockUser(): void
+    {
+        $this->ensureAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?page=admin_users");
+            exit;
+        }
+
+        $idRaw = $_POST['user_id'] ?? null;
+        $id    = is_numeric($idRaw) ? (int)$idRaw : 0;
+
+        if ($id > 0) {
+            $userModel = new User();
+            $user      = $userModel->findById($id);
+
+            if ($user) {
+                $userModel->updateStatus($id, 'blocked');
+
+                $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
+                MailService::sendAccountBlocked($user['email'], $fullName);
+            }
+        }
+
+        header("Location: index.php?page=admin_users");
+        exit;
+    }
+
+    public function activateUser(): void
+    {
+        $this->ensureAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php?page=admin_users");
+            exit;
+        }
+
+        $idRaw = $_POST['user_id'] ?? null;
+        $id    = is_numeric($idRaw) ? (int)$idRaw : 0;
+
+        if ($id > 0) {
+            $userModel = new User();
+            $user      = $userModel->findById($id);
+
+            if ($user) {
+                $userModel->updateStatus($id, 'active');
+
+                $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
+                MailService::sendAccountUnblocked($user['email'], $fullName);
+            }
+        }
+
+        header("Location: index.php?page=admin_users");
+        exit;
+    }
+
     public function notifications(): void
     {
         $this->ensureAdmin();
@@ -66,19 +215,14 @@ class AdminController
         include __DIR__ . '/../views/admin/notifications.php';
     }
 
-    /**
-     * Liste des demandes d'aide (gestion par l'admin).
-     * Vue : views/admin/help_requests.php
-     */
     public function helpRequests(): void
     {
         $this->ensureAdmin();
 
         $helpModel = new HelpRequest();
 
-        // 🔎 Validation côté serveur du filtre "statut"
-        $statut = $_GET['statut'] ?? 'all';
-        $statut = is_string($statut) ? trim($statut) : 'all';
+        $statutRaw = $_GET['statut'] ?? 'all';
+        $statut    = is_string($statutRaw) ? trim($statutRaw) : 'all';
 
         $allowedStatus = ['all', 'pending', 'accepted', 'rejected'];
         if (!in_array($statut, $allowedStatus, true)) {
@@ -90,15 +234,10 @@ class AdminController
         include __DIR__ . '/../views/admin/help_requests.php';
     }
 
-    /**
-     * Action sur une demande d'aide : accepter ou refuser.
-     * Route : index.php?page=admin_help_request_action
-     */
     public function helpRequestAction(): void
     {
         $this->ensureAdmin();
 
-        // On n'accepte que le POST : contrôle côté serveur
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: index.php?page=admin_help_requests");
             exit;
@@ -115,12 +254,9 @@ class AdminController
         if ($id > 0 && in_array($action, $allowedActions, true)) {
             $helpModel = new HelpRequest();
             $statut    = ($action === 'accept') ? 'accepted' : 'rejected';
-
-            // On pourrait aussi vérifier que la demande existe avant de la mettre à jour
             $helpModel->updateStatus($id, $statut);
         }
 
-        // Dans tous les cas on retourne à la liste (pas de HTML5 ici)
         header("Location: index.php?page=admin_help_requests");
         exit;
     }

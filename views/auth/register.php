@@ -86,7 +86,7 @@
 </head>
 
 <body>
-  <!-- ✅ BARRE EN HAUT COPIÉE DE LA PAGE LOGIN -->
+ 
   <header class="main-header top-nav" aria-label="Logo du site">
     <div class="brand-block">
       <a href="index.php?page=main" class="logo-link" title="Retour à l’accueil">
@@ -116,12 +116,12 @@
         <div class="row two">
           <label class="field">
             <span>Nom</span>
-            <input type="text" name="nom" placeholder="ex. Gabtni" required autocomplete="family-name">
+            <input type="text" name="nom" placeholder="ex. Prenom" required autocomplete="family-name">
           </label>
 
           <label class="field">
             <span>Prénom</span>
-            <input type="text" name="prenom" placeholder="ex. Najami" required autocomplete="given-name">
+            <input type="text" name="prenom" placeholder="ex. Nom" required autocomplete="given-name">
           </label>
         </div>
 

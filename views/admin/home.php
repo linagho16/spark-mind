@@ -1,3 +1,5 @@
+
+
 <?php
 // Vue backoffice d'accueil admin (AdminController::home)
 ?>
@@ -11,6 +13,31 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css" />
+
+  <style>
+    .kpi {
+        width: 1000px;      /* 🔥 taille du conteneur */
+        height: 500px;     /* 🔥 hauteur */
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        /* Optionnel si tu veux un cadre stylé */
+        background: rgba(255,255,255,0.7);
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .kpi-icon {
+        width: 500px;  
+            /* 🔥 taille de l'image */
+        height: auto;
+        object-fit: contain;
+        border-radius: 12px; /* Optionnel */
+    }
+</style>
+
 </head>
 
 <body>
@@ -24,7 +51,7 @@
 
       <nav class="menu">
         <a class="item active" data-section="dashboard">
-          <span>Tableau de bord</span>
+          <span>Frontoffice</span>
         </a>
         <a class="item" href="index.php?page=admin_users">
           <span>Utilisateurs</span>
@@ -32,6 +59,20 @@
         <a class="item" href="index.php?page=admin_notifications">
           <span>Notifications</span>
         </a>
+                <a class="item" href="index.php?page=admin_users">
+          <span>🙍‍♀️🙍Demandeurs</span>
+        </a>
+        <a class="item" href="index.php?page=admin_notifications">
+          <span>🎁Donneurs</span>
+        </a>
+        <a class="item" href="index.php?page=admin_notifications">
+          <span>🗣Expressions/Messages</span>
+        </a>
+         <a class="item" href="index.php?page=admin_notifications">
+          <span>📎Evenements</span>
+        </a>
+
+
       </nav>
 
 
@@ -44,10 +85,7 @@
     <main class="main">
       
       <header class="topbar">
-        <div class="search">
-          <input type="text" placeholder="Rechercher (utilisateurs, posts, id…)" id="globalSearch">
-          <button id="searchBtn" aria-label="Rechercher">🔍</button>
-        </div>
+
         <div class="actions">
           <button class="pill ghost" id="themeToggle" title="Basculer thème">🌓</button>
           <a class="pill" href="index.php?page=logout">Déconnexion</a>
@@ -57,74 +95,15 @@
       <!-- ✅ plus de "*/Dashboard" -->
 
       <section class="section show" id="dashboard">
-        <h1 class="title">Tableau de bord</h1>
+        <h1 class="title">Bienvenue</h1>
 
         <div class="kpis">
           <div class="kpi">
-            <span class="kpi-label">Utilisateurs</span>
-            <span class="kpi-value" id="kpiUsers">1 248</span>
+            <img src="images/image2.jpg" alt="Icône utilisateurs" class="kpi-icon">
           </div>
-          <div class="kpi">
-            <span class="kpi-label">Demandes actives</span>
-            <span class="kpi-value" id="kpiAsks">132</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">Offres actives</span>
-            <span class="kpi-value" id="kpiOffers">98</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">Signalements ouverts</span>
-            <span class="kpi-value warn" id="kpiReports">7</span>
-          </div>
-        </div>
 
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Activité récente</h2>
-            <div class="filters">
-              <select>
-                <option>Aujourd’hui</option>
-                <option>7 derniers jours</option>
-                <option>30 jours</option>
-              </select>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Type</th><th>Titre</th><th>Par</th><th>Date</th><th>État</th><th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="badge turquoise">Demande</span></td>
-                  <td>Besoin de soutien scolaire</td>
-                  <td>@lina</td>
-                  <td>12/11/2025 09:12</td>
-                  <td><span class="status pending">En attente</span></td>
-                  <td><button class="btn tiny" data-open="contentModal">Examiner</button></td>
-                </tr>
-                <tr>
-                  <td><span class="badge violet">Offre</span></td>
-                  <td>Don de vêtements hiver</td>
-                  <td>@amine</td>
-                  <td>12/11/2025 08:44</td>
-                  <td><span class="status ok">Publié</span></td>
-                  <td><button class="btn tiny alt">Masquer</button></td>
-                </tr>
-                <tr>
-                  <td><span class="badge orange">Anonyme</span></td>
-                  <td>J’ai besoin de parler</td>
-                  <td>—</td>
-                  <td>11/11/2025 23:05</td>
-                  <td><span class="status review">À modérer</span></td>
-                  <td><button class="btn tiny" data-open="contentModal">Modérer</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+          
+  
       </section>
 
       <!-- (tout le reste de tes sections: users, help-asks, help-offers, anonymous, reports, content, messages, settings)

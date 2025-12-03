@@ -163,6 +163,21 @@ body{
 .modal-card h3{margin:0 0 8px 0}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
 .muted{color:var(--muted)}
+.kpi {
+    width: 150px;      /* 🔥 augmente la largeur */
+    height: 150px;     /* 🔥 augmente la hauteur */
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.kpi-icon {
+    width: 130px;      /* 🔥 taille de l'image */
+    height: auto;      /* garde les proportions */
+    border-radius: 12px; /* optionnel */
+    object-fit: contain;
+}
 
 /* Responsive */
 @media (max-width: 980px){

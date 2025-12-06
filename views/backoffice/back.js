@@ -1,9 +1,9 @@
 // ==========================================
-// SPARKMIND - BACK.JS (VERSION AMÉLIORÉE)
-// Gestion du Back Office avec statistiques SparkMind
+// SPARKMIND - BACK.JS COMPLET
+// Version finale avec Export et Carte
 // ==========================================
 
-console.log('🚀 Back.js chargé - Version améliorée !');
+console.log('🚀 Back.js chargé - Version complète !');
 
 // Variables globales
 window.allDemandes = [];
@@ -12,6 +12,35 @@ let currentPage = 1;
 const demandesPerPage = 10;
 let selectedStatus = null;
 let currentDemandeId = null;
+let exportHistory = [];
+
+// Coordonnées approximatives des gouvernorats tunisiens (en pourcentage)
+const gouvernoratCoords = {
+    'Tunis': { x: 64, y: 11 },
+    'Ariana': { x: 62, y: 9 },
+    'Ben Arous': { x: 65, y: 13 },
+    'Manouba': { x: 60, y: 12 },
+    'Nabeul': { x: 74, y: 12 },
+    'Zaghouan': { x: 62, y: 16 },
+    'Bizerte': { x: 60, y: 4 },
+    'Béja': { x: 57, y: 11 },
+    'Jendouba': { x: 52, y: 7 },
+    'Le Kef': { x: 55, y: 14 },
+    'Siliana': { x: 59, y: 17 },
+    'Kairouan': { x: 62, y: 24 },
+    'Kasserine': { x: 52, y: 27 },
+    'Sidi Bouzid': { x: 60, y: 31 },
+    'Sousse': { x: 65, y: 21 },
+    'Monastir': { x: 68, y: 22 },
+    'Mahdia': { x: 69, y: 26 },
+    'Sfax': { x: 67, y: 34 },
+    'Gafsa': { x: 54, y: 37 },
+    'Tozeur': { x: 49, y: 39 },
+    'Kébili': { x: 54, y: 47 },
+    'Gabès': { x: 64, y: 42 },
+    'Médenine': { x: 66, y: 49 },
+    'Tataouine': { x: 64, y: 57 }
+};
 
 // ==========================================
 // INITIALISATION
@@ -20,63 +49,70 @@ let currentDemandeId = null;
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM chargé !');
     
-    // Charger les demandes
     loadDemandes();
-    
-    // Actualisation automatique
+    loadExportHistory();
     setInterval(loadDemandes, 30000);
     
-    // Event listeners pour la recherche
     const searchInput = document.getElementById('searchDemandes');
     if (searchInput) {
         let searchTimeout;
         searchInput.addEventListener('input', function(e) {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                performSearch(e.target.value);
-            }, 300);
+            searchTimeout = setTimeout(() => performSearch(e.target.value), 300);
+        });
+    }
+
+    // Event listener pour période personnalisée
+    const periodeSelect = document.getElementById('exportPeriode');
+    if (periodeSelect) {
+        periodeSelect.addEventListener('change', function() {
+            const customDateRange = document.getElementById('customDateRange');
+            if (this.value === 'custom') {
+                customDateRange.style.display = 'grid';
+            } else {
+                customDateRange.style.display = 'none';
+            }
         });
     }
 });
 
 // ==========================================
-// NAVIGATION ENTRE SECTIONS
+// NAVIGATION
 // ==========================================
 
 function showSection(event, sectionName) {
     event.preventDefault();
     
-    // Masquer toutes les sections
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
     
-    // Désactiver tous les nav-items
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
     
-    // Afficher la section demandée
     const targetSection = document.getElementById('section-' + sectionName);
     if (targetSection) {
         targetSection.classList.add('active');
     }
     
-    // Activer le nav-item correspondant
     event.target.closest('.nav-item').classList.add('active');
     
-    // Charger les données selon la section
     if (sectionName === 'categories') {
         renderCategoriesStats();
     } else if (sectionName === 'gouvernorats') {
         renderGouvernoratsStats();
     } else if (sectionName === 'evolution') {
         renderEvolutionStats();
+    } else if (sectionName === 'carte') {
+        renderCarte();
+    } else if (sectionName === 'export') {
+        fillExportFilters();
     }
 }
 
 // ==========================================
-// 1. CHARGEMENT DES DEMANDES
+// CHARGEMENT DES DEMANDES
 // ==========================================
 
 function loadDemandes() {
@@ -85,15 +121,8 @@ function loadDemandes() {
     const url = '/SparkMind/controllers/DemandeController.php?action=getAll';
     
     fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur HTTP: ' + response.status);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('📊 Données reçues:', data);
-            
             if (data.success) {
                 window.allDemandes = data.demandes || [];
                 filteredDemandes = [...window.allDemandes];
@@ -103,27 +132,22 @@ function loadDemandes() {
                 updateStatistics();
                 fillGouvernoratFilter();
             } else {
-                console.error('❌ Erreur:', data.message);
                 showNotification('Erreur: ' + data.message, 'error');
             }
         })
         .catch(error => {
-            console.error('❌ Erreur fetch:', error);
-            showNotification('Erreur de connexion au serveur', 'error');
+            showNotification('Erreur de connexion', 'error');
         });
 }
 
 // ==========================================
-// 2. AFFICHAGE DES DEMANDES
+// AFFICHAGE DES DEMANDES
 // ==========================================
 
 function displayDemandes() {
-    console.log('🖼️ Affichage des demandes...');
-    
     const tbody = document.getElementById('demandesTableBody');
     if (!tbody) return;
     
-    // Pagination
     const startIndex = (currentPage - 1) * demandesPerPage;
     const endIndex = startIndex + demandesPerPage;
     const demandesPage = filteredDemandes.slice(startIndex, endIndex);
@@ -156,7 +180,6 @@ function createDemandeRow(demande) {
     const date = new Date(demande.date_soumission);
     const dateStr = date.toLocaleDateString('fr-FR');
     
-    // Gérer les catégories d'aide (peut être un array ou une string)
     let categories = demande.categories_aide;
     if (typeof categories === 'string') {
         try {
@@ -225,7 +248,7 @@ function getStatutLabel(statut) {
 }
 
 // ==========================================
-// 3. STATISTIQUES PRINCIPALES
+// STATISTIQUES
 // ==========================================
 
 function updateStatistics() {
@@ -240,10 +263,6 @@ function updateStatistics() {
     document.getElementById('statTotal').textContent = total;
     document.getElementById('badgeEnAttente').textContent = enAttente;
 }
-
-// ==========================================
-// 4. STATISTIQUES PAR CATÉGORIE
-// ==========================================
 
 function renderCategoriesStats() {
     const categories = {};
@@ -261,14 +280,8 @@ function renderCategoriesStats() {
         
         cats.forEach(cat => {
             if (!categories[cat]) {
-                categories[cat] = {
-                    total: 0,
-                    urgentes: 0,
-                    enAttente: 0,
-                    traitees: 0
-                };
+                categories[cat] = { total: 0, urgentes: 0, enAttente: 0, traitees: 0 };
             }
-            
             categories[cat].total++;
             if (demande.urgence === 'tres-urgent') categories[cat].urgentes++;
             if (demande.statut === 'nouveau') categories[cat].enAttente++;
@@ -276,7 +289,6 @@ function renderCategoriesStats() {
         });
     });
     
-    // Afficher les cartes statistiques
     const statsContainer = document.getElementById('categoriesStats');
     statsContainer.innerHTML = '';
     
@@ -293,7 +305,6 @@ function renderCategoriesStats() {
         statsContainer.appendChild(card);
     });
     
-    // Afficher le tableau
     const tbody = document.getElementById('categoriesTableBody');
     tbody.innerHTML = '';
     
@@ -315,46 +326,12 @@ function renderCategoriesStats() {
 
 function getIconForCategory(cat) {
     const icons = {
-        'alimentaire': '🍽️',
-        'scolaire': '📚',
-        'vestimentaire': '👕',
-        'medicale': '🏥',
-        'financiere': '💰',
-        'logement': '🏠',
-        'professionnelle': '💼',
-        'psychologique': '💬',
-        'autre': '🔧'
+        'alimentaire': '🍽️', 'scolaire': '📚', 'vestimentaire': '👕',
+        'medicale': '🏥', 'financiere': '💰', 'logement': '🏠',
+        'professionnelle': '💼', 'psychologique': '💬', 'autre': '🔧'
     };
     return icons[cat] || '📁';
 }
-
-function filterByCategory(category) {
-    document.getElementById('section-categories').classList.remove('active');
-    document.getElementById('section-demandes').classList.add('active');
-    
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    document.querySelector('.nav-item[href="#demandes"]').classList.add('active');
-    
-    filteredDemandes = window.allDemandes.filter(d => {
-        let cats = d.categories_aide;
-        if (typeof cats === 'string') {
-            try {
-                cats = JSON.parse(cats);
-            } catch (e) {
-                return cats === category;
-            }
-        }
-        return Array.isArray(cats) && cats.includes(category);
-    });
-    
-    currentPage = 1;
-    displayDemandes();
-    showNotification(`Filtré par: ${getTypeLabel(category)}`, 'info');
-}
-
-// ==========================================
-// 5. STATISTIQUES PAR GOUVERNORAT
-// ==========================================
 
 function renderGouvernoratsStats() {
     const gouvernorats = {};
@@ -362,14 +339,8 @@ function renderGouvernoratsStats() {
     window.allDemandes.forEach(demande => {
         const gouv = demande.gouvernorat;
         if (!gouvernorats[gouv]) {
-            gouvernorats[gouv] = {
-                total: 0,
-                urgentes: 0,
-                enAttente: 0,
-                traitees: 0
-            };
+            gouvernorats[gouv] = { total: 0, urgentes: 0, enAttente: 0, traitees: 0 };
         }
-        
         gouvernorats[gouv].total++;
         if (demande.urgence === 'tres-urgent') gouvernorats[gouv].urgentes++;
         if (demande.statut === 'nouveau') gouvernorats[gouv].enAttente++;
@@ -379,7 +350,6 @@ function renderGouvernoratsStats() {
     const tbody = document.getElementById('gouvernoratsTableBody');
     tbody.innerHTML = '';
     
-    // Trier par nombre total décroissant
     const sorted = Object.entries(gouvernorats).sort((a, b) => b[1].total - a[1].total);
     
     sorted.forEach(([gouv, stats]) => {
@@ -398,51 +368,28 @@ function renderGouvernoratsStats() {
     });
 }
 
-function filterByGouvernorat(gouvernorat) {
-    document.getElementById('section-gouvernorats').classList.remove('active');
-    document.getElementById('section-demandes').classList.add('active');
-    
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    document.querySelector('.nav-item[href="#demandes"]').classList.add('active');
-    
-    filteredDemandes = window.allDemandes.filter(d => d.gouvernorat === gouvernorat);
-    currentPage = 1;
-    displayDemandes();
-    showNotification(`Filtré par: ${gouvernorat}`, 'info');
-}
-
-// ==========================================
-// 6. ÉVOLUTION DANS LE TEMPS
-// ==========================================
-
 function renderEvolutionStats() {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
     const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
     
-    let aujourdhui = 0;
-    let semaine = 0;
-    let mois = 0;
+    let aujourdhui = 0, semaine = 0, mois = 0;
     
     window.allDemandes.forEach(demande => {
         const demandeDate = new Date(demande.date_soumission);
-        
         if (demandeDate >= today) aujourdhui++;
         if (demandeDate >= weekAgo) semaine++;
         if (demandeDate >= monthAgo) mois++;
     });
     
-    const moyenne = window.allDemandes.length > 0 
-        ? Math.round(window.allDemandes.length / 30) 
-        : 0;
+    const moyenne = window.allDemandes.length > 0 ? Math.round(window.allDemandes.length / 30) : 0;
     
     document.getElementById('statAujourdhui').textContent = aujourdhui;
     document.getElementById('statSemaine').textContent = semaine;
     document.getElementById('statMois').textContent = mois;
     document.getElementById('statMoyenne').textContent = moyenne;
     
-    // Graphique simple par mois
     renderEvolutionChart();
 }
 
@@ -455,7 +402,6 @@ function renderEvolutionChart() {
         monthsData[monthKey] = (monthsData[monthKey] || 0) + 1;
     });
     
-    // Prendre les 6 derniers mois
     const sortedMonths = Object.entries(monthsData)
         .sort((a, b) => b[0].localeCompare(a[0]))
         .slice(0, 6)
@@ -465,7 +411,7 @@ function renderEvolutionChart() {
     chartDiv.innerHTML = '';
     
     if (sortedMonths.length === 0) {
-        chartDiv.innerHTML = '<p style="text-align: center; color: #999;">Aucune donnée disponible</p>';
+        chartDiv.innerHTML = '<p style="text-align:center;color:#999">Aucune donnée disponible</p>';
         return;
     }
     
@@ -491,7 +437,331 @@ function formatMonth(monthKey) {
 }
 
 // ==========================================
-// 7. FILTRES ET RECHERCHE
+// CARTE TUNISIE
+// ==========================================
+
+function renderCarte() {
+    const gouvernorats = {};
+    
+    window.allDemandes.forEach(demande => {
+        const gouv = demande.gouvernorat;
+        gouvernorats[gouv] = (gouvernorats[gouv] || 0) + 1;
+    });
+    
+    // Markers sur la carte
+    const markersContainer = document.getElementById('carteMarkers');
+    markersContainer.innerHTML = '';
+    
+    Object.entries(gouvernorats).forEach(([gouv, count]) => {
+        const coords = gouvernoratCoords[gouv];
+        if (!coords) return;
+        
+        const marker = document.createElement('div');
+        marker.className = 'carte-marker ' + getMarkerClass(count);
+        marker.style.left = coords.x + '%';
+        marker.style.top = coords.y + '%';
+        marker.innerHTML = `
+            ${count}
+            <div class="marker-tooltip">${gouv}: ${count} demandes</div>
+        `;
+        marker.onclick = () => filterByGouvernorat(gouv);
+        markersContainer.appendChild(marker);
+    });
+    
+    // Top 5
+    const topDiv = document.getElementById('topGouvernorats');
+    const sorted = Object.entries(gouvernorats).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const maxCount = sorted[0] ? sorted[0][1] : 1;
+    
+    topDiv.innerHTML = '';
+    sorted.forEach(([gouv, count]) => {
+        const item = document.createElement('div');
+        item.className = 'top-gouvernorat-item';
+        item.innerHTML = `
+            <div class="top-gouvernorat-header">
+                <span class="gouvernorat-name">${gouv}</span>
+                <span class="gouvernorat-count">${count}</span>
+            </div>
+            <div class="gouvernorat-bar">
+                <div class="gouvernorat-bar-fill" style="width: ${(count / maxCount) * 100}%"></div>
+            </div>
+        `;
+        topDiv.appendChild(item);
+    });
+    
+    // Grille détaillée
+    const gridDiv = document.getElementById('gouvernoratGrid');
+    gridDiv.innerHTML = '';
+    
+    Object.entries(gouvernorats).sort((a, b) => b[1] - a[1]).forEach(([gouv, count]) => {
+        const card = document.createElement('div');
+        card.className = 'gouvernorat-card';
+        card.innerHTML = `
+            <div class="gouvernorat-card-header">${gouv}</div>
+            <div class="gouvernorat-card-count">${count}</div>
+            <div class="gouvernorat-card-label">demandes</div>
+        `;
+        card.onclick = () => filterByGouvernorat(gouv);
+        gridDiv.appendChild(card);
+    });
+}
+
+function getMarkerClass(count) {
+    if (count > 20) return 'hot';
+    if (count > 10) return 'warm';
+    if (count > 5) return 'cool';
+    return 'cold';
+}
+
+// ==========================================
+// EXPORT DONNÉES
+// ==========================================
+
+function exportToExcel(type) {
+    const data = type === 'filtered' ? filteredDemandes : window.allDemandes;
+    
+    if (data.length === 0) {
+        showNotification('Aucune donnée à exporter', 'error');
+        return;
+    }
+    
+    const ws_data = [
+        ['ID', 'Date', 'Nom', 'Âge', 'Gouvernorat', 'Ville', 'Type d\'aide', 'Urgence', 'Statut', 'Téléphone', 'Email']
+    ];
+    
+    data.forEach(d => {
+        ws_data.push([
+            d.id,
+            d.date_soumission,
+            d.anonyme ? 'Anonyme' : d.nom,
+            d.age,
+            d.gouvernorat,
+            d.ville,
+            d.categories_aide,
+            d.urgence,
+            d.statut,
+            d.telephone,
+            d.email || ''
+        ]);
+    });
+    
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, 'Demandes');
+    
+    const filename = `sparkmind_demandes_${type}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, filename);
+    
+    addExportHistory('Excel', filename, data.length);
+    showNotification(`✅ Export Excel réussi (${data.length} demandes)`, 'success');
+}
+
+function exportToCSV(type) {
+    const data = type === 'filtered' ? filteredDemandes : window.allDemandes;
+    
+    if (data.length === 0) {
+        showNotification('Aucune donnée à exporter', 'error');
+        return;
+    }
+    
+    let csv = 'ID,Date,Nom,Âge,Gouvernorat,Ville,Type,Urgence,Statut,Téléphone,Email\n';
+    
+    data.forEach(d => {
+        csv += `${d.id},"${d.date_soumission}","${d.anonyme ? 'Anonyme' : d.nom}",${d.age},"${d.gouvernorat}","${d.ville}","${d.categories_aide}","${d.urgence}","${d.statut}","${d.telephone}","${d.email || ''}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const filename = `sparkmind_demandes_${type}_${new Date().toISOString().split('T')[0]}.csv`;
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.click();
+    
+    addExportHistory('CSV', filename, data.length);
+    showNotification(`✅ Export CSV réussi (${data.length} demandes)`, 'success');
+}
+
+function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('SparkMind - Rapport des Demandes', 20, 20);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, 20, 30);
+    doc.text(`Total demandes: ${window.allDemandes.length}`, 20, 40);
+    
+    const urgentes = window.allDemandes.filter(d => d.urgence === 'tres-urgent').length;
+    const enAttente = window.allDemandes.filter(d => d.statut === 'nouveau').length;
+    const traitees = window.allDemandes.filter(d => d.statut === 'traite').length;
+    
+    doc.text(`Urgentes: ${urgentes}`, 20, 50);
+    doc.text(`En attente: ${enAttente}`, 20, 60);
+    doc.text(`Traitées: ${traitees}`, 20, 70);
+    
+    const filename = `sparkmind_rapport_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(filename);
+    
+    addExportHistory('PDF', filename, window.allDemandes.length);
+    showNotification('✅ Rapport PDF généré', 'success');
+}
+
+function exportStatistics() {
+    const stats = {
+        total: window.allDemandes.length,
+        urgentes: window.allDemandes.filter(d => d.urgence === 'tres-urgent').length,
+        enAttente: window.allDemandes.filter(d => d.statut === 'nouveau').length,
+        traitees: window.allDemandes.filter(d => d.statut === 'traite').length,
+        parGouvernorat: {},
+        parCategorie: {}
+    };
+    
+    window.allDemandes.forEach(d => {
+        stats.parGouvernorat[d.gouvernorat] = (stats.parGouvernorat[d.gouvernorat] || 0) + 1;
+    });
+    
+    const json = JSON.stringify(stats, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const filename = `sparkmind_stats_${new Date().toISOString().split('T')[0]}.json`;
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.click();
+    
+    addExportHistory('Statistiques', filename, window.allDemandes.length);
+    showNotification('✅ Statistiques exportées', 'success');
+}
+
+function exportCustom() {
+    const periode = document.getElementById('exportPeriode').value;
+    const statut = document.getElementById('exportStatut').value;
+    const urgence = document.getElementById('exportUrgence').value;
+    const gouvernorat = document.getElementById('exportGouvernorat').value;
+    
+    let filtered = [...window.allDemandes];
+    
+    // Filtrer par période
+    if (periode !== 'all') {
+        const now = new Date();
+        let startDate;
+        
+        if (periode === 'today') {
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        } else if (periode === 'week') {
+            startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        } else if (periode === 'month') {
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        } else if (periode === 'year') {
+            startDate = new Date(now.getFullYear(), 0, 1);
+        } else if (periode === 'custom') {
+            const debut = document.getElementById('exportDateDebut').value;
+            const fin = document.getElementById('exportDateFin').value;
+            if (debut && fin) {
+                filtered = filtered.filter(d => {
+                    const date = new Date(d.date_soumission);
+                    return date >= new Date(debut) && date <= new Date(fin);
+                });
+            }
+        }
+        
+        if (startDate && periode !== 'custom') {
+            filtered = filtered.filter(d => new Date(d.date_soumission) >= startDate);
+        }
+    }
+    
+    // Autres filtres
+    if (statut !== 'all') filtered = filtered.filter(d => d.statut === statut);
+    if (urgence !== 'all') filtered = filtered.filter(d => d.urgence === urgence);
+    if (gouvernorat !== 'all') filtered = filtered.filter(d => d.gouvernorat === gouvernorat);
+    
+    if (filtered.length === 0) {
+        showNotification('Aucune donnée correspondant aux filtres', 'error');
+        return;
+    }
+    
+    filteredDemandes = filtered;
+    exportToExcel('filtered');
+}
+
+function fillExportFilters() {
+    const gouvSelect = document.getElementById('exportGouvernorat');
+    const gouvernorats = [...new Set(window.allDemandes.map(d => d.gouvernorat))].sort();
+    
+    gouvSelect.innerHTML = '<option value="all">Tous</option>';
+    gouvernorats.forEach(gouv => {
+        const option = document.createElement('option');
+        option.value = gouv;
+        option.textContent = gouv;
+        gouvSelect.appendChild(option);
+    });
+}
+
+function addExportHistory(type, filename, count) {
+    const history = {
+        type: type,
+        filename: filename,
+        count: count,
+        date: new Date().toLocaleString('fr-FR')
+    };
+    
+    exportHistory.unshift(history);
+    if (exportHistory.length > 10) exportHistory.pop();
+    
+    localStorage.setItem('exportHistory', JSON.stringify(exportHistory));
+    displayExportHistory();
+}
+
+function loadExportHistory() {
+    const saved = localStorage.getItem('exportHistory');
+    if (saved) {
+        exportHistory = JSON.parse(saved);
+        displayExportHistory();
+    }
+}
+
+function displayExportHistory() {
+    const listDiv = document.getElementById('exportHistoryList');
+    if (!listDiv) return;
+    
+    if (exportHistory.length === 0) {
+        listDiv.innerHTML = '<p style="text-align:center;color:#999;padding:20px">Aucun export récent</p>';
+        return;
+    }
+    
+    listDiv.innerHTML = '';
+    exportHistory.forEach(item => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'export-history-item';
+        historyItem.innerHTML = `
+            <div class="export-history-info">
+                <div class="export-history-title">${item.type} - ${item.count} demandes</div>
+                <div class="export-history-date">${item.date}</div>
+            </div>
+            <div class="export-history-icon">${getExportIcon(item.type)}</div>
+        `;
+        listDiv.appendChild(historyItem);
+    });
+}
+
+function getExportIcon(type) {
+    const icons = {
+        'Excel': '📊',
+        'CSV': '📄',
+        'PDF': '📑',
+        'Statistiques': '📈'
+    };
+    return icons[type] || '📥';
+}
+
+// ==========================================
+// FILTRES ET RECHERCHE
 // ==========================================
 
 function applyFilters() {
@@ -501,11 +771,9 @@ function applyFilters() {
     
     filteredDemandes = window.allDemandes.filter(demande => {
         let match = true;
-        
         if (statut && demande.statut !== statut) match = false;
         if (urgence && demande.urgence !== urgence) match = false;
         if (gouvernorat && demande.gouvernorat !== gouvernorat) match = false;
-        
         return match;
     });
     
@@ -557,8 +825,48 @@ function performSearch(query) {
     displayDemandes();
 }
 
+function filterByCategory(category) {
+    document.getElementById('section-categories').classList.remove('active');
+    document.getElementById('section-demandes').classList.add('active');
+    
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelector('.nav-item[href="#demandes"]').classList.add('active');
+    
+    filteredDemandes = window.allDemandes.filter(d => {
+        let cats = d.categories_aide;
+        if (typeof cats === 'string') {
+            try {
+                cats = JSON.parse(cats);
+            } catch (e) {
+                return cats === category;
+            }
+        }
+        return Array.isArray(cats) && cats.includes(category);
+    });
+    
+    currentPage = 1;
+    displayDemandes();
+    showNotification(`Filtré par: ${getTypeLabel(category)}`, 'info');
+}
+
+function filterByGouvernorat(gouvernorat) {
+    const activeSection = document.querySelector('.content-section.active');
+    if (activeSection.id !== 'section-demandes') {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById('section-demandes').classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelector('.nav-item[href="#demandes"]').classList.add('active');
+    }
+    
+    filteredDemandes = window.allDemandes.filter(d => d.gouvernorat === gouvernorat);
+    currentPage = 1;
+    displayDemandes();
+    showNotification(`Filtré par: ${gouvernorat}`, 'info');
+}
+
 // ==========================================
-// 8. PAGINATION
+// PAGINATION
 // ==========================================
 
 function updatePagination() {
@@ -569,7 +877,6 @@ function updatePagination() {
     
     pagination.innerHTML = '';
     
-    // Bouton précédent
     const prevBtn = document.createElement('button');
     prevBtn.className = 'page-btn';
     prevBtn.textContent = '« Précédent';
@@ -582,7 +889,6 @@ function updatePagination() {
     };
     pagination.appendChild(prevBtn);
     
-    // Boutons de pages
     for (let i = 1; i <= totalPages; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
@@ -594,7 +900,6 @@ function updatePagination() {
         pagination.appendChild(pageBtn);
     }
     
-    // Bouton suivant
     const nextBtn = document.createElement('button');
     nextBtn.className = 'page-btn';
     nextBtn.textContent = 'Suivant »';
@@ -609,7 +914,7 @@ function updatePagination() {
 }
 
 // ==========================================
-// 9. ACTIONS SUR LES DEMANDES
+// ACTIONS SUR LES DEMANDES
 // ==========================================
 
 window.viewDemande = function(id) {
@@ -677,10 +982,6 @@ window.viewDemande = function(id) {
     openModal('detailsModal');
 };
 
-// ==========================================
-// 10. MODAL MODIFICATION STATUT - NOUVEAU
-// ==========================================
-
 window.editDemandeStatus = function(id) {
     currentDemandeId = id;
     selectedStatus = null;
@@ -745,7 +1046,7 @@ window.deleteDemande = function(id) {
 };
 
 // ==========================================
-// 11. UTILITAIRES MODAL
+// UTILITAIRES MODAL
 // ==========================================
 
 function openModal(modalId) {
@@ -778,12 +1079,16 @@ function showNotification(message, type = 'info') {
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         z-index: 10000;
         font-weight: 600;
+        animation: slideIn 0.3s ease;
     `;
     notification.textContent = message;
     
     document.body.appendChild(notification);
     
-    setTimeout(() => notification.remove(), 3000);
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
-console.log('✅ Back Office initialisé !');
+console.log('✅ Back Office SparkMind initialisé - Version Complète !');

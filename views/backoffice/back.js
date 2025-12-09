@@ -37,8 +37,8 @@ const gouvernoratCoords = {
     'Gafsa': { x: 54, y: 37 },
     'Tozeur': { x: 49, y: 39 },
     'Kébili': { x: 54, y: 47 },
-    'Gabès': { x: 64, y: 42 },
-    'Médenine': { x: 66, y: 49 },
+    'Gabès': { x: 63, y: 50 },
+    'Médenine': { x: 66, y: 53  },
     'Tataouine': { x: 64, y: 57 }
 };
 

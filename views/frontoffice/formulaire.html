@@ -20,13 +20,13 @@
                     📝 Nouvelle Demande
                 </a>
                 <a href="#" class="nav-item">
-                    👤 groupe de discution
+                    👤 Groupe de discussion
                 </a>
                 <a href="#" class="nav-item">
-                    📦 product categories
+                    📦 Product categories
                 </a>
                 <a href="#" class="nav-item">
-                    📅 Evenement
+                    📅 Événement
                 </a>
                 <a href="#" class="nav-item">
                     📝 Réclamation
@@ -54,6 +54,7 @@
                 </div>
                 <div class="header-actions">
                     <button class="btn-help" onclick="showHelp()">❓ Aide</button>
+                    <button class="btn-chatbot" onclick="toggleChatbot()">💬 Assistant</button>
                 </div>
             </header>
 
@@ -72,7 +73,7 @@
             </div>
 
             <!-- Formulaire -->
-            <form id="helpForm" class="form-container">
+            <form id="helpForm" class="form-container" novalidate>
                 <!-- Section 1: Informations Personnelles -->
                 <div class="form-section">
                     <div class="section-header">
@@ -86,17 +87,17 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Nom complet <span class="required">*</span></label>
-                            <input type="text" name="nom" required placeholder="Votre nom complet">
+                            <input type="text" name="nom" placeholder="Votre nom complet">
                         </div>
 
                         <div class="form-group">
                             <label>Âge <span class="required">*</span></label>
-                            <input type="number" name="age" min="1" max="120" required placeholder="Votre âge">
+                            <input type="number" name="age" placeholder="Votre âge">
                         </div>
 
                         <div class="form-group">
                             <label>Gouvernorat <span class="required">*</span></label>
-                            <select name="gouvernorat" required>
+                            <select name="gouvernorat">
                                 <option value="">Sélectionnez votre gouvernorat</option>
                                 <option value="Tunis">Tunis</option>
                                 <option value="Ariana">Ariana</option>
@@ -127,7 +128,7 @@
 
                         <div class="form-group">
                             <label>Ville/Délégation <span class="required">*</span></label>
-                            <input type="text" name="ville" required placeholder="Votre ville">
+                            <input type="text" name="ville" placeholder="Votre ville">
                         </div>
 
                         <div class="form-group full-width">
@@ -220,7 +221,7 @@
                         <label>Degré d'urgence <span class="required">*</span></label>
                         <div class="radio-grid">
                             <label class="radio-card">
-                                <input type="radio" name="urgence" value="tres-urgent" required>
+                                <input type="radio" name="urgence" value="tres-urgent">
                                 <span class="radio-content">
                                     <span class="urgency-badge urgent-critical">🔴</span>
                                     <strong>Très urgent</strong>
@@ -267,13 +268,14 @@
 
                     <div class="form-group">
                         <label>Décrivez votre situation <span class="required">*</span></label>
-                        <textarea name="description_situation" required rows="5" placeholder="Expliquez votre situation en quelques phrases..."></textarea>
-                        <small class="helper-text">Soyez honnête et détaillé pour faciliter le traitement</small>
+                        <textarea name="description_situation" rows="5" placeholder="Expliquez votre situation en quelques phrases..."></textarea>
+                        <small class="helper-text">Soyez honnête et détaillé pour faciliter le traitement (minimum 20 caractères)</small>
                     </div>
 
                     <div class="form-group">
                         <label>Que demandez-vous exactement ? <span class="required">*</span></label>
-                        <textarea name="demande_exacte" required rows="4" placeholder="Ex: 2 cartables scolaires, consultation médicale, cours de soutien..."></textarea>
+                        <textarea name="demande_exacte" rows="4" placeholder="Ex: 2 cartables scolaires, consultation médicale, cours de soutien..."></textarea>
+                        <small class="helper-text">Soyez précis dans votre demande (minimum 10 caractères)</small>
                     </div>
                 </div>
 
@@ -290,7 +292,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Téléphone <span class="required">*</span></label>
-                            <input type="tel" name="telephone" required placeholder="+216 55 581 022">
+                            <input type="tel" name="telephone" placeholder="+216 55 581 022">
                         </div>
 
                         <div class="form-group">
@@ -300,7 +302,7 @@
 
                         <div class="form-group full-width">
                             <label>Préférence de contact <span class="required">*</span></label>
-                            <select name="preference_contact" required>
+                            <select name="preference_contact">
                                 <option value="">Choisissez</option>
                                 <option value="appel">📞 Appel téléphonique</option>
                                 <option value="sms">💬 SMS/WhatsApp</option>
@@ -347,7 +349,7 @@
                         <label>Visibilité de la demande <span class="required">*</span></label>
                         <div class="radio-grid">
                             <label class="radio-card">
-                                <input type="radio" name="visibilite" value="publique" required>
+                                <input type="radio" name="visibilite" value="publique">
                                 <span class="radio-content">
                                     <strong>✅ Publique</strong>
                                     <small>Visible par tous</small>
@@ -382,8 +384,8 @@
                 <div class="form-section">
                     <div class="attestation-box">
                         <label class="checkbox-special">
-                            <input type="checkbox" name="attestation" required>
-                            <span>J'atteste que les informations fournies sont exactes et que ma demande est réelle. Je comprends que toute fausse déclaration peut entraîner la suspension de mon accès.</span>
+                            <input type="checkbox" name="attestation">
+                            <span>J'atteste que les informations fournies sont exactes et que ma demande est réelle. Je comprends que toute fausse déclaration peut entraîner la suspension de mon accès. <span class="required">*</span></span>
                         </label>
                     </div>
 
@@ -394,6 +396,37 @@
                 </div>
             </form>
         </main>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbotWidget" class="chatbot-widget">
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">🤖</div>
+            <div class="chatbot-title">
+                <strong>Assistant SparkMind</strong>
+                <small>Je suis là pour vous aider</small>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">✖</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>Bonjour ! Je suis votre assistant SparkMind. Comment puis-je vous aider avec votre demande d'aide ?</p>
+                    <div class="quick-replies">
+                        <button onclick="askBot('Comment remplir le formulaire ?')">📝 Aide formulaire</button>
+                        <button onclick="askBot('Quels types d\'aide proposez-vous ?')">🤝 Types d'aide</button>
+                        <button onclick="askBot('Combien de temps pour une réponse ?')">⏰ Délai de réponse</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Posez votre question..." onkeypress="handleChatKeypress(event)">
+            <button onclick="sendChatMessage()">📤</button>
+        </div>
     </div>
 
     <script src="formulaire.js"></script>

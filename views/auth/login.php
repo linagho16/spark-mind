@@ -20,10 +20,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  
   <link rel="stylesheet" href="login.css">
 
-  
   <style>
     .top-nav {
       position: sticky;
@@ -98,7 +96,6 @@
     </div>
   </header>
 
-  
   <main class="wrap">
     <section class="card">
       <h1 class="title">Connexion</h1>
@@ -123,7 +120,6 @@
             required
             autofocus
             value="<?= isset($email) ? htmlspecialchars($email) : '' ?>"
-
           />
         </label>
 
@@ -159,10 +155,13 @@
 
         <div class="row between">
           <label class="check">
-            <input type="checkbox" name="remember">
+            <input
+              type="checkbox"
+              name="remember"
+              <?= !empty($remember) ? 'checked' : '' ?>
+            >
             <span>Se souvenir de moi</span>
           </label>
-          
         </div>
 
         <button class="btn-primary" type="submit">Se connecter</button>

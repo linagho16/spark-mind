@@ -10,59 +10,83 @@ class AuthController
             session_start();
         }
 
-        $errors     = [];
-        $emailValue = '';
+        $errors   = [];
+        $email    = '';
+        $remember = false;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Sécuriser les entrées
-            $emailRaw    = $_POST['email']    ?? '';
-            $passwordRaw = $_POST['password'] ?? '';
+        $userModel = new User();
 
-            $email       = is_string($emailRaw)    ? trim($emailRaw)    : '';
-            $password    = is_string($passwordRaw) ? $passwordRaw       : '';
-            $emailValue  = $email;
+        // 👉 Si on arrive en GET : afficher le formulaire
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
-            // 🔎 VALIDATION CÔTÉ SERVEUR
-            if ($email === '' || $password === '') {
-                $errors[] = "Veuillez saisir l’e-mail et le mot de passe.";
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = "Adresse e-mail invalide.";
+            // Si un cookie existe, on pré-remplit l'email et on coche la case
+            if (!empty($_COOKIE['remember_email'])) {
+                $email    = $_COOKIE['remember_email'];
+                $remember = true;
+            }
+
+            include __DIR__ . '/../views/auth/login.php';
+            return;
+        }
+
+        // 👉 Ici : POST → tentative de connexion
+        $emailRaw    = $_POST['email']    ?? '';
+        $passwordRaw = $_POST['password'] ?? '';
+
+        $email    = is_string($emailRaw)    ? trim($emailRaw)    : '';
+        $password = is_string($passwordRaw) ? $passwordRaw       : '';
+        $remember = isset($_POST['remember']); // case cochée ou non
+
+        // 🔎 VALIDATION CÔTÉ SERVEUR
+        if ($email === '' || $password === '') {
+            $errors[] = "Veuillez saisir l’e-mail et le mot de passe.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Adresse e-mail invalide.";
+        } else {
+            $user = $userModel->findByEmail($email);
+
+            if (
+                !$user
+                || empty($user['password_hash'])
+                || !password_verify($password, $user['password_hash'])
+            ) {
+                $errors[] = "Email ou mot de passe incorrect.";
             } else {
-                $userModel = new User();
-                $user      = $userModel->findByEmail($email);
-
-                if (
-                    !$user
-                    || empty($user['password_hash'])
-                    || !password_verify($password, $user['password_hash'])
-                ) {
-                    $errors[] = "Email ou mot de passe incorrect.";
+                // ✅ Vérifier si le compte est bloqué
+                if (isset($user['status']) && $user['status'] === 'blocked') {
+                    $errors[] = "Votre compte a été suspendu par l’administrateur.";
                 } else {
-                    // ✅ Vérifier si le compte est bloqué
-                    if (isset($user['status']) && $user['status'] === 'blocked') {
-                        $errors[] = "Votre compte a été suspendu par l’administrateur.";
-                    } else {
-                        // Connexion OK
-                        $_SESSION['user_id']         = $user['id'];
-                        $_SESSION['user_nom']        = $user['nom'];
-                        $_SESSION['user_prenom']     = $user['prenom'];
-                        $_SESSION['user_email']      = $user['email'];
-                        $_SESSION['user_ville']      = $user['ville'];
-                        $_SESSION['user_profession'] = $user['profession'];
-                        $_SESSION['user_role']       = $user['role'];
+                    // Connexion OK
 
-                        // Redirection selon rôle technique
-                        if ($user['role'] === 'admin') {
-                            header("Location: index.php?page=admin_home");
-                        } else {
-                            header("Location: index.php?page=main");
-                        }
-                        exit;
+                    // 🔹 Gestion du "Se souvenir de moi"
+                    if ($remember) {
+                        // Cookie valable 30 jours
+                        setcookie('remember_email', $email, time() + 60 * 60 * 24 * 30, "/");
+                    } else {
+                        // Si décoché, on supprime le cookie
+                        setcookie('remember_email', '', time() - 3600, "/");
                     }
+
+                    $_SESSION['user_id']         = $user['id'];
+                    $_SESSION['user_nom']        = $user['nom'];
+                    $_SESSION['user_prenom']     = $user['prenom'];
+                    $_SESSION['user_email']      = $user['email'];
+                    $_SESSION['user_ville']      = $user['ville'];
+                    $_SESSION['user_profession'] = $user['profession'];
+                    $_SESSION['user_role']       = $user['role'];
+
+                    // Redirection selon rôle technique
+                    if ($user['role'] === 'admin') {
+                        header("Location: index.php?page=admin_home");
+                    } else {
+                        header("Location: index.php?page=main");
+                    }
+                    exit;
                 }
             }
         }
 
+        // S'il y a des erreurs → on réaffiche le formulaire
         include __DIR__ . '/../views/auth/login.php';
     }
 

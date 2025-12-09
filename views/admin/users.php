@@ -60,6 +60,24 @@
           object-fit: cover;
       }
 
+      .brand-text {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.1;
+      }
+
+      .brand-name {
+          font-family: 'Playfair Display', serif;
+          font-size: 20px;
+          color: #1A464F;
+      }
+
+      .brand-tagline {
+          font-size: 11px;
+          color: #1A464F;
+          opacity: 0.8;
+      }
+
       .header-actions {
           display: flex;
           gap: 10px;
@@ -103,11 +121,70 @@
           font-size: 26px;
       }
 
+      .admin-subtitle {
+          font-size: 13px;
+          margin-bottom: 18px;
+          color: #444;
+      }
+
+      /* Barre filtres + recherche */
+      .filters-bar {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: center;
+          padding: 10px 14px;
+          border-radius: 16px;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+          margin-bottom: 18px;
+      }
+
+      .filters-bar .search-wrapper {
+          flex: 1 1 220px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+      }
+
+      .search-input {
+          flex: 1;
+          padding: 8px 12px;
+          border-radius: 999px;
+          border: 1px solid #ccc;
+          font-size: 13px;
+          outline: none;
+          background: #fff;
+      }
+
+      .search-input:focus {
+          border-color: #1A464F;
+          box-shadow: 0 0 0 2px rgba(26,70,79,0.15);
+      }
+
+      .filters-bar select {
+          padding: 7px 10px;
+          border-radius: 999px;
+          border: 1px solid #ddd;
+          font-size: 13px;
+          background: #fff;
+          min-width: 170px;
+      }
+
+      .filters-bar label {
+          font-size: 12px;
+          color: #444;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+      }
+
+      /* Stats + formulaire + tableau */
       .stats-row {
           display: flex;
           flex-wrap: wrap;
           gap: 12px;
-          margin: 12px 0 16px;
+          margin: 5px 0 14px;
       }
 
       .stat-card {
@@ -116,11 +193,81 @@
           padding: 10px 12px;
           border-radius: 14px;
           box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+          font-size: 13px;
+      }
+
+      .stat-card strong {
+          font-size: 15px;
+      }
+
+      .admin-form-card {
+          background: #fff7ef;
+          border-radius: 18px;
+          padding: 14px 14px 16px;
+          box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+          margin-bottom: 18px;
+      }
+
+      .admin-form-title {
+          margin: 0 0 6px;
+          font-size: 18px;
+          font-weight: 600;
+      }
+
+      .admin-form-sub {
+          font-size: 12px;
+          margin-bottom: 10px;
+          color: #555;
+      }
+
+      .admin-form-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-bottom: 10px;
+      }
+
+      .admin-form-field {
+          flex: 1 1 150px;
+          font-size: 13px;
+      }
+
+      .admin-form-field label {
+          display: block;
+          margin-bottom: 3px;
+          font-size: 12px;
+          color: #444;
+      }
+
+      .admin-form-field input,
+      .admin-form-field select {
+          width: 100%;
+          padding: 6px 8px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 13px;
+          outline: none;
+          background: #fff;
+      }
+
+      .admin-form-field input:focus,
+      .admin-form-field select:focus {
+          border-color: #1A464F;
+          box-shadow: 0 0 0 1px rgba(26,70,79,0.15);
+      }
+
+      .users-table-wrapper {
+          overflow-x: auto;
+          background: #fff;
+          border-radius: 18px;
+          box-shadow: 0 8px 18px rgba(0,0,0,0.06);
       }
 
       table {
           border-collapse: collapse;
           width: 100%;
+          border-radius: 18px;
+          overflow: hidden;
       }
 
       table td, table th {
@@ -141,32 +288,7 @@
       }
 
       .tag-admin { background:#ffe0b3; color:#8a4b00; }
-      .tag-user { background:#e0f5ff; color:#005f8a; }
-
-      .users-table-wrapper {
-          overflow-x: auto;
-      }
-
-      .search-wrapper {
-          margin: 10px 0 15px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-      }
-
-      .search-input {
-          flex: 1;
-          padding: 8px 12px;
-          border-radius: 999px;
-          border: 1px solid #ccc;
-          font-size: 13px;
-          outline: none;
-      }
-
-      .search-input:focus {
-          border-color: #1A464F;
-          box-shadow: 0 0 0 2px rgba(26,70,79,0.15);
-      }
+      .tag-user  { background:#e0f5ff; color:#005f8a; }
 
       .btn-table {
           display: inline-block;
@@ -192,6 +314,13 @@
       .btn-table.delete:hover {
           opacity: 0.9;
       }
+
+      @media (max-width: 800px) {
+          .filters-bar {
+              flex-direction: column;
+              align-items: stretch;
+          }
+      }
     </style>
 </head>
 
@@ -210,8 +339,8 @@
 
       <div class="header-actions">
         <button class="btn-nav secondary" onclick="window.location.href='index.php?page=main'">🏠 Espace utilisateur</button>
+        <button class="btn-nav" onclick="window.location.href='index.php?page=admin_home'">📊 Dashboard admin</button>
         <button class="btn-nav" onclick="window.location.href='index.php?page=logout'">🚪 Déconnexion</button>
-        <button class="btn-nav" onclick="window.location.href='index.php?page=admin_home'">🔙 Retour</button>
       </div>
     </header>
 
@@ -219,61 +348,131 @@
         <section class="admin-card">
 
             <h1>Administration des utilisateurs</h1>
-            <p>
-                Bonjour <strong><?= htmlspecialchars($_SESSION['user_prenom'].' '.$_SESSION['user_nom']) ?></strong>
+            <p class="admin-subtitle">
+                Bonjour
+                <strong><?= htmlspecialchars($_SESSION['user_prenom'].' '.$_SESSION['user_nom']) ?></strong>
                 (<?= htmlspecialchars($_SESSION['user_email']) ?>)
             </p>
 
-            <!-- 🔍 BARRE DE RECHERCHE LIVE -->
-            <div class="search-wrapper">
-                <span>🔍</span>
-                <input
-                    type="text"
-                    id="user-search"
-                    class="search-input"
-                    placeholder="Rechercher un utilisateur (nom, prénom, email)...">
+            <?php
+              $currentSiteRole   = $currentSiteRole   ?? 'all';
+              $currentDateFilter = $currentDateFilter ?? 'all';
+
+              $filters = [
+                  'all'     => 'Tous les rôles',
+                  'seeker'  => 'Demandeurs',
+                  'helper'  => 'Donneurs',
+                  'both'    => 'Les deux',
+                  'speaker' => 'Expression',
+              ];
+
+              $dateFilters = [
+                  'all'        => 'Toutes les dates',
+                  'today'      => "Aujourd'hui",
+                  'yesterday'  => 'Hier',
+                  'week'       => '7 derniers jours',
+                  'last_month' => 'Mois dernier',
+                  'last_year'  => 'Année dernière',
+              ];
+            ?>
+
+            <!-- BARRE FILTRES + RECHERCHE -->
+            <div class="filters-bar">
+                <div class="search-wrapper">
+                    <span>🔍</span>
+                    <input
+                        type="text"
+                        id="user-search"
+                        class="search-input"
+                        placeholder="Rechercher (nom, prénom, email)...">
+                </div>
+
+                <label>
+                    Rôle sur SPARKMIND
+                    <select id="filter-role">
+                        <?php foreach ($filters as $value => $label): ?>
+                            <option value="<?= $value ?>" <?= $currentSiteRole === $value ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($label) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+
+                <label>
+                    Date d'inscription
+                    <select id="filter-date">
+                        <?php foreach ($dateFilters as $value => $label): ?>
+                            <option value="<?= $value ?>" <?= $currentDateFilter === $value ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($label) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
             </div>
 
-            <!-- FORMULAIRE D'AJOUT D'UN UTILISATEUR -->
-            <form method="post" action="index.php?page=admin_users" style="margin:20px 0; padding:15px; border-radius:16px; background:#fff7ef; box-shadow:0 8px 18px rgba(0,0,0,0.08);">
-                <h2 style="margin-top:0; font-size:18px;">➕ Ajouter un utilisateur</h2>
+            <!-- STATS -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    Comptes affichés<br>
+                    <strong><?= count($users) ?></strong>
+                </div>
+                <div class="stat-card">
+                    Admins<br>
+                    <strong>
+                        <?php $admins=0; foreach($users as $u){ if($u['role']==='admin') $admins++; } echo $admins; ?>
+                    </strong>
+                </div>
+                <div class="stat-card">
+                    Utilisateurs<br>
+                    <strong><?= count($users)-$admins ?></strong>
+                </div>
+            </div>
+
+            <!-- FORMULAIRE D'AJOUT -->
+            <form method="post"
+                  action="index.php?page=admin_users"
+                  class="admin-form-card">
+                <h2 class="admin-form-title">➕ Ajouter un utilisateur</h2>
+                <p class="admin-form-sub">
+                    Créez rapidement un nouveau compte pour la communauté SPARKMIND.
+                </p>
 
                 <input type="hidden" name="action" value="create_user">
 
-                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
-                    <div style="flex:1 1 160px;">
-                        <label>Prénom</label><br>
-                        <input type="text" name="prenom" required style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid #ccc;">
+                <div class="admin-form-row">
+                    <div class="admin-form-field">
+                        <label>Prénom</label>
+                        <input type="text" name="prenom" required>
                     </div>
 
-                    <div style="flex:1 1 160px;">
-                        <label>Nom</label><br>
-                        <input type="text" name="nom" required style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid #ccc;">
+                    <div class="admin-form-field">
+                        <label>Nom</label>
+                        <input type="text" name="nom" required>
                     </div>
 
-                    <div style="flex:1 1 220px;">
-                        <label>Email</label><br>
-                        <input type="email" name="email" required style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid #ccc;">
+                    <div class="admin-form-field">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
                     </div>
                 </div>
 
-                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
-                    <div style="flex:1 1 200px;">
-                        <label>Mot de passe</label><br>
-                        <input type="password" name="password" required style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid #ccc;">
+                <div class="admin-form-row">
+                    <div class="admin-form-field">
+                        <label>Mot de passe</label>
+                        <input type="password" name="password" required>
                     </div>
 
-                    <div style="flex:1 1 160px;">
-                        <label>Rôle technique</label><br>
-                        <select name="role" required style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid:#ccc;">
+                    <div class="admin-form-field">
+                        <label>Rôle technique</label>
+                        <select name="role" required>
                             <option value="user">Utilisateur</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
 
-                    <div style="flex:1 1 180px;">
-                        <label>Rôle SPARKMIND</label><br>
-                        <select name="site_role" required style="width:100%; padding:6px 8px; border-radius:8px; border:1px solid:#ccc;">
+                    <div class="admin-form-field">
+                        <label>Rôle SPARKMIND</label>
+                        <select name="site_role" required>
                             <option value="seeker">Demandeur</option>
                             <option value="helper">Donneur</option>
                             <option value="both">Les deux</option>
@@ -282,83 +481,12 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-nav" style="margin-top:5px;">
+                <button type="submit" class="btn-nav" style="margin-top:4px;">
                     ✅ Créer l’utilisateur
                 </button>
             </form>
 
-            <?php
-              $currentSiteRole   = $currentSiteRole   ?? 'all';
-              $currentDateFilter = $currentDateFilter ?? 'all';
-
-              $filters = [
-                  'all'     => 'Tous',
-                  'seeker'  => 'Demandeurs',
-                  'helper'  => 'Donneurs',
-                  'both'    => 'Les deux',
-                  'speaker' => 'Expression',
-              ];
-
-              $dateFilters = [
-                  'all'       => 'Toutes les dates',
-                  'today'     => "Aujourd'hui",
-                  'yesterday' => 'Hier',
-                  'week'      => '7 derniers jours',
-                  'last_month'=> 'Mois dernier',
-                  'last_year' => 'Année dernière',
-              ];
-            ?>
-
-            <!-- Filtres rôle SPARKMIND -->
-            <div style="margin:15px 0; display:flex; flex-wrap:wrap; gap:10px;">
-                <?php foreach ($filters as $value => $label):
-                    $active = ($currentSiteRole === $value);
-                ?>
-                    <a href="index.php?page=admin_users&site_role=<?= $value ?>&date=<?= htmlspecialchars($currentDateFilter) ?>"
-                       style="
-                         padding:8px 14px;
-                         border-radius:999px;
-                         font-size:13px;
-                         text-decoration:none;
-                         border:1px solid #1A464F;
-                         background:<?= $active ? '#1A464F' : 'transparent' ?>;
-                         color:<?= $active ? '#fff' : '#1A464F' ?>;">
-                        <?= htmlspecialchars($label) ?>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Filtres date d'inscription -->
-            <div style="margin:5px 0 15px; display:flex; flex-wrap:wrap; gap:10px;">
-                <?php foreach ($dateFilters as $value => $label):
-                    $active = ($currentDateFilter === $value);
-                ?>
-                    <a href="index.php?page=admin_users&site_role=<?= htmlspecialchars($currentSiteRole) ?>&date=<?= $value ?>"
-                       style="
-                         padding:8px 14px;
-                         border-radius:999px;
-                         font-size:13px;
-                         text-decoration:none;
-                         border:1px solid #EC7546;
-                         background:<?= $active ? '#EC7546' : 'transparent' ?>;
-                         color:<?= $active ? '#fff' : '#EC7546' ?>;">
-                        <?= htmlspecialchars($label) ?>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- STATS -->
-            <div class="stats-row">
-                <div class="stat-card">Comptes affichés <strong><?= count($users) ?></strong></div>
-                <div class="stat-card">
-                    Admins <strong>
-                    <?php $admins=0; foreach($users as $u){ if($u['role']==='admin') $admins++; } echo $admins; ?>
-                    </strong>
-                </div>
-                <div class="stat-card">Utilisateurs <strong><?= count($users)-$admins ?></strong></div>
-            </div>
-
-            <!-- TABLE -->
+            <!-- TABLEAU DES UTILISATEURS -->
             <?php if (empty($users)): ?>
                 <p>Aucun utilisateur pour ces filtres.</p>
             <?php else: ?>
@@ -433,23 +561,44 @@
 
 </div>
 
-<!-- 🔍 SCRIPT DE RECHERCHE LIVE -->
+<!-- 🔍 RECHERCHE LIVE + FILTRES -->
 <script>
   (function() {
     const searchInput = document.getElementById('user-search');
     const tableBody   = document.getElementById('users-table-body');
+    const filterRole  = document.getElementById('filter-role');
+    const filterDate  = document.getElementById('filter-date');
 
-    if (!searchInput || !tableBody) return;
+    // Recherche live
+    if (searchInput && tableBody) {
+      searchInput.addEventListener('input', function () {
+        const filter = this.value.toLowerCase().trim();
+        const rows   = tableBody.querySelectorAll('tr');
 
-    searchInput.addEventListener('input', function () {
-      const filter = this.value.toLowerCase().trim();
-      const rows   = tableBody.querySelectorAll('tr');
-
-      rows.forEach(function(row) {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
+        rows.forEach(function(row) {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(filter) ? '' : 'none';
+        });
       });
-    });
+    }
+
+    // Changement rôle
+    if (filterRole) {
+      filterRole.addEventListener('change', function () {
+        const role = this.value;
+        const date = filterDate ? filterDate.value : 'all';
+        window.location.href = 'index.php?page=admin_users&site_role=' + encodeURIComponent(role) + '&date=' + encodeURIComponent(date);
+      });
+    }
+
+    // Changement date
+    if (filterDate) {
+      filterDate.addEventListener('change', function () {
+        const date = this.value;
+        const role = filterRole ? filterRole.value : 'all';
+        window.location.href = 'index.php?page=admin_users&site_role=' + encodeURIComponent(role) + '&date=' + encodeURIComponent(date);
+      });
+    }
   })();
 </script>
 

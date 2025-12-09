@@ -172,6 +172,13 @@
       font-size: 13px;
       cursor: pointer;
     }
+
+    .password-hint {
+      font-size: 11px;
+      color: #555;
+      margin-top: 3px;
+      display: block;
+    }
   </style>
 </head>
 
@@ -307,7 +314,19 @@
 
           <label class="field">
             <span>Mot de passe</span>
-            <input type="password" name="password" placeholder="Minimum 8 caractères" minlength="8" required autocomplete="new-password">
+            <input
+              type="password"
+              name="password"
+              placeholder="Mot de passe complexe"
+              minlength="8"
+              required
+              autocomplete="new-password"
+              pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}"
+              title="Au moins 8 caractères, avec une lettre majuscule, une lettre minuscule, un chiffre et un symbole."
+            >
+            <span class="password-hint">
+              Au moins 8 caractères, avec une majuscule, une minuscule, un chiffre et un symbole.
+            </span>
           </label>
         </div>
 

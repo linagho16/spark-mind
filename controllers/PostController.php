@@ -160,7 +160,44 @@ class PostController {
             header('Location: index.php');
             exit;
         }
+        // Afficher le formulaire de modification d'un commentaire
+public function editComment() {
+    $id = $_GET['id'] ?? null;
+    $post_id = $_GET['post_id'] ?? null;
+    
+    if (!$id || !$post_id) {
+        header('Location: index.php');
+        exit;
     }
+    
+    $commentModel = new Comment();
+    $comment = $commentModel->getById($id);
+    
+    if (!$comment) {
+        header('Location: index.php?action=show&id=' . $post_id);
+        exit;
+    }
+    
+    include __DIR__ . '/../views/front/comment_edit.php';
+}
+
+// Mettre à jour un commentaire
+public function updateComment() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = $_POST['comment_id'] ?? null;
+        $post_id = $_POST['post_id'] ?? null;
+        $content = trim($_POST['content'] ?? '');
+        
+        if ($id && $post_id && !empty($content)) {
+            $commentModel = new Comment();
+            $commentModel->update($id, $content);
+        }
+        
+        header('Location: index.php?action=show&id=' . $post_id);
+        exit;
+    }
+    }
+}
 
 
 

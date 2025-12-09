@@ -12,7 +12,7 @@
             <img src="assets/img/Logo__1_-removebg-preview.png" alt="SparkMind logo" />
             <div class="title-block">
                 <h1>SparkMind</h1>
-                <p class="subtitle">Forum de donations</p>
+                <p class="subtitle">Forum de messageries</p>
             </div>
         </div>
     </header>

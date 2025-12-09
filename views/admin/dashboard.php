@@ -22,7 +22,7 @@
             <a href="index.php" class="btn-view">🏠 Retour au site</a>
             <a href="index.php?action=admin_posts" class="btn-view">📝 Posts</a>
             <a href="index.php?action=admin_comments" class="btn-view">💬 Commentaires</a>
-            <a href="index.php?action=admin_types" class="btn-view">📋 Types</a>
+            <a href="index.php?action=admin_types" class="btn-view">📋 Sujet</a>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
@@ -46,7 +46,7 @@
             <div class="post-item" style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 15px;">📋</div>
                 <h2 style="font-size: 36px; margin-bottom: 10px; color: #2c5f5d;"><?= $totalTypes ?></h2>
-                <p style="color: #718096;">Types de donations</p>
+                <p style="color: #718096;">Sujet</p>
                 <a href="index.php?action=admin_types" class="btn-view" style="margin-top: 15px;">Voir</a>
             </div>
         </div>

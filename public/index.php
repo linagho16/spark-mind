@@ -73,6 +73,20 @@ switch ($action) {
                                         exit;
                                     }
                                     break;
+                                    case 'edit_comment':
+                                        $controller = new PostController();
+                                        $controller->editComment();
+                                        break;
+
+                                    case 'update_comment':
+                                        $controller = new PostController();
+                                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                            $controller->updateComment();
+                                        } else {
+                                            header('Location: index.php');
+                                            exit;
+                                        }
+                                        break;
                                     case 'admin':
                                         $adminController = new AdminController();
                                         $adminController->dashboard();

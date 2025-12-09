@@ -12,7 +12,7 @@
         <img src="assets/img/Logo__1_-removebg-preview.png" alt="SparkMind logo" />
         <div class="title-block">
           <h1>SparkMind</h1>
-          <p class="subtitle">Forum de donations - Partager et aidez</p>
+          <p class="subtitle">Forum de messageries</p>
         </div>
       </div>
     </header>
@@ -20,7 +20,7 @@
     <main class="wrap">
       <!--sidebar filtres -->
       <aside class="filters-section">
-        <h2>📋 Types de donations</h2>
+        <h2>📋 Sujet</h2>
         <div class="filters">
           <a href="index.php" class="filter-btn <?= !isset($_GET['type']) ? 'active' : '' ?>">
             🌟 Tous
@@ -64,11 +64,11 @@
 
                   <div class="form-group">
                     <label>Titre (optionnel)</label>
-                    <input type="text" name="titre" placeholder="Ex: don de vêtements d'hiver" />
+                    <input type="text" name="titre" placeholder="Ex: titre..." />
                   </div>
                   <div class="form-group">
                     <label>Message *</label>
-                    <textarea name="contenu" id="contenuFront" rows="4" placeholder="Décrivez votre besoin/donation..." required></textarea>
+                    <textarea name="contenu" id="contenuFront" rows="4" placeholder="écrivez votre message..." required></textarea>
                     <small class="charCount" data-max="280">0 / 280</small>
                   </div>
                   <div class="form-group">

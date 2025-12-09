@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Types de Donations - BackOffice</title>
+    <title>Types de Sujet - BackOffice</title>
     <link rel="stylesheet" href="assets/css/sty.css" />
 </head>
 <body>
@@ -11,7 +11,7 @@
         <div class="logo-title">
             <img src="assets/img/Logo__1_-removebg-preview.png" alt="SparkMind logo" />
             <div class="title-block">
-                <h1>Types de Donations</h1>
+                <h1>Types de sujet</h1>
                 <p class="subtitle">BackOffice - Administration</p>
             </div>
         </div>

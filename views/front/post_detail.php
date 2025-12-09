@@ -12,7 +12,7 @@
             <img src="assets/img/Logo__1_-removebg-preview.png" alt="SparkMind logo" />
             <div class="title-block">
                 <h1>SparkMind</h1>
-                <p class="subtitle">Forum de donations</p>
+                <p class="subtitle">Forum de messageries</p>
             </div>
         </div>
     </header>
@@ -83,6 +83,7 @@
                                     <div class="menu-container">
                                         <button class="menu-btn" onclick="toggleMenu(this)" style="padding: 2px 8px; font-size: 16px;">⋮</button>
                                         <div class="menu-options">
+                                            <a href="index.php?action=edit_comment&id=<?= $comment['id'] ?>&post_id=<?= $post['id'] ?>">✏️ Modifier</a>
                                             <form method="post" action="index.php?action=delete_comment" onsubmit="return confirm('Supprimer ce commentaire ?');">
                                                     <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
                                                     <input type="hidden" name="post_id" value="<?= $post['id'] ?>">

@@ -1,5 +1,6 @@
 <?php
 // Vue login (AuthController::login)
+// variables possibles : $errors, $email, $remember, $captchaQuestion, $captchaChoices
 ?>
 <?php if (!empty($errors)): ?>
   <div class="error-box">
@@ -16,10 +17,12 @@
   <title>SPARKMIND — Connexion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Polices -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- CSS -->
   <link rel="stylesheet" href="login.css">
 
   <style>
@@ -79,11 +82,75 @@
         transform: translateY(0);
       }
     }
+
+    /* Captcha custom */
+    .captcha-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fff7ee;
+      border: 1px solid #f0d1ad;
+    }
+
+    .captcha-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1A464F;
+      margin-bottom: 6px;
+    }
+
+    .captcha-question {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .captcha-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .captcha-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #eee;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .captcha-option input[type="radio"] {
+      margin-bottom: 4px;
+    }
+
+    .captcha-option img {
+      max-width: 70px;
+      max-height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .check-robot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .check-robot span {
+      font-size: 13px;
+    }
   </style>
 </head>
 
 <body>
   
+  <!-- HEADER -->
   <header class="main-header top-nav" aria-label="Logo du site">
     <div class="brand-block">
       <a href="index.php?page=main" class="logo-link" title="Retour à l’accueil">
@@ -96,6 +163,7 @@
     </div>
   </header>
 
+  <!-- CONTENU -->
   <main class="wrap">
     <section class="card">
       <h1 class="title">Connexion</h1>
@@ -138,22 +206,43 @@
           </div>
         </label>
 
-        <script>
-          function togglePassword() {
-            const input = document.getElementById("passwordInput");
-            const icon = document.querySelector(".toggle-password");
+        <!-- CAPTCHA -->
+        <div class="captcha-box">
+          <div class="check-robot">
+            <input type="checkbox" name="captcha_check" id="captcha_check">
+            <span>Je ne suis pas un robot</span>
+          </div>
 
-            if (input.type === "password") {
-              input.type = "text";
-              icon.textContent = "🙈";
-            } else {
-              input.type = "password";
-              icon.textContent = "👁️";
-            }
-          }
-        </script>
+          <!-- Contenu du test, caché tant que la case n'est pas cochée -->
+          <div id="captchaContent" style="display:none; margin-top:10px;">
+            <?php if (!empty($captchaQuestion) && !empty($captchaChoices)): ?>
+              <div class="captcha-title">Petit test de vérification :</div>
+              <div class="captcha-question">
+                <?= htmlspecialchars($captchaQuestion) ?>
+              </div>
 
-        <div class="row between">
+              <div class="captcha-options">
+                <?php foreach ($captchaChoices as $choice): ?>
+                  <label class="captcha-option">
+                    <input
+                      type="radio"
+                      name="captcha_choice"
+                      value="<?= htmlspecialchars($choice['value']) ?>"
+                    >
+                    <?php if (!empty($choice['image'])): ?>
+                      <img src="<?= htmlspecialchars($choice['image']) ?>" alt="Option">
+                    <?php endif; ?>
+                    <?php if (!empty($choice['label'])): ?>
+                      <span><?= htmlspecialchars($choice['label']) ?></span>
+                    <?php endif; ?>
+                  </label>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <div class="row between" style="margin-top:10px;">
           <label class="check">
             <input
               type="checkbox"
@@ -177,5 +266,40 @@
   </main>
 
   <a class="help" href="#" title="Besoin d’aide ?">?</a>
+
+  <script>
+    // Affichage / masquage du mot de passe
+    function togglePassword() {
+      const input = document.getElementById("passwordInput");
+      const icon = document.querySelector(".toggle-password");
+
+      if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
+      } else {
+        input.type = "password";
+        icon.textContent = "👁️";
+      }
+    }
+
+    // Affichage / masquage du contenu captcha
+    const checkRobot = document.getElementById("captcha_check");
+    const captchaContent = document.getElementById("captchaContent");
+
+    if (checkRobot) {
+      checkRobot.addEventListener("change", function () {
+        if (this.checked) {
+          captchaContent.style.display = "block"; // afficher les options
+        } else {
+          captchaContent.style.display = "none";  // cacher les options
+          // désélectionner les anciennes réponses
+          document.querySelectorAll("input[name='captcha_choice']").forEach(function (r) {
+            r.checked = false;
+          });
+        }
+      });
+    }
+  </script>
+
 </body>
 </html>

@@ -1,5 +1,6 @@
 <?php
 // Vue inscription (AuthController::register)
+// variables possibles : $errors, $captchaQuestion, $captchaChoices
 ?>
 <?php if (!empty($errors)): ?>
   <div class="error-box">
@@ -24,7 +25,7 @@
   <!-- Style de la page d'inscription -->
   <link rel="stylesheet" href="inscrit.css">
 
-  <!-- 🔹 Barre en haut IDENTIQUE à la page de login -->
+  <!-- 🔹 Barre en haut IDENTIQUE à la page de login + styles captcha -->
   <style>
     .top-nav {
       position: sticky;
@@ -82,6 +83,69 @@
         transform: translateY(0);
       }
     }
+
+    /* Captcha custom */
+    .captcha-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fff7ee;
+      border: 1px solid #f0d1ad;
+    }
+
+    .captcha-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1A464F;
+      margin-bottom: 6px;
+    }
+
+    .captcha-question {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .captcha-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .captcha-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid #eee;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .captcha-option input[type="radio"] {
+      margin-bottom: 4px;
+    }
+
+    .captcha-option img {
+      max-width: 70px;
+      max-height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .check-robot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .check-robot span {
+      font-size: 13px;
+    }
   </style>
 </head>
 
@@ -116,12 +180,12 @@
         <div class="row two">
           <label class="field">
             <span>Nom</span>
-            <input type="text" name="nom" placeholder="ex. Prenom" required autocomplete="family-name">
+            <input type="text" name="nom" placeholder="ex. Gabtni" required autocomplete="family-name">
           </label>
 
           <label class="field">
             <span>Prénom</span>
-            <input type="text" name="prenom" placeholder="ex. Nom" required autocomplete="given-name">
+            <input type="text" name="prenom" placeholder="ex. Najami" required autocomplete="given-name">
           </label>
         </div>
 
@@ -203,7 +267,42 @@
           <input type="file" name="photo" accept="image/*">
         </label>
 
-        <label class="check">
+        <!-- 🔹 CAPTCHA custom, même principe que login -->
+        <div class="captcha-box">
+          <div class="check-robot">
+            <input type="checkbox" name="captcha_check" id="captcha_check">
+            <span>Je ne suis pas un robot</span>
+          </div>
+
+          <div id="captchaContent" style="display:none; margin-top:10px;">
+            <?php if (!empty($captchaQuestion) && !empty($captchaChoices)): ?>
+              <div class="captcha-title">Petit test de bienvenue :</div>
+              <div class="captcha-question">
+                <?= htmlspecialchars($captchaQuestion) ?>
+              </div>
+
+              <div class="captcha-options">
+                <?php foreach ($captchaChoices as $choice): ?>
+                  <label class="captcha-option">
+                    <input
+                      type="radio"
+                      name="captcha_choice"
+                      value="<?= htmlspecialchars($choice['value']) ?>"
+                    >
+                    <?php if (!empty($choice['image'])): ?>
+                      <img src="<?= htmlspecialchars($choice['image']) ?>" alt="Option">
+                    <?php endif; ?>
+                    <?php if (!empty($choice['label'])): ?>
+                      <span><?= htmlspecialchars($choice['label']) ?></span>
+                    <?php endif; ?>
+                  </label>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <label class="check" style="margin-top:10px;">
           <input type="checkbox" required>
           <span>J’accepte les conditions d’utilisation</span>
         </label>
@@ -221,5 +320,24 @@
   </main>
 
   <a class="help" href="#" title="Besoin d’aide ?">?</a>
+
+  <script>
+    // Affichage / masquage du contenu captcha
+    const checkRobot = document.getElementById("captcha_check");
+    const captchaContent = document.getElementById("captchaContent");
+
+    if (checkRobot) {
+      checkRobot.addEventListener("change", function () {
+        if (this.checked) {
+          captchaContent.style.display = "block";
+        } else {
+          captchaContent.style.display = "none";
+          document.querySelectorAll("input[name='captcha_choice']").forEach(function (r) {
+            r.checked = false;
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>

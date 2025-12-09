@@ -146,6 +146,32 @@
     .check-robot span {
       font-size: 13px;
     }
+
+    .role-group-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #1A464F;
+    }
+
+    .role-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .role-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -249,6 +275,29 @@
             </select>
           </label>
         </div>
+
+        <!-- 🔹 Rôle sur SPARKMIND -->
+        <label class="field">
+          <span class="role-group-title">Votre rôle sur SPARKMIND</span>
+          <div class="role-options">
+            <label class="role-option">
+              <input type="radio" name="site_role" value="seeker" required>
+              <span>Demandeur</span>
+            </label>
+            <label class="role-option">
+              <input type="radio" name="site_role" value="helper">
+              <span>Donneur</span>
+            </label>
+            <label class="role-option">
+              <input type="radio" name="site_role" value="both">
+              <span>Les deux</span>
+            </label>
+            <label class="role-option">
+              <input type="radio" name="site_role" value="speaker">
+              <span>Expression</span>
+            </label>
+          </div>
+        </label>
 
         <div class="row two">
           <label class="field">

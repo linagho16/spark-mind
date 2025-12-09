@@ -358,6 +358,8 @@ class AuthController
             'profession' => isset($_POST['profession']) && is_string($_POST['profession']) ? trim($_POST['profession']) : '',
             'email'      => isset($_POST['email'])      && is_string($_POST['email'])      ? trim($_POST['email'])      : '',
             'password'   => isset($_POST['password'])   && is_string($_POST['password'])   ? $_POST['password']         : '',
+            // 🔹 AJOUT : rôle sur le site
+            'site_role'  => isset($_POST['site_role'])  && is_string($_POST['site_role'])  ? trim($_POST['site_role'])  : '',
         ];
 
         // 👉 GET : afficher le formulaire avec un captcha
@@ -408,6 +410,12 @@ class AuthController
 
         if ($data['profession'] === '') {
             $errors[] = "Veuillez sélectionner une profession.";
+        }
+
+        // 🔹 VALIDATION du site_role (AJOUT)
+        $allowedSiteRoles = ['seeker', 'helper', 'both', 'speaker'];
+        if ($data['site_role'] === '' || !in_array($data['site_role'], $allowedSiteRoles, true)) {
+            $errors[] = "Veuillez choisir votre rôle sur SPARKMIND.";
         }
 
         // 🔹 VALIDATION CAPTCHA inscription
@@ -631,7 +639,7 @@ class AuthController
             }
         }
 
-        include __DIR__ . '/../views/auth/reset_password.php>';
+        include __DIR__ . '/../views/auth/reset_password.php';
     }
 
     public function logout(): void

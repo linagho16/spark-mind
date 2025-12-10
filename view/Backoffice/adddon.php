@@ -325,51 +325,6 @@
             <span>Ajouter un groupe</span>
         </a>
         
-        <!-- Settings Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
-            ADMINISTRATION
-        </div>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">👤</span>
-            <span>Utilisateurs</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">⚙️</span>
-            <span>Paramètres</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">📢</span>
-            <span>Newsletter</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">📋</span>
-            <span>Rapports</span>
-        </a>
-    </nav>
-    
-    <!-- Sidebar Footer -->
-    <div class="sidebar-footer">
-        <!-- User Profile -->
-        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 1.2rem;">👤</span>
-            </div>
-            <div>
-                <div style="font-weight: 600; font-size: 0.9rem;">Administrateur</div>
-                <div style="font-size: 0.8rem; opacity: 0.8;">Admin</div>
-            </div>
-        </div>
-        
-        <!-- Logout Button -->
-        <a href="#" style="display: block; text-align: center; margin-top: 1rem; padding: 0.7rem; background: rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
-            <span>🚪</span>
-            <span>Déconnexion</span>
-        </a>
-        
         <!-- FrontOffice Link -->
         <a href="/aide_solitaire/view/frontoffice/index.php" style="display: block; text-align: center; margin-top: 0.5rem; padding: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
             <span>🌐</span>

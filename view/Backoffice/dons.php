@@ -572,7 +572,10 @@
             <span class="icon">➕</span>
             <span>Ajouter un groupe</span>
         </a>
-        
+        <a href="/aide_solitaire/view/frontoffice/index.php" style="display: block; text-align: center; margin-top: 0.5rem; padding: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
+        <span>🌐</span>
+        <span>Voir le site public</span>
+      </a>
         <!-- Settings Section -->
         <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
             ADMINISTRATION

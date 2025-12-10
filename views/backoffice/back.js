@@ -33,7 +33,7 @@ const gouvernoratCoords = {
     'Sousse': { x: 65, y: 21 },
     'Monastir': { x: 68, y: 22 },
     'Mahdia': { x: 69, y: 26 },
-    'Sfax': { x: 67, y: 34 },
+    'Sfax': { x: 71, y: 38 },
     'Gafsa': { x: 54, y: 37 },
     'Tozeur': { x: 49, y: 39 },
     'Kébili': { x: 54, y: 47 },

@@ -21,7 +21,7 @@ const chatbotKnowledge = {
 const chatbotResponses = {
     greeting: "Bonjour ! 👋 Je suis ravi de vous aider. Je peux répondre à vos questions sur le formulaire, les types d'aide disponibles, ou tout autre aspect de votre demande.",
     
-    form: "📝 Pour remplir le formulaire :\n\n1. Informations personnelles : Nom, âge, gouvernorat et ville\n2. Type d'aide : Choisissez une ou plusieurs catégories\n3. Description : Expliquez votre situation (min. 20 caractères)\n4. Contact : Comment vous joindre\n5. Confidentialité : Niveau de visibilité souhaité\n\nTous les champs marqués d'un  sont obligatoires. Vos données sont sauvegardées automatiquement !",
+    form: "📝 Pour remplir le formulaire :\n\n1. Informations personnelles : Nom, âge, gouvernorat et ville\n2. Type d'aide : Choisissez une ou plusieurs catégories\n3. Description : Expliquez votre situation (min. 20 caractères)\n4. Contact : Comment vous joindre\n5. Confidentialité : Niveau de visibilité souhaité\n\nTous les champs marqués d'un * sont obligatoires. Vos données sont sauvegardées automatiquement !",
     
     types: "🤝 Types d'aide disponibles :\n\n• 🍽️ Alimentaire : Colis alimentaires, repas\n• 📚 Scolaire : Fournitures, livres, frais scolaires\n• 👕 Vestimentaire : Vêtements, chaussures\n• 🏥 Médicale : Consultations, médicaments\n• 💰 Financière : Aide ponctuelle\n• 🏠 Logement : Aide au loyer\n• 💼 Professionnelle : Formation, emploi\n• 💬 Psychologique : Écoute, soutien",
     
@@ -44,11 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     updateProgress();
     initializeChatbot();
+    setupCharCounter();
 });
 
 // Initialiser le chatbot
 function initializeChatbot() {
-    // Charger l'historique du chat si disponible
     const savedHistory = localStorage.getItem('sparkmind_chat_history');
     if (savedHistory) {
         try {
@@ -74,37 +74,24 @@ function toggleChatbot() {
 function analyzeIntent(message) {
     const lowerMessage = message.toLowerCase();
     
-    // Vérifier les salutations
     if (chatbotKnowledge.greetings.some(word => lowerMessage.includes(word))) {
         return 'greeting';
     }
-    
-    // Vérifier les questions sur le formulaire
     if (chatbotKnowledge.form.some(word => lowerMessage.includes(word))) {
         return 'form';
     }
-    
-    // Vérifier les types d'aide
     if (chatbotKnowledge.types.some(word => lowerMessage.includes(word))) {
         return 'types';
     }
-    
-    // Vérifier l'urgence
     if (chatbotKnowledge.urgent.some(word => lowerMessage.includes(word))) {
         return 'urgent';
     }
-    
-    // Vérifier le contact
     if (chatbotKnowledge.contact.some(word => lowerMessage.includes(word))) {
         return 'contact';
     }
-    
-    // Vérifier la confidentialité
     if (chatbotKnowledge.privacy.some(word => lowerMessage.includes(word))) {
         return 'privacy';
     }
-    
-    // Vérifier les délais
     if (chatbotKnowledge.time.some(word => lowerMessage.includes(word))) {
         return 'time';
     }
@@ -117,7 +104,6 @@ function generateBotResponse(userMessage) {
     const intent = analyzeIntent(userMessage);
     let response = chatbotResponses[intent] || chatbotResponses.default;
     
-    // Ajouter des suggestions contextuelles
     const suggestions = [];
     
     if (intent === 'greeting' || intent === 'default') {
@@ -148,19 +134,14 @@ function sendChatMessage() {
     
     if (!message) return;
     
-    // Ajouter le message de l'utilisateur
     addChatMessage(message, 'user');
-    
-    // Effacer l'input
     input.value = '';
     
-    // Générer et afficher la réponse
     setTimeout(() => {
         const { response, suggestions } = generateBotResponse(message);
         addChatMessage(response, 'bot', suggestions);
     }, 500);
     
-    // Sauvegarder l'historique
     saveChatHistory();
 }
 
@@ -178,7 +159,7 @@ function addChatMessage(message, sender, suggestions = null) {
                 ${suggestions && suggestions.length > 0 ? `
                     <div class="quick-replies">
                         ${suggestions.map(s => `
-                            <button onclick="askBot(chatbotResponses.${s.action})">${s.text}</button>
+                            <button onclick="askBot('${chatbotResponses[s.action]}')">${s.text}</button>
                         `).join('')}
                     </div>
                 ` : ''}
@@ -196,7 +177,6 @@ function addChatMessage(message, sender, suggestions = null) {
     messagesContainer.appendChild(messageDiv);
     scrollChatToBottom();
     
-    // Ajouter à l'historique
     chatHistory.push({ message, sender, timestamp: Date.now() });
 }
 
@@ -258,6 +238,7 @@ function setupEventListeners() {
         input.addEventListener('change', () => {
             saveFormData();
             updateProgress();
+            updateStepIndicators();
         });
         
         if (input.tagName === 'TEXTAREA' || input.type === 'text') {
@@ -285,13 +266,61 @@ function setupEventListeners() {
     }
 }
 
-// Mettre à jour la barre de progression
+// Configurer le compteur de caractères
+function setupCharCounter() {
+    const descTextarea = document.querySelector('textarea[name="description_situation"]');
+    if (descTextarea) {
+        descTextarea.addEventListener('input', (e) => {
+            const counter = document.getElementById('descCounter');
+            if (counter) {
+                counter.textContent = e.target.value.length;
+            }
+        });
+    }
+}
+
+// Mettre à jour les indicateurs d'étapes
+function updateStepIndicators() {
+    const form = document.getElementById('helpForm');
+    const sections = form.querySelectorAll('.form-card');
+    
+    sections.forEach((section, index) => {
+        const sectionNum = index + 1;
+        const stepItem = document.querySelector(`.step-item[data-step="${sectionNum}"]`);
+        
+        if (stepItem && isSectionComplete(section)) {
+            stepItem.classList.add('completed');
+        }
+    });
+}
+
+// Vérifier si une section est complète
+function isSectionComplete(section) {
+    const inputs = section.querySelectorAll('input, select, textarea');
+    let allFilled = true;
+    
+    inputs.forEach(input => {
+        if (input.hasAttribute('required') || input.closest('.form-group').querySelector('.required')) {
+            if (input.type === 'radio' || input.type === 'checkbox') {
+                const name = input.name;
+                const checked = section.querySelector(`input[name="${name}"]:checked`);
+                if (!checked) allFilled = false;
+            } else if (!input.value.trim()) {
+                allFilled = false;
+            }
+        }
+    });
+    
+    return allFilled;
+}
+
+// Mettre à jour la barre de progression circulaire
 function updateProgress() {
     const form = document.getElementById('helpForm');
-    const progressBar = document.getElementById('progressBar');
+    const progressCircle = document.getElementById('progressCircle');
     const progressPercent = document.getElementById('progressPercent');
     
-    if (!form || !progressBar) return;
+    if (!form || !progressCircle) return;
     
     const requiredFields = [
         'nom', 'age', 'gouvernorat', 'ville', 'urgence',
@@ -321,7 +350,12 @@ function updateProgress() {
     if (attestation && attestation.checked) filledFields++;
     
     const progress = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
-    progressBar.style.width = progress + '%';
+    
+    // Mettre à jour le cercle de progression
+    const circumference = 2 * Math.PI * 54; // rayon de 54
+    const offset = circumference - (progress / 100) * circumference;
+    progressCircle.style.strokeDashoffset = offset;
+    
     if (progressPercent) {
         progressPercent.textContent = progress + '%';
     }
@@ -552,8 +586,8 @@ async function handleSubmit(e) {
     console.log('📤 Envoi des données:', formData);
     
     const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = '⏳ Envoi en cours...';
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span>⏳</span> Envoi en cours...';
     submitBtn.disabled = true;
     
     try {
@@ -583,7 +617,7 @@ async function handleSubmit(e) {
         console.error('❌ Erreur:', error);
         showNotification('❌ Erreur de connexion au serveur', 'error');
     } finally {
-        submitBtn.textContent = originalText;
+        submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }
 }
@@ -818,4 +852,10 @@ function showHelp() {
           `5. La validation se fait automatiquement\n\n` +
           `💬 Utilisez l'Assistant Chatbot pour plus d'aide!\n\n` +
           `Pour toute question, contactez-nous au:\n+216 55 581 022`);
+}
+
+// Toggle menu mobile
+function toggleMobileMenu() {
+    const navLinks = document.querySelector('.nav-links');
+    navLinks.classList.toggle('mobile-active');
 }

@@ -111,5 +111,129 @@ public function getGroupesWithFilters($filters = []) {
     $stmt->execute($params);
     return $stmt->fetchAll();
 }
+public function getAllGroupesWithDonStats() {
+        $sql = "SELECT g.*, 
+                       COUNT(d.id) as total_dons,
+                       SUM(CASE WHEN d.statut = 'livre' THEN 1 ELSE 0 END) as dons_livres,
+                       SUM(CASE WHEN d.statut = 'en_attente' THEN 1 ELSE 0 END) as dons_en_attente
+                FROM groupes g 
+                LEFT JOIN dons d ON g.id = d.groupe_id 
+                GROUP BY g.id 
+                ORDER BY g.created_at DESC";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+     public function getGroupeWithDons($groupeId) {
+        $sql = "SELECT g.*, 
+                       d.id as don_id, 
+                       d.type_don, 
+                       d.quantite, 
+                       d.etat_object,
+                       d.photos,
+                       d.region as don_region, 
+                       d.description as don_description,
+                       d.date_don, 
+                       d.statut as don_statut
+                FROM groupes g 
+                LEFT JOIN dons d ON g.id = d.groupe_id 
+                WHERE g.id = ? 
+                ORDER BY d.date_don DESC";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$groupeId]);
+        return $stmt->fetchAll();
+    }
+    public function getActiveGroupesByRegion($region) {
+        $sql = "SELECT * FROM groupes 
+                WHERE statut = 'actif' 
+                AND (region = ? OR region = 'National')
+                ORDER BY nom";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$region]);
+        return $stmt->fetchAll();
+    }
+     public function getGroupesByDonType($donType) {
+        // Map donation types to group types if needed
+        $typeMapping = [
+            'vetements' => 'humanitaire',
+            'nourriture' => 'humanitaire',
+            'medicaments' => 'medical',
+            'argent' => 'tous'
+        ];
+        
+        $groupType = $typeMapping[$donType] ?? 'tous';
+        
+        $sql = "SELECT * FROM groupes 
+                WHERE statut = 'actif' 
+                AND (type = ? OR type = 'tous' OR ? = 'tous')
+                ORDER BY nom";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$groupType, $groupType]);
+        return $stmt->fetchAll();
+    }
+     public function getEnhancedGroupesStats() {
+        $stats = $this->getGroupesStats(); // Keep existing stats
+        
+        // Add jointure-based stats
+        $stmt = $this->pdo->query("
+            SELECT g.type, 
+                   COUNT(DISTINCT g.id) as groupe_count,
+                   COUNT(d.id) as total_dons,
+                   AVG(CASE WHEN d.id IS NOT NULL THEN 1 ELSE 0 END) * 100 as avg_dons_per_groupe
+            FROM groupes g 
+            LEFT JOIN dons d ON g.id = d.groupe_id 
+            GROUP BY g.type
+        ");
+        $stats['type_with_dons'] = $stmt->fetchAll();
+         $stmt = $this->pdo->query("
+            SELECT g.region, 
+                   COUNT(DISTINCT g.id) as groupe_count,
+                   COUNT(d.id) as dons_count
+            FROM groupes g 
+            LEFT JOIN dons d ON g.id = d.groupe_id 
+            GROUP BY g.region
+            ORDER BY dons_count DESC
+        ");
+        $stats['region_performance'] = $stmt->fetchAll();
+        
+        return $stats;
+    }
+     public function getGroupesWithLatestDons($limit = 5) {
+        $sql = "SELECT g.id, g.nom, g.type, g.region,
+                       d.id as dernier_don_id,
+                       d.type_don as dernier_don_type,
+                       d.quantite as dernier_don_quantite,
+                       d.date_don as dernier_don_date
+                FROM groupes g 
+                LEFT JOIN dons d ON g.id = d.groupe_id 
+                WHERE d.id = (
+                    SELECT MAX(id) 
+                    FROM dons 
+                    WHERE groupe_id = g.id
+                ) OR d.id IS NULL
+                ORDER BY g.nom
+                LIMIT ?";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$limit]);
+        return $stmt->fetchAll();
+    }
+     public function updateGroupeDonCount($groupeId) {
+        $sql = "UPDATE groupes g 
+                SET membres_count = (
+                    SELECT COUNT(*) 
+                    FROM dons 
+                    WHERE groupe_id = g.id
+                ) 
+                WHERE g.id = ?";
+        
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$groupeId]);
+    }   
+
 }
 ?>

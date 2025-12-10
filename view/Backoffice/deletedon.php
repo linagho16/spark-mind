@@ -180,6 +180,7 @@
         .warning-icon {
             font-size: 4rem;
             margin-bottom: 1rem;
+            color: #dc3545;
         }
 
         .don-details {
@@ -245,6 +246,22 @@
             transform: scale(1.05);
         }
 
+        .btn-cancel {
+            background: transparent;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
         .alert-warning {
             background: #fff3cd;
             color: #856404;
@@ -284,6 +301,7 @@
             .top-header {
                 flex-direction: column;
                 gap: 1.5rem;
+                text-align: center;
             }
 
             .delete-container {
@@ -305,134 +323,95 @@
 </head>
 <body>
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-    <div class="logo">
-        <h2>🕊️ Admin</h2>
-    </div>
-    <nav class="nav-menu">
-        <!-- Dashboard -->
-        <!-- SIDEBAR NAVIGATION - Add this to your backoffice files -->
-<div class="sidebar">
-    <!-- Logo -->
-    <div class="logo">
-        <h2>🤝 Aide Solidaire</h2>
-        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Administration</p>
-    </div>
-    
-    <!-- Navigation Menu -->
-    <nav class="nav-menu">
-        <!-- Dashboard -->
-        <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php' || (!isset($_GET['action']) && isset($_GET['action']) == 'dashboard')) ? 'active' : ''; ?>">
-            <span class="icon">📊</span>
-            <span>Tableau de bord</span>
-        </a>
-        
-        <!-- Donations Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600;">
-            GESTION DES DONS
+    <div class="sidebar">
+        <!-- Logo -->
+        <div class="logo">
+            <h2>🤝 Aide Solidaire</h2>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Administration</p>
         </div>
         
-        <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'dons') ? 'active' : ''; ?>">
-            <span class="icon">🎁</span>
-            <span>Tous les dons</span>
-        </a>
-        
-        <a href="/aide_solitaire/controller/donC.php?action=create_don" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'create_don') ? 'active' : ''; ?>">
-            <span class="icon">➕</span>
-            <span>Ajouter un don</span>
-        </a>
-        
-        <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'statistics') ? 'active' : ''; ?>">
-            <span class="icon">📈</span>
-            <span>Statistiques dons</span>
-        </a>
-        
-        <!-- Groups Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
-            GESTION DES GROUPES
-        </div>
-        
-        <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'groupes') ? 'active' : ''; ?>">
-            <span class="icon">👥</span>
-            <span>Tous les groupes</span>
-        </a>
-        
-        <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'create_groupe') ? 'active' : ''; ?>">
-            <span class="icon">➕</span>
-            <span>Ajouter un groupe</span>
-        </a>
-        
-        <!-- Settings Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
-            ADMINISTRATION
-        </div>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">👤</span>
-            <span>Utilisateurs</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">⚙️</span>
-            <span>Paramètres</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">📢</span>
-            <span>Newsletter</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">📋</span>
-            <span>Rapports</span>
-        </a>
-    </nav>
-    
-    <!-- Sidebar Footer -->
-    <div class="sidebar-footer">
-        <!-- User Profile -->
-        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 1.2rem;">👤</span>
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <!-- Dashboard -->
+            <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Tableau de bord</span>
+            </a>
+            
+            <!-- Donations Section -->
+            <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600;">
+                GESTION DES DONS
             </div>
-            <div>
-                <div style="font-weight: 600; font-size: 0.9rem;">Administrateur</div>
-                <div style="font-size: 0.8rem; opacity: 0.8;">Admin</div>
+            
+            <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item">
+                <span class="icon">🎁</span>
+                <span>Tous les dons</span>
+            </a>
+            
+            <a href="/aide_solitaire/controller/donC.php?action=create_don" class="nav-item">
+                <span class="icon">➕</span>
+                <span>Ajouter un don</span>
+            </a>
+            
+            <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item">
+                <span class="icon">📈</span>
+                <span>Statistiques dons</span>
+            </a>
+            
+            <!-- Groups Section -->
+            <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
+                GESTION DES GROUPES
             </div>
+            
+            <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Tous les groupes</span>
+            </a>
+            
+            <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="nav-item">
+                <span class="icon">➕</span>
+                <span>Ajouter un groupe</span>
+            </a>
+        </nav>
+        
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <!-- User Profile -->
+            <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 1.2rem;">👤</span>
+                </div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Administrateur</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">Admin</div>
+                </div>
+            </div>
+            
+            <!-- FrontOffice Link -->
+            <a href="/aide_solitaire/view/frontoffice/index.php" style="display: block; text-align: center; margin-top: 0.5rem; padding: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
+                <span>🌐</span>
+                <span>Voir le site public</span>
+            </a>
         </div>
-        
-        <!-- Logout Button -->
-        <a href="#" style="display: block; text-align: center; margin-top: 1rem; padding: 0.7rem; background: rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
-            <span>🚪</span>
-            <span>Déconnexion</span>
-        </a>
-        
-        <!-- FrontOffice Link -->
-        <a href="/aide_solitaire/view/frontoffice/index.php" style="display: block; text-align: center; margin-top: 0.5rem; padding: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
-            <span>🌐</span>
-            <span>Voir le site public</span>
-        </a>
     </div>
-</div>
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Header -->
-       <!-- In the top header section: -->
-<header class="top-header">
-    <div class="header-left">
-        <h1>Supprimer le Don</h1>
-        <p>Confirmez la suppression de ce don</p>
-    </div>
-    <div class="header-right">
-        <!-- If you have a "Retour" link here: -->
-        <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-cancel">
-            ← Retour à la liste
-        </a>
-        <div class="user-profile">
-            <div class="avatar">👤</div>
-        </div>
-    </div>
-</header>
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Supprimer le Don</h1>
+                <p>Confirmez la suppression de ce don</p>
+            </div>
+            <div class="header-right">
+                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-cancel">
+                    ← Retour à la liste
+                </a>
+                <div class="user-profile">
+                    <div class="avatar">👤</div>
+                </div>
+            </div>
+        </header>
 
         <!-- Delete Confirmation -->
         <div class="delete-container">
@@ -475,19 +454,19 @@
                 <?php endif; ?>
                 <div class="detail-row">
                     <span class="detail-label">Description :</span>
-                    <span class="detail-value"><?php echo nl2br(htmlspecialchars($don['description'])); ?></span>
+                    <span class="detail-value"><?php echo nl2br(htmlspecialchars($don['description'] ?? '')); ?></span>
                 </div>
             </div>
 
             <!-- Confirmation Form -->
-<form method="POST" action="/aide_solitaire/controller/donC.php?action=delete_don&id=<?php echo $don['id']; ?>">
-    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
-        <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">Annuler</a>
-        <button type="submit" class="btn-danger" onclick="return confirm('Êtes-vous ABSOLUMENT sûr ? Cette action ne peut pas être annulée.')">
-            🗑️ Supprimer définitivement
-        </button>
-    </div>
-</form>
+            <form method="POST" action="/aide_solitaire/controller/donC.php?action=delete_don&id=<?php echo $don['id']; ?>">
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                    <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-secondary">Annuler</a>
+                    <button type="submit" class="btn-danger" onclick="return confirm('Êtes-vous ABSOLUMENT sûr ? Cette action ne peut pas être annulée.')">
+                        🗑️ Supprimer définitivement
+                    </button>
+                </div>
+            </form>
         </div>
     </main>
 

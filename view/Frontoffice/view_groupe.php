@@ -508,12 +508,12 @@ try {
                 <h3>💡 Groupes similaires</h3>
                 <p>Découvrez d'autres groupes dans la même région ou du même type.</p>
                 <div style="margin-top: 1rem;">
-                    <a href="/aide_solitaire/controller/groupeC.php?action=list&context=frontoffice&region=<?php echo urlencode($groupe['region']); ?>" class="action-btn action-secondary">
+                    <a href="/aide_solitaire/view/Frontoffice/browse_groupes.php?action=list&context=frontoffice&region=<?php echo urlencode($groupe['region']); ?>" class="action-btn action-secondary">
 
                         📍 Groupes à <?php echo htmlspecialchars($groupe['region']); ?>
                     </a>
-                    <a href="/aide_solitaire/controller/groupeC.php?action=list&context=frontoffice&type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary"></a>
-                        👥 Tous les groupes <?php echo htmlspecialchars($groupe['type']); ?>
+                    <a href="/aide_solitaire/view/Frontoffice/browse_groupes.php?action=list&context=frontoffice&type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">👥 Tous les groupes <?php echo htmlspecialchars($groupe['type']); ?></a>
+                        
                     </a>
                 </div>
             </div>

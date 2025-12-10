@@ -2,12 +2,13 @@
 // frontoffice/browse_dons.php - Browse all donations
 session_start();
 require_once __DIR__ . '/../../Model/donmodel.php';
+require_once __DIR__ . '/../../Model/groupemodel.php';
 
 try {
     $model = new DonModel();
     
     // Get filters from URL
-    $filters = ['statut' => 'actif']; // Only show active donations
+    $filters = [];
     
     if (isset($_GET['type_don']) && !empty($_GET['type_don'])) {
         $filters['type_don'] = $_GET['type_don'];
@@ -17,21 +18,60 @@ try {
         $filters['region'] = $_GET['region'];
     }
     
+    if (isset($_GET['groupe_id']) && !empty($_GET['groupe_id'])) {
+        $filters['groupe_id'] = $_GET['groupe_id'];
+    }
+    
+    // MODIFICATION IMPORTANTE ICI :
+    // Pour frontoffice, on veut afficher les dons 'actif', 'en_attente' et 'payé'
+    $filters['statut'] = 'frontoffice'; // Ceci utilise un filtre spécial
+    
     // Get donations with filters
-    // At the top of browse_dons.php:
-    $dons = $model->getDonsWithFilters(['statut' => 'frontoffice']);
+    $dons = $model->getDonsWithFiltersAndGroupes($filters);
+    
+    // Reste du code...
+    // Debug: Vérifier ce qui est récupéré
+    error_log("Nombre de dons récupérés: " . count($dons));
+    if (!empty($dons)) {
+        error_log("Premier don récupéré: " . print_r($dons[0], true));
+    }
     
     // Get unique types and regions for filters
     $allDons = $model->getAllDons();
     $types = array_unique(array_column($allDons, 'type_don'));
     $regions = array_unique(array_column($allDons, 'region'));
     
+    // Vérifier les messages de succès
+    if (isset($_GET['message'])) {
+        if ($_GET['message'] == 'don_created') {
+            $success_message = "✅ Votre don a été créé avec succès !";
+        } elseif ($_GET['message'] == 'paiement_success') {
+            $success_message = "✅ Paiement effectué avec succès ! Votre don financier est maintenant disponible.";
+        }
+    }
+    
 } catch (Exception $e) {
     $error = "Erreur: " . $e->getMessage();
+    error_log("Erreur dans browse_dons.php: " . $e->getMessage());
     $dons = [];
     $types = [];
     $regions = [];
 }
+
+// Définir les icônes pour les types de dons
+$icons = [
+    'Alimentaire' => '🍎',
+    'Vêtements' => '👕',
+    'Médicaments' => '💊',
+    'Fournitures scolaires' => '📚',
+    'Matériel médical' => '🏥',
+    'Équipements sportifs' => '⚽',
+    'Produits d\'hygiène' => '🚿',
+    'Meubles' => '🛋️',
+    'Électronique' => '💻',
+    'Financier' => '💰',
+    'Autre' => '🎁'
+];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -117,6 +157,35 @@ try {
             box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
+        /* Alert Messages */
+        .alert {
+            padding: 1.5rem 1.8rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 6px solid;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(212, 237, 218, 0.2), rgba(40, 167, 69, 0.1));
+            color: #155724;
+            border-left-color: #28a745;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, rgba(248, 215, 218, 0.2), rgba(220, 53, 69, 0.1));
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         /* Filters Container - Dashboard Style */
         .filters-container {
             background: white;
@@ -125,11 +194,6 @@ try {
             margin-bottom: 2.5rem;
             box-shadow: 0 8px 30px rgba(0,0,0,0.12);
             animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
 
         .filters-title {
@@ -305,15 +369,43 @@ try {
             box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
 
+        /* NOUVEAU: Conteneur d'image */
+        .card-image-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        .card-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(31,140,135,0.1), rgba(126,221,213,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
         .card-header {
-            padding: 2rem 2rem 0;
+            padding: 1.5rem 1.5rem 0;
         }
 
         .card-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.2rem;
-            width: 80px;
-            height: 80px;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -329,7 +421,7 @@ try {
         }
 
         .card-body {
-            padding: 1.5rem 2rem 2rem;
+            padding: 1.5rem 1.5rem 2rem;
         }
 
         .card-meta {
@@ -361,6 +453,20 @@ try {
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+        }
+
+        /* AJOUT: Style pour l'état de l'objet */
+        .card-etat {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 235, 59, 0.15));
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ffc107;
+        }
+
+        .card-etat strong {
+            color: #856404;
+            margin-right: 0.5rem;
         }
 
         .card-actions {
@@ -462,43 +568,13 @@ try {
             background: linear-gradient(135deg, #ec7546, #f4a261);
         }
 
+        .action-btn:nth-child(3) {
+            background: linear-gradient(135deg, #7d5aa6, #b58ce0);
+        }
+
         .action-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 2px solid #f1f3f5;
-        }
-
-        .page-link {
-            padding: 0.7rem 1.2rem;
-            background: #f1f3f5;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 40px;
-        }
-
-        .page-link.active {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-        }
-
-        .page-link:hover {
-            background: #e1e5e9;
-            transform: translateY(-2px);
         }
 
         /* Footer */
@@ -513,6 +589,35 @@ try {
         .footer p {
             margin-bottom: 1rem;
             font-size: 1.1rem;
+        }
+
+        /* Active filters indicator */
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: linear-gradient(135deg, #1f8c87, #7eddd5);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .filter-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1rem;
         }
 
         /* Responsive */
@@ -607,35 +712,6 @@ try {
                 padding: 2rem 1rem;
             }
         }
-
-        /* Active filters indicator */
-        .active-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .filter-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0.8rem;
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .filter-tag button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 0;
-            font-size: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -653,8 +729,23 @@ try {
             <span>Retour à l'accueil</span>
         </a>
         
+        <!-- Messages d'alerte -->
+        <?php if (isset($success_message)): ?>
+            <div class="alert alert-success">
+                <span style="font-size: 1.5rem;">✅</span>
+                <span><?php echo $success_message; ?></span>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (isset($error)): ?>
+            <div class="alert alert-error">
+                <span style="font-size: 1.5rem;">❌</span>
+                <span><?php echo $error; ?></span>
+            </div>
+        <?php endif; ?>
+        
         <!-- Active Filters -->
-        <?php if (isset($_GET['type_don']) || isset($_GET['region'])): ?>
+        <?php if (isset($_GET['type_don']) || isset($_GET['region']) || isset($_GET['groupe_id'])): ?>
         <div class="active-filters">
             <?php if (isset($_GET['type_don']) && !empty($_GET['type_don'])): ?>
             <span class="filter-tag">
@@ -667,6 +758,16 @@ try {
             <span class="filter-tag">
                 <span>📍 Région: <?php echo htmlspecialchars($_GET['region']); ?></span>
                 <button onclick="removeFilter('region')">×</button>
+            </span>
+            <?php endif; ?>
+            
+            <?php if (isset($_GET['groupe_id']) && !empty($_GET['groupe_id'])): 
+                $groupeModel = new GroupeModel();
+                $groupe = $groupeModel->getGroupeById($_GET['groupe_id']);
+            ?>
+            <span class="filter-tag">
+                <span>👥 Groupe: <?php echo htmlspecialchars($groupe['nom'] ?? 'Inconnu'); ?></span>
+                <button onclick="removeFilter('groupe_id')">×</button>
             </span>
             <?php endif; ?>
         </div>
@@ -705,6 +806,22 @@ try {
                     </select>
                 </div>
                 
+                <div class="filter-group">
+                    <label class="filter-label">Groupe</label>
+                    <select name="groupe_id" class="filter-select">
+                        <option value="">Tous les groupes</option>
+                        <?php 
+                        $groupeModel = new GroupeModel();
+                        $activeGroupes = $groupeModel->getGroupesWithFilters(['statut' => 'actif']);
+                        foreach ($activeGroupes as $groupe): ?>
+                            <option value="<?php echo $groupe['id']; ?>" 
+                                <?php echo isset($_GET['groupe_id']) && $_GET['groupe_id'] == $groupe['id'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($groupe['nom']); ?> (<?php echo htmlspecialchars($groupe['region']); ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                
                 <div class="filter-actions">
                     <button type="submit" class="filter-btn">
                         <span>🔍</span>
@@ -721,7 +838,10 @@ try {
         <!-- Results Count -->
         <div class="results-count">
             <strong><?php echo count($dons); ?></strong> dons trouvés
-        </div>
+            <?php if (isset($_GET['groupe_id']) && !empty($_GET['groupe_id'])): ?>
+                <br><small>Filtrés par groupe</small>
+            <?php endif; ?>
+        </div>  
         
         <!-- Donations Grid -->
         <section class="section">
@@ -733,21 +853,45 @@ try {
                 <div class="grid">
                     <?php foreach ($dons as $don): ?>
                     <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon">
+                        <div class="card-image-container">
+                            <?php if (!empty($don['photos'])): ?>
                                 <?php 
-                                $icons = [
-                                    'Vêtements' => '👕',
-                                    'Nourriture' => '🍞',
-                                    'Médicaments' => '💊',
-                                    'Équipement' => '🔧',
-                                    'Argent' => '💰',
-                                    'Services' => '🤝',
-                                    'Autre' => '🎁'
+                                $imagePath = $don['photos'];
+                                $testPaths = [
+                                    $imagePath,
+                                    '/' . $imagePath,
+                                    '/aide_solitaire/' . $imagePath,
+                                    'http://' . $_SERVER['HTTP_HOST'] . '/aide_solitaire/' . $imagePath
                                 ];
-                                echo $icons[$don['type_don']] ?? '🎁';
+                                $imageFound = false;
                                 ?>
-                            </div>
+                                
+                                <?php foreach ($testPaths as $testPath): ?>
+                                    <?php 
+                                    $filePath = str_replace('http://' . $_SERVER['HTTP_HOST'], $_SERVER['DOCUMENT_ROOT'], $testPath);
+                                    if (file_exists($filePath)): 
+                                        $imageFound = true;
+                                    ?>
+                                        <img src="<?php echo htmlspecialchars($testPath); ?>" 
+                                             alt="Image de <?php echo htmlspecialchars($don['type_don']); ?>" 
+                                             class="card-image">
+                                        <?php break; ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                                
+                                <?php if (!$imageFound): ?>
+                                    <div class="card-image-placeholder">
+                                        <?php echo $icons[$don['type_don']] ?? '🎁'; ?>
+                                    </div>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <div class="card-image-placeholder">
+                                    <?php echo $icons[$don['type_don']] ?? '🎁'; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="card-header">
                             <h3 class="card-title"><?php echo htmlspecialchars($don['type_don']); ?></h3>
                         </div>
                         <div class="card-body">
@@ -756,19 +900,48 @@ try {
                                 <span>📍 <?php echo htmlspecialchars($don['region']); ?></span>
                                 <span>📅 <?php echo date('d/m/Y', strtotime($don['date_don'])); ?></span>
                             </div>
-                            <p class="card-description"><?php echo nl2br(htmlspecialchars($don['description'] ?? 'Pas de description')); ?></p>
-                            <?php if (!empty($don['etat_object'])): ?>
-                                <p style="margin-bottom: 1rem;"><strong>⭐ État:</strong> <?php echo htmlspecialchars($don['etat_object']); ?></p>
+                            
+                            <?php if (!empty($don['groupe_nom'])): ?>
+                            <div class="card-meta" style="background: linear-gradient(135deg, rgba(31,140,135,0.1), rgba(126,221,213,0.15)); padding: 0.8rem; border-radius: 10px; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                                <a href="view_groupe.php?id=<?php echo $don['groupe_id']; ?>" 
+                                   style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.8rem; background: linear-gradient(135deg, #1f8c87, #7eddd5); color: #2c3b3aff ; border-radius: 20px; font-size: 0.9rem; font-weight: 500; text-decoration: none; transition: all 0.3s ease;">
+                                    <span>👥</span>
+                                    <span><?php echo htmlspecialchars($don['groupe_nom']); ?></span>
+                                </a>
+                                <?php if (!empty($don['groupe_type'])): ?>
+                                    <span style="background: rgba(125, 90, 166, 0.2); color: #7d5aa6; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.5rem;">
+                                        <span>🏷️</span>
+                                        <span><?php echo htmlspecialchars($don['groupe_type']); ?></span>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
                             <?php endif; ?>
+                            
+                            <!-- AFFICHAGE DE LA DESCRIPTION -->
+                            <?php if (!empty($don['description'])): ?>
+                                <p class="card-description"><?php echo nl2br(htmlspecialchars($don['description'])); ?></p>
+                            <?php else: ?>
+                                <p class="card-description" style="color: #999; font-style: italic;">Aucune description fournie</p>
+                            <?php endif; ?>
+                            
+                            <!-- AFFICHAGE DE L'ÉTAT -->
+                            <?php if (!empty($don['etat_object'])): ?>
+                                <div class="card-etat">
+                                    <strong>⭐ État:</strong> <?php echo htmlspecialchars($don['etat_object']); ?>
+                                </div>
+                            <?php endif; ?>
+                            
                             <div class="card-actions">
                                 <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">
                                     <span>🔍</span>
                                     <span>Voir détails</span>
                                 </a>
-                                <a href="create_don.php" class="btn btn-secondary">
-                                    <span>🎁</span>
-                                    <span>Faire un don</span>
+                                <?php if (!empty($don['groupe_id'])): ?>
+                                <a href="view_groupe.php?id=<?php echo $don['groupe_id']; ?>" class="btn btn-secondary">
+                                    <span>👥</span>
+                                    <span>Voir le groupe</span>
                                 </a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -795,13 +968,17 @@ try {
         <section class="quick-actions">
             <h3>Vous ne trouvez pas ce que vous cherchez ?</h3>
             <div class="action-buttons">
-                <a href="create_don.php" class="action-btn">
+                <a href="create_dons.php" class="action-btn">
                     <span>🎁</span>
                     <span>Proposer un don spécifique</span>
                 </a>
                 <a href="index.php" class="action-btn">
                     <span>🏠</span>
                     <span>Retour à l'accueil</span>
+                </a>
+                <a href="browse_groupes.php" class="action-btn">
+                    <span>👥</span>
+                    <span>Voir tous les groupes</span>
                 </a>
             </div>
         </section>
@@ -840,6 +1017,26 @@ try {
             cards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`;
                 observer.observe(card);
+            });
+            
+            // Auto-hide success messages
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 1000);
+                });
+            }, 5000);
+            
+            // Gérer les images qui ne se chargent pas
+            document.querySelectorAll('.card-image').forEach(img => {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const placeholder = this.nextElementSibling;
+                    if (placeholder && placeholder.classList.contains('card-image-placeholder')) {
+                        placeholder.style.display = 'flex';
+                    }
+                };
             });
         });
     </script>

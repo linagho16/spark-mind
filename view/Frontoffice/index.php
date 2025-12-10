@@ -1,5 +1,5 @@
 <?php
-// frontoffice/index.php - FrontOffice Homepage
+// frontoffice/index.php - FrontOffice Homepage with Sidebar
 session_start();
 require_once __DIR__ . '/../../model/donmodel.php';
 require_once __DIR__ . '/../../model/groupemodel.php';
@@ -8,38 +8,9 @@ try {
     $donModel = new DonModel();
     $groupeModel = new GroupeModel();
     
-    // CHANGED: Get donations with 'frontoffice' status filter
-    // At the top of index.php:
+    // Get donations with 'frontoffice' status filter
     $activeDons = $donModel->getDonsWithFilters(['statut' => 'frontoffice']);
     $activeGroupes = $groupeModel->getGroupesWithFilters(['statut' => 'frontoffice']);
-    
-    // Limit to 6 each for homepage
-    $recentDons = array_slice($activeDons, 0, 6);
-    $recentGroupes = array_slice($activeGroupes, 0, 6);
-    
-} catch (Exception $e) {
-    $error = "Erreur de connexion: " . $e->getMessage();
-    $recentDons = [];
-    $recentGroupes = [];
-}
-?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <!-- ... rest of your index.php file ... -->
-<?php
-// frontoffice/index.php - Main homepage
-session_start();
-require_once __DIR__ . '/../../Model/donmodel.php';
-require_once __DIR__ . '/../../Model/groupemodel.php';
-
-try {
-    $donModel = new DonModel();
-    $groupeModel = new GroupeModel();
-    
-    // Get active donations (for frontoffice)
-    $activeDons = $donModel->getDonsWithFilters(['statut' => 'actif']);
-    $activeGroupes = $groupeModel->getGroupesWithFilters(['statut' => 'actif']);
     
     // Limit to 6 each for homepage
     $recentDons = array_slice($activeDons, 0, 6);
@@ -69,6 +40,107 @@ try {
             background-color: #FBEDD7;
             color: #333;
             line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ====== SIDEBAR STYLES ====== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1f8c87 0%, #7eddd5 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.mobile-hidden {
+            transform: translateX(-100%);
+        }
+
+        .logo {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 0.3rem 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item .icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Mobile Toggle Button */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: linear-gradient(135deg, #1f8c87, #7eddd5);
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* ====== MAIN CONTENT AREA ====== */
+        .main-wrapper {
+            flex: 1;
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
         }
 
         /* Header - Dashboard Style */
@@ -432,6 +504,24 @@ try {
             }
         }
 
+        @media (max-width: 968px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 2rem 1rem 3rem;
@@ -502,151 +592,208 @@ try {
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <h1>🤝 Aide Solidaire</h1>
-        <p>Plateforme de don et de solidarité. Partagez, donnez, et rejoignez des initiatives qui changent des vies.</p>
-        <div class="pigeon-bg">🕊️</div>
-    </header>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 
-    <!-- Stats -->
-    <div class="stats-bar">
-        <div class="stat-card">
-            <span class="stat-number"><?php echo count($activeDons ?? []); ?></span>
-            <span class="stat-label">Dons actifs</span>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <h2>🕊️ Aide Solidaire</h2>
         </div>
-        <div class="stat-card">
-            <span class="stat-number"><?php echo count($activeGroupes ?? []); ?></span>
-            <span class="stat-label">Groupes actifs</span>
+        <nav class="nav-menu">
+            <!-- Accueil -->
+            <a href="index.php" class="nav-item active">
+                <span class="icon">🏠</span>
+                <span>Accueil</span>
+            </a>
+            <!-- Dons -->
+            <a href="browse_dons.php" class="nav-item">
+                <span class="icon">🎁</span>
+                <span>Parcourir les Dons</span>
+            </a>
+            <!-- Groupes -->
+            <a href="browse_groupes.php" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Parcourir les Groupes</span>
+            </a>
+            <!-- Faire un Don -->
+            <a href="create_don.php" class="nav-item">
+                <span class="icon">➕</span>
+                <span>Faire un Don</span>
+            </a>
+            <!-- Créer un Groupe -->
+            <a href="create_groupe.php" class="nav-item">
+                <span class="icon">✨</span>
+                <span>Créer un Groupe</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="../Backoffice/dashboard.php" class="nav-item">
+                <span class="icon">🔒</span>
+                <span>Espace Admin</span>
+            </a>
         </div>
-        <div class="stat-card">
-            <span class="stat-number"><?php echo (count($activeDons ?? []) + count($activeGroupes ?? [])); ?></span>
-            <span class="stat-label">Opportunités</span>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <h1>🤝 Aide Solidaire</h1>
+            <p>Plateforme de don et de solidarité. Partagez, donnez, et rejoignez des initiatives qui changent des vies.</p>
+            <div class="pigeon-bg">🕊️</div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span class="stat-number"><?php echo count($activeDons ?? []); ?></span>
+                <span class="stat-label">Dons actifs</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number"><?php echo count($activeGroupes ?? []); ?></span>
+                <span class="stat-label">Groupes actifs</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number"><?php echo (count($activeDons ?? []) + count($activeGroupes ?? [])); ?></span>
+                <span class="stat-label">Opportunités</span>
+            </div>
         </div>
+
+        <!-- Main Content -->
+        <main class="container">
+            
+
+            <!-- Recent Donations -->
+            <section class="section">
+                <div class="section-title">
+                    <h2>🎁 Dons récents</h2>
+                    <a href="browse_dons.php" class="view-all">Voir tous →</a>
+                </div>
+                
+                <?php if (!empty($recentDons)): ?>
+                    <div class="grid">
+                        <?php foreach ($recentDons as $don): ?>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <?php 
+                                    $icons = [
+                                        'Vêtements' => '👕',
+                                        'Nourriture' => '🍞',
+                                        'Médicaments' => '💊',
+                                        'Équipement' => '🔧',
+                                        'Argent' => '💰',
+                                        'Services' => '🤝',
+                                        'Autre' => '🎁'
+                                    ];
+                                    echo $icons[$don['type_don']] ?? '🎁';
+                                    ?>
+                                </div>
+                                <h3 class="card-title"><?php echo htmlspecialchars($don['type_don']); ?></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-meta">
+                                    <span>📦 <?php echo htmlspecialchars($don['quantite']); ?> unités</span>
+                                    <span>📍 <?php echo htmlspecialchars($don['region']); ?></span>
+                                </div>
+                                <p class="card-description"><?php echo substr(htmlspecialchars($don['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
+                                <div class="card-actions">
+                                    <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">Voir détails</a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <p>📭 Aucun don disponible pour le moment.</p>
+                        <a href="create_don.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Soyez le premier à donner</a>
+                    </div>
+                <?php endif; ?>
+            </section>
+
+            <!-- Recent Groups -->
+            <section class="section">
+                <div class="section-title">
+                    <h2>👥 Groupes récents</h2>
+                    <a href="browse_groupes.php" class="view-all">Voir tous →</a>
+                </div>
+                
+                <?php if (!empty($recentGroupes)): ?>
+                    <div class="grid">
+                        <?php foreach ($recentGroupes as $groupe): ?>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <?php 
+                                    $icons = [
+                                        'Santé' => '🏥',
+                                        'Éducation' => '📚',
+                                        'Seniors' => '👵',
+                                        'Jeunesse' => '👦',
+                                        'Culture' => '🎨',
+                                        'Urgence' => '🚨',
+                                        'Animaux' => '🐾',
+                                        'Environnement' => '🌿'
+                                    ];
+                                    echo $icons[$groupe['type']] ?? '👥';
+                                    ?>
+                                </div>
+                                <h3 class="card-title"><?php echo htmlspecialchars($groupe['nom']); ?></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-meta">
+                                    <span>📍 <?php echo htmlspecialchars($groupe['region']); ?></span>
+                                    <span>👤 <?php echo htmlspecialchars($groupe['responsable']); ?></span>
+                                </div>
+                                <p class="card-description"><?php echo substr(htmlspecialchars($groupe['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
+                                <div class="card-actions">
+                                    <a href="view_groupe.php?id=<?php echo $groupe['id']; ?>" class="btn btn-primary">Voir groupe</a>
+                                    <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="btn btn-secondary">Contacter</a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <p>👥 Aucun groupe disponible pour le moment.</p>
+                        <a href="create_groupe.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Créer le premier groupe</a>
+                    </div>
+                <?php endif; ?>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2025 Aide Solidaire - Ensemble, faisons la différence ❤️</p>
+            <div class="footer-links">
+                <a href="index.php">🏠 Accueil</a>
+                <a href="../Backoffice/dashboard.php">🔒 Espace Admin</a>
+            </div>
+        </footer>
     </div>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Quick Actions -->
-        <section class="quick-actions">
-            <h3>⚡ Que souhaitez-vous faire ?</h3>
-            <div class="action-buttons">
-                <a href="create_don.php" class="action-btn">🎁 Faire un don</a>
-                <a href="create_groupe.php" class="action-btn">👥 Créer un groupe</a>
-                <a href="browse_dons.php" class="action-btn">🔍 Voir les dons</a>
-                <a href="browse_groupes.php" class="action-btn">🤝 Voir les groupes</a>
-            </div>
-        </section>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('mobile-visible');
+        }
 
-        <!-- Recent Donations -->
-        <section class="section">
-            <div class="section-title">
-                <h2>🎁 Dons récents</h2>
-                <a href="browse_dons.php" class="view-all">Voir tous →</a>
-            </div>
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
             
-            <?php if (!empty($recentDons)): ?>
-                <div class="grid">
-                    <?php foreach ($recentDons as $don): ?>
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <?php 
-                                $icons = [
-                                    'Vêtements' => '👕',
-                                    'Nourriture' => '🍞',
-                                    'Médicaments' => '💊',
-                                    'Équipement' => '🔧',
-                                    'Argent' => '💰',
-                                    'Services' => '🤝',
-                                    'Autre' => '🎁'
-                                ];
-                                echo $icons[$don['type_don']] ?? '🎁';
-                                ?>
-                            </div>
-                            <h3 class="card-title"><?php echo htmlspecialchars($don['type_don']); ?></h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-meta">
-                                <span>📦 <?php echo htmlspecialchars($don['quantite']); ?> unités</span>
-                                <span>📍 <?php echo htmlspecialchars($don['region']); ?></span>
-                            </div>
-                            <p class="card-description"><?php echo substr(htmlspecialchars($don['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
-                            <div class="card-actions">
-                                <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">Voir détails</a>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="empty-state">
-                    <p>📭 Aucun don disponible pour le moment.</p>
-                    <a href="create_don.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Soyez le premier à donner</a>
-                </div>
-            <?php endif; ?>
-        </section>
-
-        <!-- Recent Groups -->
-        <section class="section">
-            <div class="section-title">
-                <h2>👥 Groupes récents</h2>
-                <a href="browse_groupes.php" class="view-all">Voir tous →</a>
-            </div>
-            
-            <?php if (!empty($recentGroupes)): ?>
-                <div class="grid">
-                    <?php foreach ($recentGroupes as $groupe): ?>
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <?php 
-                                $icons = [
-                                    'Santé' => '🏥',
-                                    'Éducation' => '📚',
-                                    'Seniors' => '👵',
-                                    'Jeunesse' => '👦',
-                                    'Culture' => '🎨',
-                                    'Urgence' => '🚨',
-                                    'Animaux' => '🐾',
-                                    'Environnement' => '🌿'
-                                ];
-                                echo $icons[$groupe['type']] ?? '👥';
-                                ?>
-                            </div>
-                            <h3 class="card-title"><?php echo htmlspecialchars($groupe['nom']); ?></h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-meta">
-                                <span>📍 <?php echo htmlspecialchars($groupe['region']); ?></span>
-                                <span>👤 <?php echo htmlspecialchars($groupe['responsable']); ?></span>
-                            </div>
-                            <p class="card-description"><?php echo substr(htmlspecialchars($groupe['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
-                            <div class="card-actions">
-                                <a href="view_groupe.php?id=<?php echo $groupe['id']; ?>" class="btn btn-primary">Voir groupe</a>
-                                <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="btn btn-secondary">Contacter</a>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="empty-state">
-                    <p>👥 Aucun groupe disponible pour le moment.</p>
-                    <a href="create_groupe.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Créer le premier groupe</a>
-                </div>
-            <?php endif; ?>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>© 2025 Aide Solidaire - Ensemble, faisons la différence ❤️</p>
-        <div class="footer-links">
-            <a href="index.php">🏠 Accueil</a>
-            <a href="../Backoffice/dashboard.php">🔒 Espace Admin</a>
-        </div>
-    </footer>
+            if (window.innerWidth <= 968 && 
+                !sidebar.contains(event.target) && 
+                !toggle.contains(event.target) &&
+                sidebar.classList.contains('mobile-visible')) {
+                sidebar.classList.remove('mobile-visible');
+            }
+        });
+    </script>
 
     <?php if (isset($error)): ?>
     <script>

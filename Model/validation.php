@@ -120,5 +120,36 @@ class Validation {
         
         return true;
     }
+     public static function validateGroupeId($groupeId) {
+        if ($groupeId === null || $groupeId === '') {
+            return true; // Null is allowed (no group)
+        }
+        
+        if (!is_numeric($groupeId)) {
+            return "L'ID du groupe doit être un nombre";
+        }
+        
+        if ($groupeId < 1) {
+            return "L'ID du groupe est invalide";
+        }
+        
+        return true;
+    }
+    public static function validateDonAssignment($donId, $groupeId) {
+        $errors = [];
+        
+        // Validate don ID
+        if (!is_numeric($donId) || $donId < 1) {
+            $errors[] = "ID de don invalide";
+        }
+        
+        // Validate groupe ID (can be null)
+        $groupeValidation = self::validateGroupeId($groupeId);
+        if ($groupeValidation !== true) {
+            $errors[] = $groupeValidation;
+        }
+        
+        return empty($errors) ? true : implode(', ', $errors);
+    }
 }
 ?>

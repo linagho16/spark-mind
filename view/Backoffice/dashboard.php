@@ -637,156 +637,136 @@
         </div>
       </div>
     </header>
-
     <!-- Stats Cards - Now Dynamic -->
-    <<!-- SIDEBAR NAVIGATION - Add this to your backoffice files -->
-<div class="sidebar">
+    <div class="stats-grid">
+      <div class="stat-card stat-teal">
+        <div class="stat-icon">🎁</div>
+        <div class="stat-info">
+          <h3><?php echo $stats['total_dons'] ?? 0; ?></h3>
+          <p>Total des dons</p>
+          <span class="stat-trend up">+<?php echo $stats['recent_dons'] ?? 0; ?> cette semaine</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-purple">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>
+            <?php 
+            if (isset($stats['dons_by_type']) && count($stats['dons_by_type']) > 0) {
+              echo count($stats['dons_by_type']);
+            } else {
+              echo '0';
+            }
+            ?>
+          </h3>
+          <p>Types de dons</p>
+          <span class="stat-trend up">Variétés</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-coral">
+        <div class="stat-icon">📍</div>
+        <div class="stat-info">
+          <h3>
+            <?php 
+            if (isset($stats['dons_by_region']) && count($stats['dons_by_region']) > 0) {
+              echo count($stats['dons_by_region']);
+            } else {
+              echo '0';
+            }
+            ?>
+          </h3>
+          <p>Régions actives</p>
+          <span class="stat-trend up">Couverture</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-orange">
+        <div class="stat-icon">📈</div>
+        <div class="stat-info">
+          <h3><?php echo isset($stats['avg_daily']) ? $stats['avg_daily'] : '0'; ?></h3>
+          <p>Moyenne journalière</p>
+          <span class="stat-trend up">Croissance</span>
+        </div>
+      </div>
+    </div>
+     
+  <!--  Sidebar Navigation -->
+  <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
-        <h2>🤝 Aide Solidaire</h2>
-        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Administration</p>
+      <h2>🤝 Aide Solidaire</h2>
+      <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">Administration</p>
     </div>
     
     <!-- Navigation Menu -->
     <nav class="nav-menu">
-        <!-- Dashboard -->
-        <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php' || (!isset($_GET['action']) && isset($_GET['action']) == 'dashboard')) ? 'active' : ''; ?>">
-            <span class="icon">📊</span>
-            <span>Tableau de bord</span>
-        </a>
-        
-        <!-- Donations Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600;">
-            GESTION DES DONS
-        </div>
-        
-        <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'dons') ? 'active' : ''; ?>">
-            <span class="icon">🎁</span>
-            <span>Tous les dons</span>
-        </a>
-        
-        <a href="/aide_solitaire/controller/donC.php?action=create_don" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'create_don') ? 'active' : ''; ?>">
-            <span class="icon">➕</span>
-            <span>Ajouter un don</span>
-        </a>
-        
-        <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'statistics') ? 'active' : ''; ?>">
-            <span class="icon">📈</span>
-            <span>Statistiques dons</span>
-        </a>
-        
-        <!-- Groups Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
-            GESTION DES GROUPES
-        </div>
-        
-        <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'groupes') ? 'active' : ''; ?>">
-            <span class="icon">👥</span>
-            <span>Tous les groupes</span>
-        </a>
-        
-        <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="nav-item <?php echo (isset($_GET['action']) && $_GET['action'] == 'create_groupe') ? 'active' : ''; ?>">
-            <span class="icon">➕</span>
-            <span>Ajouter un groupe</span>
-        </a>
-        
-        <!-- Settings Section -->
-        <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
-            ADMINISTRATION
-        </div>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">👤</span>
-            <span>Utilisateurs</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">⚙️</span>
-            <span>Paramètres</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">📢</span>
-            <span>Newsletter</span>
-        </a>
-        
-        <a href="#" class="nav-item">
-            <span class="icon">📋</span>
-            <span>Rapports</span>
-        </a>
+      <!-- Dashboard -->
+      <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item active">
+        <span class="icon">📊</span>
+        <span>Tableau de bord</span>
+      </a>
+      
+      <!-- Donations Section -->
+      <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600;">
+        GESTION DES DONS
+      </div>
+      
+      <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item">
+        <span class="icon">🎁</span>
+        <span>Tous les dons</span>
+      </a>
+      
+      <a href="/aide_solitaire/controller/donC.php?action=create_don" class="nav-item">
+        <span class="icon">➕</span>
+        <span>Ajouter un don</span>
+      </a>
+      
+      <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item">
+        <span class="icon">📈</span>
+        <span>Statistiques dons</span>
+      </a>
+      
+      <!-- Groups Section -->
+      <div style="padding: 1rem 0.5rem 0.5rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600; margin-top: 1rem;">
+        GESTION DES GROUPES
+      </div>
+      
+      <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item">
+        <span class="icon">👥</span>
+        <span>Tous les groupes</span>
+      </a>
+      
+      <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="nav-item">
+        <span class="icon">➕</span>
+        <span>Ajouter un groupe</span>
+      </a>
     </nav>
     
     <!-- Sidebar Footer -->
     <div class="sidebar-footer">
-        <!-- User Profile -->
-        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 1.2rem;">👤</span>
-            </div>
-            <div>
-                <div style="font-weight: 600; font-size: 0.9rem;">Administrateur</div>
-                <div style="font-size: 0.8rem; opacity: 0.8;">Admin</div>
-            </div>
+      <!-- User Profile -->
+      <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem;">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+          <span style="font-size: 1.2rem;">👤</span>
         </div>
-        
-        <!-- Logout Button -->
-        <a href="#" style="display: block; text-align: center; margin-top: 1rem; padding: 0.7rem; background: rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
-            <span>🚪</span>
-            <span>Déconnexion</span>
-        </a>
-        
-        <!-- FrontOffice Link -->
-        <a href="/aide_solitaire/view/frontoffice/index.php" style="display: block; text-align: center; margin-top: 0.5rem; padding: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
-            <span>🌐</span>
-            <span>Voir le site public</span>
-        </a>
-    </div>
-</div>
-
-    <!-- Content Grid -->
-    <section class="content-grid">
-      <!-- Recent Groups -->
-      <div class="content-card">
-        <div class="card-header">
-          <h2>🌟 Groupes récents</h2>
-          <button class="btn-primary">+ Nouveau</button>
-        </div>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Nom du groupe</th>
-                <th>Catégorie</th>
-                <th>Membres</th>
-                <th>Statut</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>🐾 Refuge des animaux</td>
-                <td>Animaux</td>
-                <td>142</td>
-                <td><span class="badge badge-active">Actif</span></td>
-                <td>
-                  <button class="btn-icon">✏️</button>
-                  <button class="btn-icon">🗑️</button>
-                </td>
-              </tr>
-              <tr>
-                <td>🍞 Ramadan 2025</td>
-                <td>Solidarité</td>
-                <td>98</td>
-                <td><span class="badge badge-active">Actif</span></td>
-                <td>
-                  <button class="btn-icon">✏️</button>
-                  <button class="btn-icon">🗑️</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem;">Administrateur</div>
+          <div style="font-size: 0.8rem; opacity: 0.8;">Admin</div>
         </div>
       </div>
+      
+      <!-- FrontOffice Link -->
+      <a href="/aide_solitaire/view/frontoffice/index.php" style="display: block; text-align: center; margin-top: 0.5rem; padding: 0.7rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; text-decoration: none; color: white; font-size: 0.9rem; transition: all 0.3s ease;">
+        <span>🌐</span>
+        <span>Voir le site public</span>
+      </a>
+    </div>
+  </div>
+    
+    <section class="content-grid">
+      <!-- Recent Groups -->
 
       <!-- Recent Donations - Now Dynamic -->
       <div class="content-card">

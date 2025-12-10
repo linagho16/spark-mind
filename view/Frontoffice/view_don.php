@@ -554,9 +554,8 @@ try {
     <main class="container">
         <?php if ($don): ?>
             <!-- Back Button -->
-            <a href="/aide_solitaire/controller/donC.php?action=list&context=frontoffice" class="back-link"></a>
-                <span>←</span>
-                <span>Retour aux dons</span>
+            <a href="/aide_solitaire/view/frontoffice/browse_dons.php?action=list&context=frontoffice" class="back-link"><span>←Retour aux dons</span></a>
+                
             </a>
             
             <!-- Donation Details -->
@@ -661,13 +660,13 @@ try {
                 
                 <!-- Action Buttons -->
                 <div class="action-buttons">
-                    <a href="/aide_solitaire/controller/donC.php?action=list&context=frontoffice&type_don=<?php echo urlencode($don['type_don']); ?>" class="action-btn action-primary"></a>
-                        <span>🔍</span>
-                        <span>Voir d'autres dons similaires</span>
+                    <a href="/aide_solitaire/view/Frontoffice/browse_dons.php?action=list&context=frontoffice&type_don=<?php echo urlencode($don['type_don']); ?>" class="action-btn action-primary"><span>🔍 Voir d'autres dons similaires</span></a>
+                        
+                        
                     </a>
-                    <a href="/aide_solitaire/controller/donC.php?action=create&context=frontoffice" class="action-btn action-secondary"></a>
-                        <span>🎁</span>
-                        <span>Faire un don similaire</span>
+                    <a href="/aide_solitaire/view/Frontoffice/create_don.php?action=create&context=frontoffice" class="action-btn action-secondary"><span>🎁 Faire un don similaire</span></a>
+                        
+                        
                     </a>
                 </div>
             </div>
@@ -677,13 +676,13 @@ try {
                 <h3><span>💡</span> Suggestions</h3>
                 <p>Découvrez d'autres opportunités de solidarité qui pourraient vous intéresser.</p>
                 <div class="related-links">
-                    <<a href="/aide_solitaire/controller/donC.php?action=list&context=frontoffice&region=<?php echo urlencode($don['region']); ?>" class="related-link">
+                    <a href="/aide_solitaire/controller/donC.php?action=list&context=frontoffice&region=<?php echo urlencode($don['region']); ?>" class="related-link">
                         <span>📍</span>
                         <span>Voir les dons à <?php echo htmlspecialchars($don['region']); ?></span>
                     </a>
-                    <a href="/aide_solitaire/controller/donC.php?action=list&context=frontoffice&type_don=<?php echo urlencode($don['type_don']); ?>" class="related-link"></a>
-                        <span>🎁</span>
-                        <span>Voir tous les dons <?php echo htmlspecialchars($don['type_don']); ?></span>
+                    <a href="/aide_solitaire/controller/donC.php?action=list&context=frontoffice&type_don=<?php echo urlencode($don['type_don']); ?>" class="related-link"><span>🎁 Voir tous les dons <?php echo htmlspecialchars($don['type_don']); ?></span></a>
+                        
+                        
                     </a>
                 </div>
             </div>

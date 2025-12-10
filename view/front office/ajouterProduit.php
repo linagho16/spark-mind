@@ -57,280 +57,208 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SparkMind - Ajouter un Produit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="formlaire.css">
-    <style>
-        :root {
-            --primary: #1f8c87;
-            --primary-dark: #166662;
-            --secondary: #7d5aa6;
-            --accent: #ec7546;
-            --bg-light: #f8f9fa;
-            --text-dark: #2d3436;
-            --text-light: #636e72;
-            --white: #ffffff;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
-            --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        /* Header Styles from formulaire.css */
-        .header {
-            text-align: center;
-            padding: 30px 0;
-        }
-
-        .logo {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .header h1 {
-            color: #1f8c87;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #7d5aa6;
-            font-style: italic;
-            font-size: 1.1em;
-        }
-
-        /* Form Card Styles */
-        .form-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: var(--shadow-md);
-            margin-top: 30px;
-            border: 1px solid rgba(0,0,0,0.03);
-        }
-
-        .section-title {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .section-number {
-            background: var(--primary);
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            box-shadow: 0 4px 15px rgba(31, 140, 135, 0.3);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(31, 140, 135, 0.4);
-        }
-
-        .nav-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background: white;
-            color: var(--primary);
-            text-decoration: none;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid #eee;
-        }
-
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            color: var(--secondary);
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(31, 140, 135, 0.1);
-        }
-
-        .radio-item input[type="radio"] {
-            accent-color: var(--primary);
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Navigation -->
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="index.php" class="nav-button">
-                ← Retour à l'accueil
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>SparkMind</h2>
+            <p>« Quand la pensée devient espoir. »</p>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="index.php" class="nav-item">
+                <span>🏠</span>
+                <span>Accueil</span>
             </a>
-        </div>
-
-        <div class="header">
-            <div class="logo">
-                <img src="logo.png" alt="SparkMind Logo">
+            <a href="liste_produits.php" class="nav-item">
+                <span>📦</span>
+                <span>Produits</span>
+            </a>
+            <a href="ajouterProduit.php" class="nav-item active">
+                <span>➕</span>
+                <span>Ajouter un don</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span>👤</span>
+                <span>Mon compte</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="info-box">
+                <h4>Besoin d'aide ?</h4>
+                <p>Contactez notre équipe pour toute question</p>
             </div>
-            <h1>Gestion des Produits</h1>
-            <p class="subtitle">« Ajoutez vos produits facilement »</p>
         </div>
+    </aside>
 
-        <div class="form-card">
-            <h2 style="color: var(--accent); text-align: center; margin-bottom: 10px;">📦 Ajouter un Produit</h2>
-            <p class="tagline" style="color: var(--text-light);">
-                Remplissez le formulaire pour ajouter un nouveau produit
-            </p>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1>Ajouter un Produit</h1>
+                <p class="subtitle">Partagez vos objets avec la communauté</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-help">❓ Aide</button>
+            </div>
+        </header>
 
-            <?php if ($error): ?>
-                <div style="background: #fff5f5; color: #c0392b; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #e74c3c;">
-                    ⚠️ <?= htmlspecialchars($error) ?>
-                </div>
-            <?php endif; ?>
+        <!-- Notifications -->
+        <?php if ($error): ?>
+            <div class="notification error show">
+                ⚠️ <?= htmlspecialchars($error) ?>
+            </div>
+        <?php endif; ?>
 
-            <?php if ($success): ?>
-                <div style="background: #f0fdf4; color: #166534; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #22c55e;">
-                    ✅ <?= htmlspecialchars($success) ?>
-                </div>
-            <?php endif; ?>
+        <?php if ($success): ?>
+            <div class="notification success show">
+                ✅ <?= htmlspecialchars($success) ?>
+            </div>
+        <?php endif; ?>
 
+        <!-- Form Container -->
+        <div class="form-container">
             <form id="productForm" method="POST" enctype="multipart/form-data" novalidate>
+                
                 <!-- Section 1: Informations du Produit -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">1</span>
-                        Informations du Produit
-                    </h3>
-
-                    <div class="form-group">
-                        <label>Titre du produit <span class="required">*</span></label>
-                        <input type="text" id="title" name="title" placeholder="Ex: iPhone 13 Pro, Laptop Dell...">
-                        <span class="error-message" id="title-error"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Description <span class="required">*</span></label>
-                        <textarea id="description" name="description" placeholder="Décrivez votre produit en détail..."></textarea>
-                        <span class="error-message" id="description-error"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Catégorie <span class="required">*</span></label>
-                        <select id="category" name="category">
-                            <option value="">Sélectionnez une catégorie</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat['idc'] ?>">
-                                    <?= htmlspecialchars($cat['nomC']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <div style="margin-top: 8px; font-size: 0.9em;">
-                            <a href="../../ajouterCategorie.php" style="color: var(--primary); text-decoration: none; font-weight: 500;">
-                                + Ajouter une nouvelle catégorie
-                            </a>
+                <section class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">📝</div>
+                        <div>
+                            <h2 class="section-title">Informations du Produit</h2>
+                            <p class="section-description">Décrivez votre produit en détail</p>
                         </div>
-                        <span class="error-message" id="category-error"></span>
                     </div>
-                </div>
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Titre du produit <span class="required">*</span></label>
+                            <input type="text" id="title" name="title" placeholder="Ex: iPhone 13 Pro, Laptop Dell...">
+                            <span class="error-message" id="title-error"></span>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Description <span class="required">*</span></label>
+                            <textarea id="description" name="description" placeholder="Décrivez votre produit en détail..."></textarea>
+                            <span class="error-message" id="description-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Catégorie <span class="required">*</span></label>
+                            <select id="category" name="category">
+                                <option value="">Sélectionnez une catégorie</option>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?= $cat['idc'] ?>">
+                                        <?= htmlspecialchars($cat['nomC']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <p class="helper-text">
+                                <a href="../../ajouterCategorie.php" style="color: #166e6a; text-decoration: none; font-weight: 600;">
+                                    + Ajouter une nouvelle catégorie
+                                </a>
+                            </p>
+                            <span class="error-message" id="category-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Photo du produit <span class="required">*</span></label>
+                            <input type="file" id="photo" name="photo" accept="image/*">
+                            <p class="helper-text">📸 Ajoutez une photo claire de votre produit</p>
+                            <span class="error-message" id="photo-error"></span>
+                        </div>
+                    </div>
+                </section>
 
                 <!-- Section 2: État et Disponibilité -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">2</span>
-                        État et Disponibilité
-                    </h3>
-
-                    <div class="form-group">
-                        <label>Condition <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <label class="radio-item">
-                                <input type="radio" name="condition" value="neuf">
-                                <span>✨ Neuf - Produit jamais utilisé</span>
-                            </label>
-                            <label class="radio-item">
-                                <input type="radio" name="condition" value="bon etat">
-                                <span>👍 Bon état - Légèrement utilisé</span>
-                            </label>
-                            <label class="radio-item">
-                                <input type="radio" name="condition" value="usage">
-                                <span>🔧 Usagé - Utilisé régulièrement</span>
-                            </label>
+                <section class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">⚙️</div>
+                        <div>
+                            <h2 class="section-title">État et Disponibilité</h2>
+                            <p class="section-description">Précisez l'état de votre produit</p>
                         </div>
-                        <span class="error-message" id="condition-error"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label>Statut <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <label class="radio-item">
-                                <input type="radio" name="statut" value="disponible">
-                                <span>✅ Disponible - Prêt à être vendu</span>
-                            </label>
-                            <label class="radio-item">
-                                <input type="radio" name="statut" value="reserve">
-                                <span>⏳ Réservé - En attente</span>
-                            </label>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Condition <span class="required">*</span></label>
+                            <div class="radio-grid">
+                                <label class="radio-card">
+                                    <input type="radio" name="condition" value="neuf">
+                                    <div class="radio-content">
+                                        <div class="urgency-badge" style="background: #e8f5e9;">✨</div>
+                                        <strong>Neuf</strong>
+                                        <small>Jamais utilisé</small>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="condition" value="bon etat">
+                                    <div class="radio-content">
+                                        <div class="urgency-badge" style="background: #fff3e0;">👍</div>
+                                        <strong>Bon état</strong>
+                                        <small>Légèrement utilisé</small>
+                                    </div>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="condition" value="usage">
+                                    <div class="radio-content">
+                                        <div class="urgency-badge" style="background: #fce4ec;">🔧</div>
+                                        <strong>Usagé</strong>
+                                        <small>Utilisé régulièrement</small>
+                                    </div>
+                                </label>
+                            </div>
+                            <span class="error-message" id="condition-error"></span>
                         </div>
-                        <span class="error-message" id="statut-error"></span>
+
+                        <div class="form-group full-width">
+                            <label>Statut <span class="required">*</span></label>
+                            <div class="checkbox-grid-compact">
+                                <label class="checkbox-compact">
+                                    <input type="radio" name="statut" value="disponible">
+                                    <span>✅ Disponible - Prêt à être donné</span>
+                                </label>
+                                <label class="checkbox-compact">
+                                    <input type="radio" name="statut" value="reserve">
+                                    <span>⏳ Réservé - En attente</span>
+                                </label>
+                            </div>
+                            <span class="error-message" id="statut-error"></span>
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- Section 3: Photo -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">3</span>
-                        Photo du Produit
-                    </h3>
-
-                    <div class="privacy-notice" style="background: #f0f9ff; border-left-color: var(--primary);">
-                        📸 <strong>Conseil :</strong> Ajoutez une photo claire de votre produit pour attirer plus d'acheteurs.
+                <!-- Section 3: Validation -->
+                <section class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">✓</div>
+                        <div>
+                            <h2 class="section-title">Validation</h2>
+                            <p class="section-description">Confirmez les informations</p>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Photo du produit <span class="required">*</span></label>
-                        <input type="file" id="photo" name="photo" accept="image/*" style="padding: 10px; background: #f8f8f8;">
-                        <span class="error-message" id="photo-error"></span>
-                    </div>
-                </div>
-
-                <!-- Section 4: Validation -->
-                <div class="section">
-                    <h3 class="section-title">
-                        <span class="section-number">4</span>
-                        Validation
-                    </h3>
-
-                    <div class="attestation-box" style="border-color: var(--accent); background: #fff9f5;">
-                        <label>
-                            <input type="checkbox" id="attestation" name="attestation" style="accent-color: var(--accent);">
+                    <div class="attestation-box">
+                        <label class="checkbox-special">
+                            <input type="checkbox" id="attestation" name="attestation">
                             <span>J'atteste que les informations fournies sont exactes et que ce produit m'appartient.</span>
                         </label>
                         <span class="error-message" id="attestation-error"></span>
                     </div>
 
-                    <div class="button-group">
-                        <a href="index.php" class="btn-cancel" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Annuler</a>
-                        <button type="submit" class="btn-submit">🚀 Ajouter le produit</button>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="window.location.href='index.php'">Annuler</button>
+                        <button type="submit" class="btn-primary">🚀 Ajouter le produit</button>
                     </div>
-                </div>
+                </section>
             </form>
         </div>
-    </div>
+    </main>
     
     <script src="validation.js"></script>
 </body>

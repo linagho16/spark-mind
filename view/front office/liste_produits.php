@@ -27,190 +27,317 @@ foreach ($produitsDisponibles as $produit) {
     <title>SparkMind - Produits disponibles</title>
     <link rel="stylesheet" href="formlaire.css">
     <style>
-        .products-section {
-            margin-top: 30px;
-        }
-        .products-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .products-header h2 {
-            color: #ec7546;
-            font-size: 2em;
-        }
-        .products-summary {
-            display: flex;
-            justify-content: center;
+        /* Styles spécifiques pour la liste des produits */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
+            margin-bottom: 40px;
         }
-        .summary-card {
+
+        .stat-card {
             background: white;
-            border-radius: 14px;
-            padding: 18px 24px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-            min-width: 220px;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s ease;
         }
-        .summary-card span {
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .stat-label {
             display: block;
-            color: #7d5aa6;
+            color: #666;
             font-size: 0.9em;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
-        .summary-card strong {
-            font-size: 1.6em;
-            color: #1f8c87;
+
+        .stat-card .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #166e6a;
         }
+
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
         }
+
         .product-card {
             background: white;
-            border-radius: 18px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+
+        .product-body {
+            padding: 25px;
+            flex: 1;
             display: flex;
             flex-direction: column;
         }
-        .product-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .product-body {
-            padding: 20px;
-            flex: 1;
-        }
+
         .product-body h3 {
-            color: #1f8c87;
-            margin-bottom: 8px;
+            color: #0a6661;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            font-weight: 700;
         }
+
         .product-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
+
         .badge {
-            padding: 5px 12px;
-            border-radius: 40px;
+            padding: 6px 14px;
+            border-radius: 30px;
             font-size: 0.8em;
-            background: #f0f0f0;
-            color: #555;
+            font-weight: 600;
         }
+
         .badge.condition {
             background: #fff3e0;
             color: #e65100;
         }
+
         .badge.category {
-            background: #e3f2fd;
-            color: #1565c0;
+            background: rgba(22, 110, 106, 0.1);
+            color: #166e6a;
         }
+
         .product-body p {
-            color: #555;
-            line-height: 1.4;
-            margin-bottom: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
+
         .product-actions {
-            padding: 0 20px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
         }
+
         .product-actions a {
-            background: linear-gradient(135deg, #1f8c87, #7d5aa6);
+            background: linear-gradient(135deg, #0d6e69, #6e3da7);
             color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 12px 24px;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: transform 0.2s ease;
+            transition: all 0.3s ease;
         }
+
         .product-actions a:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 110, 105, 0.3);
         }
+
         .product-actions small {
-            color: #7d5aa6;
-            font-style: italic;
+            color: #27ae60;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
+        .product-actions small::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #27ae60;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+        }
+
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 40px;
             background: white;
-            border-radius: 18px;
-            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.12);
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
+
         .empty-state h3 {
-            color: #1f8c87;
-            margin-bottom: 10px;
+            color: #0a6661;
+            margin-bottom: 15px;
+            font-size: 1.8em;
         }
+
         .empty-state p {
             color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <img src="logo.png" alt="SparkMind Logo">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>SparkMind</h2>
+            <p>« Quand la pensée devient espoir. »</p>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="index.php" class="nav-item">
+                <span>🏠</span>
+                <span>Accueil</span>
+            </a>
+            <a href="liste_produits.php" class="nav-item active">
+                <span>📦</span>
+                <span>Produits</span>
+            </a>
+            <a href="ajouterProduit.php" class="nav-item">
+                <span>➕</span>
+                <span>Ajouter un don</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span>👤</span>
+                <span>Mon compte</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="info-box">
+                <h4>Besoin d'aide ?</h4>
+                <p>Contactez notre équipe pour toute question</p>
             </div>
-            <h1>SparkMind</h1>
-            <p class="subtitle">« Quand la pensée devient espoir. »</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div>
+                <h1>Produits Disponibles</h1>
+                <p class="subtitle">Découvrez tous les dons prêts à être remis</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-help">❓ Aide</button>
+            </div>
+        </header>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <span class="stat-label">Total disponibles</span>
+                <div class="stat-value"><?php echo $totalDisponibles; ?></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏷️</div>
+                <span class="stat-label">Catégories</span>
+                <div class="stat-value"><?php echo count($categoriesDisponibles); ?></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✨</div>
+                <span class="stat-label">Nouveautés</span>
+                <div class="stat-value"><?php echo min($totalDisponibles, 12); ?></div>
+            </div>
         </div>
 
-        <div class="form-card products-section">
-            <div class="products-header">
-                <h2>🎁 Produits disponibles</h2>
-                <p>Découvrez les dons prêts à être remis.</p>
+        <!-- Products Section -->
+        <?php if ($totalDisponibles === 0): ?>
+            <div class="empty-state">
+                <div style="font-size: 5rem; margin-bottom: 20px;">📭</div>
+                <h3>Aucun produit disponible pour le moment</h3>
+                <p>Revenez bientôt ou proposez un don depuis notre formulaire.</p>
+                <a href="ajouterProduit.php" class="btn-primary" style="text-decoration: none; display: inline-block;">
+                    + Proposer un don
+                </a>
             </div>
-
-            <div class="products-summary">
-                <div class="summary-card">
-                    <span>Total disponibles</span>
-                    <strong><?php echo $totalDisponibles; ?></strong>
-                </div>
-                <div class="summary-card">
-                    <span>Catégories représentées</span>
-                    <strong><?php echo count($categoriesDisponibles); ?></strong>
-                </div>
-            </div>
-
-            <?php if ($totalDisponibles === 0): ?>
-                <div class="empty-state">
-                    <h3>Aucun produit disponible pour le moment</h3>
-                    <p>Revenez bientôt ou proposez un don depuis notre formulaire.</p>
-                </div>
-            <?php else: ?>
-                <div class="products-grid">
-                    <?php foreach ($produitsDisponibles as $produit): ?>
-                        <div class="product-card">
-                            <?php if (!empty($produit['photo'])): ?>
-                                <img src="<?php echo htmlspecialchars($produit['photo']); ?>" alt="<?php echo htmlspecialchars($produit['title']); ?>">
-                            <?php else: ?>
-                                <img src="logo.png" alt="SparkMind">
-                            <?php endif; ?>
-                            <div class="product-body">
-                                <h3><?php echo htmlspecialchars($produit['title']); ?></h3>
-                                <div class="product-meta">
-                                    <span class="badge category"><?php echo htmlspecialchars($produit['category']); ?></span>
-                                    <span class="badge condition"><?php echo htmlspecialchars($produit['condition']); ?></span>
-                                </div>
-                                <p><?php echo nl2br(htmlspecialchars(substr($produit['description'], 0, 140))); ?>...</p>
+        <?php else: ?>
+            <div class="products-grid">
+                <?php foreach ($produitsDisponibles as $produit): ?>
+                    <div class="product-card">
+                        <?php 
+                        // Construire le chemin de l'image
+                        if (!empty($produit['photo'])) {
+                            $photo = htmlspecialchars($produit['photo']);
+                            // Si le chemin commence par 'uploads/', ajouter ../../ pour remonter depuis view/front office/
+                            if (strpos($photo, 'uploads/') === 0) {
+                                $photo = '../../' . $photo;
+                            }
+                            // Si le chemin ne commence pas par http ou ../../, l'ajouter
+                            elseif (strpos($photo, 'http') !== 0 && strpos($photo, '../../') !== 0) {
+                                $photo = '../../uploads/' . $photo;
+                            }
+                        } else {
+                            // Image par défaut
+                            $photo = 'logo.png';
+                        }
+                        ?>
+                        <img src="<?php echo $photo; ?>" alt="<?php echo htmlspecialchars($produit['title']); ?>"
+                             onerror="this.src='logo.png'">
+                        <div class="product-body">
+                            <h3><?php echo htmlspecialchars($produit['title']); ?></h3>
+                            <div class="product-meta">
+                                <span class="badge category"><?php echo htmlspecialchars($produit['category']); ?></span>
+                                <span class="badge condition"><?php echo htmlspecialchars($produit['condition']); ?></span>
                             </div>
+                            <p><?php echo nl2br(htmlspecialchars(substr($produit['description'], 0, 140))); ?>...</p>
                             <div class="product-actions">
-                                <small>Statut : Disponible</small>
-                                <a href="../../detail.php?id=<?php echo $produit['id']; ?>">Voir plus</a>
+                                <small>Disponible</small>
+                                <a href="detailsfront.php?id=<?php echo $produit['id']; ?>">Voir détails</a>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Footer -->
+        <div style="text-align: center; padding: 40px 0; color: #666; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 40px;">
+            <p>&copy; 2024 SparkMind. Tous droits réservés.</p>
         </div>
-    </div>
+    </main>
 </body>
 </html>
-

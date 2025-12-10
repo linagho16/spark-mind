@@ -134,5 +134,97 @@ class CategorieC
             return 0;
         }
     }
+
+    // Filtrer et trier les catégories (avec pagination)
+    public function filtrerCategories($recherche = null, $createur = null, $tri = null, $page = null, $perPage = null)
+    {
+        $sql = "SELECT * FROM categorie WHERE 1=1";
+        $params = [];
+
+        if (!empty($recherche)) {
+            $sql .= " AND (nomC LIKE :recherche OR descriptionC LIKE :recherche)";
+            $params['recherche'] = "%$recherche%";
+        }
+
+        if (!empty($createur)) {
+            $sql .= " AND nom_Createur LIKE :createur";
+            $params['createur'] = "%$createur%";
+        }
+
+        if (!empty($tri)) {
+            switch ($tri) {
+                case 'nom_asc':
+                    $sql .= " ORDER BY nomC ASC";
+                    break;
+                case 'nom_desc':
+                    $sql .= " ORDER BY nomC DESC";
+                    break;
+                case 'date_asc':
+                    $sql .= " ORDER BY dateC ASC";
+                    break;
+                case 'date_desc':
+                    $sql .= " ORDER BY dateC DESC";
+                    break;
+                default:
+                    $sql .= " ORDER BY idc DESC";
+            }
+        } else {
+            $sql .= " ORDER BY idc DESC";
+        }
+
+        // Pagination
+        if ($page !== null && $perPage !== null) {
+            $offset = ($page - 1) * $perPage;
+            $sql .= " LIMIT :offset, :limit";
+        }
+
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            
+            // Bind existing params
+            foreach ($params as $key => $value) {
+                $query->bindValue(':' . $key, $value);
+            }
+
+            if ($page !== null && $perPage !== null) {
+                $query->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+                $query->bindValue(':limit', (int)$perPage, PDO::PARAM_INT);
+            }
+
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
+    // Compter les catégories filtrées (pour la pagination)
+    public function countFiltrerCategories($recherche = null, $createur = null)
+    {
+        $sql = "SELECT COUNT(*) as total FROM categorie WHERE 1=1";
+        $params = [];
+
+        if (!empty($recherche)) {
+            $sql .= " AND (nomC LIKE :recherche OR descriptionC LIKE :recherche)";
+            $params['recherche'] = "%$recherche%";
+        }
+
+        if (!empty($createur)) {
+            $sql .= " AND nom_Createur LIKE :createur";
+            $params['createur'] = "%$createur%";
+        }
+
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute($params);
+            $result = $query->fetch(PDO::FETCH_ASSOC);
+            return $result['total'];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
 }
+
 ?>

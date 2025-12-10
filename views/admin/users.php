@@ -287,8 +287,10 @@
           font-size: 11px;
       }
 
-      .tag-admin { background:#ffe0b3; color:#8a4b00; }
-      .tag-user  { background:#e0f5ff; color:#005f8a; }
+      .tag-admin   { background:#ffe0b3; color:#8a4b00; }
+      .tag-user    { background:#e0f5ff; color:#005f8a; }
+      .tag-active  { background:#e0f9e5; color:#1b6b2a; }
+      .tag-blocked { background:#ffe0e0; color:#b02222; }
 
       .btn-table {
           display: inline-block;
@@ -311,7 +313,19 @@
           color: #fff;
       }
 
-      .btn-table.delete:hover {
+      .btn-table.block {
+          background: #ffb3b3;
+          color: #7a1010;
+      }
+
+      .btn-table.unblock {
+          background: #b9f4c4;
+          color: #145321;
+      }
+
+      .btn-table.delete:hover,
+      .btn-table.block:hover,
+      .btn-table.unblock:hover {
           opacity: 0.9;
       }
 
@@ -499,6 +513,7 @@
                                 <th>Email</th>
                                 <th>Rôle technique</th>
                                 <th>Rôle SPARKMIND</th>
+                                <th>Statut</th>
                                 <th>Date inscription</th>
                                 <th>Actions</th>
                             </tr>
@@ -506,6 +521,10 @@
 
                         <tbody id="users-table-body">
                         <?php foreach ($users as $u): ?>
+                            <?php
+                              $status = $u['status'] ?? 'active';
+                              $isBlocked = ($status === 'blocked');
+                            ?>
                             <tr>
                                 <td><?= $u['id'] ?></td>
                                 <td><?= htmlspecialchars($u['nom'].' '.$u['prenom']) ?></td>
@@ -529,14 +548,45 @@
                                     ?>
                                 </td>
 
+                                <td>
+                                    <?php if ($isBlocked): ?>
+                                        <span class="tag tag-blocked">Bloqué</span>
+                                    <?php else: ?>
+                                        <span class="tag tag-active">Actif</span>
+                                    <?php endif; ?>
+                                </td>
+
                                 <td><?= htmlspecialchars($u['created_at']) ?></td>
 
                                 <td>
                                     <!-- Voir profil -->
                                     <a href="index.php?page=admin_user_profile&id=<?= $u['id'] ?>"
                                        class="btn-table view">
-                                        👁 Voir profil
+                                        👁 Voir
                                     </a>
+
+                                    <!-- Bloquer / Débloquer -->
+                                    <?php if ($isBlocked): ?>
+                                        <form method="post"
+                                              action="index.php?page=admin_unblock_user"
+                                              style="display:inline;"
+                                              onsubmit="return confirm('Débloquer ce compte et lui permettre de se reconnecter ?');">
+                                            <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                                            <button type="submit" class="btn-table unblock">
+                                                ✅ Débloquer
+                                            </button>
+                                        </form>
+                                    <?php else: ?>
+                                        <form method="post"
+                                              action="index.php?page=admin_block_user"
+                                              style="display:inline;"
+                                              onsubmit="return confirm('Bloquer ce compte ? L’utilisateur ne pourra plus se connecter.');">
+                                            <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                                            <button type="submit" class="btn-table block">
+                                                🚫 Bloquer
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
 
                                     <!-- Supprimer compte -->
                                     <form method="post"

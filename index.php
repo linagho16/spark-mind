@@ -99,12 +99,13 @@ switch ($page) {
         break;
 
     case 'admin_block_user':
-        $adminController->blockUser();
+        (new AdminController())->blockUser();
         break;
 
-    case 'admin_activate_user':
-        $adminController->activateUser();
+    case 'admin_unblock_user':
+        (new AdminController())->unblockUser();
         break;
+
 
     case 'admin_user_profile':
         $adminController->userProfile();

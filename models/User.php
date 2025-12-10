@@ -125,7 +125,7 @@ class User
     // 🔹 Filtre combiné rôle SPARKMIND + période d'inscription
     public function findAllBySiteRoleAndDate(string $siteRole = 'all', string $dateFilter = 'all'): array
     {
-        $sql = "SELECT id, nom, prenom, email, role, site_role, created_at
+        $sql = "SELECT id, nom, prenom, email, role, site_role,status, created_at
                 FROM users
                 WHERE 1=1";
         $params = [];
@@ -186,6 +186,9 @@ class User
             ':id'   => $id,
         ]);
     }
+
+
+
 
     /* =======================
        🔹 NOUVELLES MÉTHODES

@@ -149,6 +149,10 @@ class AdminController
         exit;
     }
 
+    /**
+     * Bloquer un utilisateur + envoyer mail.
+     * Route : index.php?page=admin_block_user
+     */
     public function blockUser(): void
     {
         $this->ensureAdmin();
@@ -166,8 +170,10 @@ class AdminController
             $user      = $userModel->findById($id);
 
             if ($user) {
+                // statut => blocked
                 $userModel->updateStatus($id, 'blocked');
 
+                // mail d'info
                 $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
                 MailService::sendAccountBlocked($user['email'], $fullName);
             }
@@ -177,7 +183,11 @@ class AdminController
         exit;
     }
 
-    public function activateUser(): void
+    /**
+     * Réactiver un utilisateur + envoyer mail.
+     * Route : index.php?page=admin_unblock_user
+     */
+    public function unblockUser(): void
     {
         $this->ensureAdmin();
 
@@ -194,8 +204,10 @@ class AdminController
             $user      = $userModel->findById($id);
 
             if ($user) {
+                // statut => active
                 $userModel->updateStatus($id, 'active');
 
+                // mail de réactivation
                 $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
                 MailService::sendAccountUnblocked($user['email'], $fullName);
             }

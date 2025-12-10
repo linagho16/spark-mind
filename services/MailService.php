@@ -1,16 +1,11 @@
 <?php
 // ============================================
-// CONFIGURATION : Choisissez UNE des deux options
+// CONFIGURATION : PHPMailer sans Composer
 // ============================================
 
-// OPTION A : Si tu as copié PHPMailer dans un dossier phpmailer/
 require_once __DIR__ . '/../phpmailer/PHPMailer.php';
 require_once __DIR__ . '/../phpmailer/SMTP.php';
 require_once __DIR__ . '/../phpmailer/Exception.php';
-
-// OPTION B : Si tu utilises Composer, commente les 3 lignes ci-dessus
-// et décommente cette ligne :
-// require_once __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -18,12 +13,12 @@ use PHPMailer\PHPMailer\Exception;
 
 class MailService {
 
-    // 🔐 CONFIG SMTP (à adapter pour TON compte Gmail / SMTP)
+    // 🔐 CONFIG SMTP (Gmail + mot de passe d’application)
     private static $smtpHost     = 'smtp.gmail.com';
-    private static $smtpUsername = 'lanoulouna24@gmail.com';     // ton adresse d’envoi
-    private static $smtpPassword = 'gerb iwji hjaa kfkd';         // ⚠ mets ici ton mot de passe d’application Gmail
-    private static $fromEmail    = 'lanoulouna24@gmail.com';     // adresse "From"
-    private static $fromName     = 'SPARKMIND';
+    private static $smtpUsername = 'lanoulouna24@gmail.com';      // adresse d’envoi
+    private static $smtpPassword = 'bgwrpzjbxqlocqxo'; // <-- mets ici ton mot de passe d’application Gmail
+    private static $fromEmail    = 'lanoulouna24@gmail.com';      // adresse "From"
+    private static $fromName     = 'sparkmind';
 
     /**
      * Email de bienvenue (après inscription)
@@ -180,6 +175,9 @@ class MailService {
         $mail = new PHPMailer(true);
 
         try {
+            // DEBUG (tu pourras mettre 0 quand ça marchera bien)
+            $mail->SMTPDebug = 0;
+
             // Config SMTP
             $mail->isSMTP();
             $mail->Host       = self::$smtpHost;
@@ -189,6 +187,15 @@ class MailService {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
+
+            // ⚠ Désactiver la vérification SSL (OK pour tests en local XAMPP)
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
 
             // Destinataires
             $mail->setFrom(self::$fromEmail, self::$fromName);
@@ -204,7 +211,9 @@ class MailService {
             return true;
 
         } catch (Exception $e) {
-            error_log("Erreur envoi email: " . $mail->ErrorInfo);
+            echo "<pre>";
+            echo "Mailer Error : " . $mail->ErrorInfo . "\n";
+            echo "</pre>";
             return false;
         }
     }

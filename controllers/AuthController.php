@@ -39,17 +39,17 @@ class AuthController
                         [
                             'value' => 'logo',
                             'label' => '',
-                            'image' => 'images/logo.jpg'        // ton vrai logo
+                            'image' => 'images/logo.jpg'
                         ],
                         [
                             'value' => 'img1',
                             'label' => '',
-                            'image' => 'images/log2.jpg'    // à créer si besoin
+                            'image' => 'images/log2.jpg'
                         ],
                         [
                             'value' => 'img2',
                             'label' => '',
-                            'image' => 'images/log3.png'    // à créer si besoin
+                            'image' => 'images/log3.png'
                         ],
                     ];
                     $_SESSION['captcha_answer'] = 'logo';
@@ -282,17 +282,17 @@ class AuthController
                         [
                             'value' => 'logo',
                             'label' => '',
-                            'image' => 'images/logo.jpg',      // ton vrai logo
+                            'image' => 'images/logo.jpg',
                         ],
                         [
                             'value' => 'img1',
                             'label' => '',
-                            'image' => 'images/log2.jpg',      // à créer si besoin
+                            'image' => 'images/log2.jpg',
                         ],
                         [
                             'value' => 'img2',
                             'label' => '',
-                            'image' => 'images/log3.png',      // à créer si besoin
+                            'image' => 'images/log3.png',
                         ],
                     ];
                     $_SESSION['reg_captcha_answer'] = 'logo';
@@ -358,7 +358,7 @@ class AuthController
             'profession' => isset($_POST['profession']) && is_string($_POST['profession']) ? trim($_POST['profession']) : '',
             'email'      => isset($_POST['email'])      && is_string($_POST['email'])      ? trim($_POST['email'])      : '',
             'password'   => isset($_POST['password'])   && is_string($_POST['password'])   ? $_POST['password']         : '',
-            // 🔹 AJOUT : rôle sur le site
+            // 🔹 rôle sur le site
             'site_role'  => isset($_POST['site_role'])  && is_string($_POST['site_role'])  ? trim($_POST['site_role'])  : '',
         ];
 
@@ -379,8 +379,13 @@ class AuthController
             $errors[] = "Adresse e-mail invalide.";
         }
 
-        if ($data['password'] !== '' && strlen($data['password']) < 8) {
-            $errors[] = "Le mot de passe doit contenir au moins 8 caractères.";
+        // 🔐 Vérification complexité mot de passe (serveur)
+        if ($data['password'] !== '') {
+            $password = $data['password'];
+            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/';
+            if (!preg_match($pattern, $password)) {
+                $errors[] = "Le mot de passe doit contenir au minimum 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un symbole.";
+            }
         }
 
         // Téléphone : contrôle façon regex
@@ -412,7 +417,7 @@ class AuthController
             $errors[] = "Veuillez sélectionner une profession.";
         }
 
-        // 🔹 VALIDATION du site_role (AJOUT)
+        // 🔹 VALIDATION du site_role
         $allowedSiteRoles = ['seeker', 'helper', 'both', 'speaker'];
         if ($data['site_role'] === '' || !in_array($data['site_role'], $allowedSiteRoles, true)) {
             $errors[] = "Veuillez choisir votre rôle sur SPARKMIND.";
@@ -504,6 +509,7 @@ class AuthController
 
         if ($ok) {
             $fullName = trim($data['prenom'] . ' ' . $data['nom']);
+            // ✉️ Email de bienvenue
             MailService::sendWelcome($data['email'], $fullName);
 
             // On peut aussi supprimer les infos captcha
@@ -601,8 +607,12 @@ class AuthController
                 $errors[] = "Les deux mots de passe ne correspondent pas.";
             }
 
-            if ($password !== '' && strlen($password) < 8) {
-                $errors[] = "Le nouveau mot de passe doit contenir au moins 8 caractères.";
+            // 🔐 Vérification complexité du nouveau mot de passe
+            if ($password !== '') {
+                $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/';
+                if (!preg_match($pattern, $password)) {
+                    $errors[] = "Le nouveau mot de passe doit contenir au minimum 8 caractères, avec au moins une majuscule, une minuscule, un chiffre et un symbole.";
+                }
             }
 
             if (time() > ($_SESSION['reset_expires'] ?? 0)) {

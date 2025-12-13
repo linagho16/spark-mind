@@ -2,5 +2,5 @@ Array
 (
     [donation_type_id] => 5
     [titre] => 
-    [contenu] => hello
+    [contenu] => c triste
 )

@@ -9,7 +9,7 @@ class Database {
     public function __construct() {
         try {
             $this->pdo = new PDO(
-                "mysql:host={$this->host};dbname={$this->dbname};charset=utf8",
+                "mysql:host={$this->host};dbname={$this->dbname};charset=utf8mb4",
                 $this->user,
                 $this->pass
             );

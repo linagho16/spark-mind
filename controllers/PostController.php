@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/Post.php';
 require_once __DIR__ . '/../models/Comment.php';
 require_once __DIR__ . '/../models/DonationType.php';
+require_once __DIR__ . '/../models/AIHelper.php';
 
 
 class PostController {
@@ -24,8 +25,10 @@ class PostController {
     public function storeFront() {
         file_put_contents('debug.txt', print_r($_POST, true));
         $postModel = new Post();
+        $aiHelper = new AIHelper();
         $errors = [];
         $success = "";
+        $warnings = [];
 
         $titre   = trim($_POST['titre'] ?? '');
         $contenu = trim($_POST['contenu'] ?? '');
@@ -44,6 +47,36 @@ class PostController {
         if (move_uploaded_file($_FILES['image']['tmp_name'], $fullPath)){
             $imagePath = "assets/img/posts/" . $imageName; } 
          }
+         //analyse IA
+         $aiAnalysis = $aiHelper->analyze($contenu);
+         // 1. VÉRIFIER PROPOS HAINEUX
+    if ($aiAnalysis['hate_speech']['is_hate_speech']) {
+        $errors[] = "⚠️ Votre message contient des propos inappropriés : " 
+                       . $aiAnalysis['hate_speech']['reason'];
+    }
+    
+    // 2. SUGGÉRER CATÉGORIE si non sélectionnée
+            if (!$donation_type_id && $aiAnalysis['suggested_category']['suggested_category_id']) {
+            $confidence = $aiAnalysis['suggested_category']['confidence'];
+            
+            if ($confidence > 60) {
+                // Auto-sélection si confiance élevée
+                $donation_type_id = $aiAnalysis['suggested_category']['suggested_category_id'];
+                $warnings[] = "✅ Catégorie suggérée automatiquement : " 
+                             . $aiAnalysis['suggested_category']['category_name'] 
+                             . " (confiance: {$confidence}%)";
+            } elseif ($confidence > 30) {
+                // Simple suggestion
+                $warnings[] = "💡 Suggestion IA : Catégorie " 
+                             . $aiAnalysis['suggested_category']['category_name'] 
+                             . " (confiance: {$confidence}%)";
+            }
+        }
+        
+        // 3. ALERTE SI MESSAGE URGENT
+        if ($aiAnalysis['sentiment']['type'] === 'urgent') {
+            $warnings[] = "⚡ Message urgent détecté - Il sera visible en priorité";
+        }
 
         // Validation côté PHP
         if ($contenu === "") {
@@ -55,10 +88,22 @@ class PostController {
             $errors[] = "Veuillez sélectionner un type de donnation.";
         }
 
+        // ✅ POST-REDIRECT-GET PATTERN - FIX POPUP
         if (empty($errors)) {
             $postModel->create($titre, $contenu, $imagePath, $donation_type_id);
-            $success = "Post publié avec succès ✅";
+            
+            // Sauvegarder les messages en session
+            $_SESSION['success'] = "Post publié avec succès ✅";
+            if (!empty($warnings)) {
+                $_SESSION['warnings'] = $warnings;
+            }
+            
+            // Rediriger vers la liste (GET)
+            header('Location: index.php');
+            exit;
         }
+        
+        // Si erreurs, afficher le formulaire avec les erreurs
         $donationTypeModel = new DonationType();
         $posts = $postModel->getAll();
         $donation_types = $donationTypeModel->getAll();
@@ -86,9 +131,45 @@ class PostController {
             $content = trim($_POST['content'] ?? '');
 
             if ($post_id && !empty($content)) {
-                $commentModel = new comment();
+                // ===== ANALYSE IA DU COMMENTAIRE =====
+                $aiHelper = new AIHelper();
+                $aiAnalysis = $aiHelper->analyze($content);
+                
+                // BLOQUER si propos haineux
+                if ($aiAnalysis['hate_speech']['is_hate_speech']) {
+                    $_SESSION['comment_error'] = "⚠️ Votre commentaire contient des propos inappropriés : " 
+                                                 . $aiAnalysis['hate_speech']['reason'];
+                    header('location: index.php?action=show&id=' . $post_id);
+                    exit;
+                }
+                
+                // ALERTER si besoin de modération (mais publier quand même)
+                if ($aiAnalysis['needs_moderation']) {
+                    error_log("Commentaire nécessite modération (post_id: $post_id) : " . substr($content, 0, 50));
+                    // Vous pouvez marquer le commentaire pour revue admin
+                }
+                
+                // Créer le commentaire si OK
+                $commentModel = new Comment();
                 $commentModel->create($post_id, $content);
+                require_once __DIR__ . '/../models/Like.php';
+                require_once __DIR__ . '/../models/Notification.php';
+
+                $likeModel = new Like();
+                $notificationModel = new Notification();
+                $currentUserId = $_SESSION['user_id'] ?? 1;
+
+                // Get the post owner
+                $postOwner = $likeModel->getPostOwner($post_id);
+
+                // Notify post owner about new comment
+                if ($postOwner && $postOwner != $currentUserId) {
+                    $notificationModel->notifyNewComment($postOwner, $currentUserId, $post_id, null);
+                }
+                
+                $_SESSION['comment_success'] = "✅ Commentaire publié avec succès !";
             }
+            
             header('location: index.php?action=show&id=' . $post_id);
             exit;
         }
@@ -188,16 +269,217 @@ public function updateComment() {
         $post_id = $_POST['post_id'] ?? null;
         $content = trim($_POST['content'] ?? '');
         
-        if ($id && $post_id && !empty($content)) {
-            $commentModel = new Comment();
-            $commentModel->update($id, $content);
+     if ($id && $post_id && !empty($content)) {
+                // ===== ANALYSE IA DU COMMENTAIRE MODIFIÉ =====
+                $aiHelper = new AIHelper();
+                $aiAnalysis = $aiHelper->analyze($content);
+                
+                // BLOQUER si propos haineux
+                if ($aiAnalysis['hate_speech']['is_hate_speech']) {
+                    $_SESSION['comment_error'] = "⚠️ Modification refusée : " 
+                                                 . $aiAnalysis['hate_speech']['reason'];
+                    header('Location: index.php?action=show&id=' . $post_id);
+                    exit;
+                }
+                
+                // Mettre à jour le commentaire
+                $commentModel = new Comment();
+                $commentModel->update($id, $content);
+                
+                $_SESSION['comment_success'] = "✅ Commentaire modifié avec succès !";
+            }
+            
+            header('Location: index.php?action=show&id=' . $post_id);
+            exit;
         }
-        
-        header('Location: index.php?action=show&id=' . $post_id);
-        exit;
     }
-    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

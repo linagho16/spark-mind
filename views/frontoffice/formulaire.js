@@ -4,6 +4,7 @@ const API_BASE = '../../controllers/DemandeController.php';
 // Variables globales
 let formData = {};
 let chatHistory = [];
+let isChatbotOpen = false;
 
 // Base de connaissances du chatbot
 const chatbotKnowledge = {
@@ -57,16 +58,59 @@ function initializeChatbot() {
             chatHistory = [];
         }
     }
+    
+    // S'assurer que le chatbot est caché au démarrage
+    const widget = document.getElementById('chatbotWidget');
+    if (widget) {
+        widget.classList.remove('active');
+        isChatbotOpen = false;
+    }
 }
 
-// Toggle chatbot
+// Toggle chatbot - FONCTION CORRIGÉE
 function toggleChatbot() {
     const widget = document.getElementById('chatbotWidget');
-    widget.classList.toggle('active');
+    const floatingBtn = document.querySelector('.floating-chat-btn');
     
-    if (widget.classList.contains('active')) {
-        document.getElementById('chatbotInput').focus();
-        scrollChatToBottom();
+    if (!widget) {
+        console.error('Widget chatbot non trouvé');
+        return;
+    }
+    
+    // Toggle l'état
+    isChatbotOpen = !isChatbotOpen;
+    
+    if (isChatbotOpen) {
+        // Ouvrir le chatbot
+        widget.classList.add('active');
+        widget.style.display = 'flex';
+        
+        // Cacher le bouton flottant
+        if (floatingBtn) {
+            floatingBtn.style.display = 'none';
+        }
+        
+        // Focus sur l'input après un petit délai
+        setTimeout(() => {
+            const input = document.getElementById('chatbotInput');
+            if (input) {
+                input.focus();
+            }
+            scrollChatToBottom();
+        }, 100);
+    } else {
+        // Fermer le chatbot
+        widget.classList.remove('active');
+        
+        // Utiliser une transition avant de masquer complètement
+        setTimeout(() => {
+            widget.style.display = 'none';
+        }, 300);
+        
+        // Réafficher le bouton flottant
+        if (floatingBtn) {
+            floatingBtn.style.display = 'flex';
+        }
     }
 }
 
@@ -130,6 +174,8 @@ function generateBotResponse(userMessage) {
 // Envoyer un message du chatbot
 function sendChatMessage() {
     const input = document.getElementById('chatbotInput');
+    if (!input) return;
+    
     const message = input.value.trim();
     
     if (!message) return;
@@ -148,21 +194,25 @@ function sendChatMessage() {
 // Ajouter un message au chat
 function addChatMessage(message, sender, suggestions = null) {
     const messagesContainer = document.getElementById('chatbotMessages');
+    if (!messagesContainer) return;
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = `chatbot-message ${sender}`;
     
     if (sender === 'bot') {
+        const suggestionsHTML = suggestions && suggestions.length > 0 ? `
+            <div class="quick-replies">
+                ${suggestions.map(s => `
+                    <button onclick="askBot('${s.action}')">${s.text}</button>
+                `).join('')}
+            </div>
+        ` : '';
+        
         messageDiv.innerHTML = `
             <div class="message-avatar">🤖</div>
             <div class="message-content">
                 <p>${message.replace(/\n/g, '<br>')}</p>
-                ${suggestions && suggestions.length > 0 ? `
-                    <div class="quick-replies">
-                        ${suggestions.map(s => `
-                            <button onclick="askBot('${chatbotResponses[s.action]}')">${s.text}</button>
-                        `).join('')}
-                    </div>
-                ` : ''}
+                ${suggestionsHTML}
             </div>
         `;
     } else {
@@ -180,16 +230,21 @@ function addChatMessage(message, sender, suggestions = null) {
     chatHistory.push({ message, sender, timestamp: Date.now() });
 }
 
-// Question rapide du bot
-function askBot(question) {
-    const input = document.getElementById('chatbotInput');
-    input.value = question;
-    sendChatMessage();
+// Question rapide du bot - FONCTION CORRIGÉE
+function askBot(action) {
+    const response = chatbotResponses[action] || chatbotResponses.default;
+    
+    // Ajouter directement la réponse sans afficher de message utilisateur
+    const { suggestions } = generateBotResponse(response);
+    addChatMessage(response, 'bot', suggestions);
+    
+    saveChatHistory();
 }
 
 // Gérer la touche Entrée
 function handleChatKeypress(event) {
     if (event.key === 'Enter') {
+        event.preventDefault();
         sendChatMessage();
     }
 }
@@ -197,12 +252,18 @@ function handleChatKeypress(event) {
 // Scroller vers le bas du chat
 function scrollChatToBottom() {
     const messagesContainer = document.getElementById('chatbotMessages');
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 }
 
 // Sauvegarder l'historique du chat
 function saveChatHistory() {
-    localStorage.setItem('sparkmind_chat_history', JSON.stringify(chatHistory));
+    try {
+        localStorage.setItem('sparkmind_chat_history', JSON.stringify(chatHistory));
+    } catch (e) {
+        console.error('Erreur lors de la sauvegarde de l\'historique:', e);
+    }
 }
 
 // Initialiser le formulaire
@@ -300,7 +361,7 @@ function isSectionComplete(section) {
     let allFilled = true;
     
     inputs.forEach(input => {
-        if (input.hasAttribute('required') || input.closest('.form-group').querySelector('.required')) {
+        if (input.hasAttribute('required') || input.closest('.form-group')?.querySelector('.required')) {
             if (input.type === 'radio' || input.type === 'checkbox') {
                 const name = input.name;
                 const checked = section.querySelector(`input[name="${name}"]:checked`);
@@ -352,7 +413,7 @@ function updateProgress() {
     const progress = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
     
     // Mettre à jour le cercle de progression
-    const circumference = 2 * Math.PI * 54; // rayon de 54
+    const circumference = 2 * Math.PI * 54;
     const offset = circumference - (progress / 100) * circumference;
     progressCircle.style.strokeDashoffset = offset;
     
@@ -834,6 +895,8 @@ function clearFormData() {
 // Afficher une notification
 function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
+    if (!notification) return;
+    
     notification.textContent = message;
     notification.className = `notification ${type} show`;
     
@@ -857,5 +920,7 @@ function showHelp() {
 // Toggle menu mobile
 function toggleMobileMenu() {
     const navLinks = document.querySelector('.nav-links');
-    navLinks.classList.toggle('mobile-active');
+    if (navLinks) {
+        navLinks.classList.toggle('mobile-active');
+    }
 }

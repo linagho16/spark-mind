@@ -3,138 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SparkMind - Gestion des Réponses</title>
+    <title>SPARKMIND - Back Office | Gestion des Réponses</title>
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="reponse.css">
 </head>
 <body>
-    <!-- Container principal -->
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <h2>✨ SparkMind</h2>
-                <p>Gestion des Réponses</p>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a class="brand" href="back.html">
+            <img src="logo.png" alt="Logo SPARKMIND" class="logo" />
+            <div class="brand-text">
+                <span class="brand-name">SPARKMIND</span>
+                <span class="brand-tagline">Quand la pensée devient espoir</span>
             </div>
-            <nav class="nav-menu">
-                <a href="../backoffice/back.html" class="nav-item">
-                    📋 Dashboard Admin
-                </a>
-                <a href="#" class="nav-item active">
-                    💬 Gérer les Réponses
-                </a>
-                <a href="#" class="nav-item">
-                    📊 Statistiques
-                </a>
-                <a href="#" class="nav-item">
-                    👥 Demandeurs
-                </a>
-                <a href="#" class="nav-item">
-                    📧 Notifications
-                </a>
-                <a href="#" class="nav-item">
-                    ⚙️ Configuration
-                </a>
-                <a href="#" class="nav-item">
-                    ❓ Aide
-                </a>
-            </nav>
-        </aside>
+        </a>
+        
+        <div class="sidebar-subtitle">Gestion des réponses</div>
 
-        <!-- Contenu principal -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <h1>💬 Gestion des Réponses aux Demandes</h1>
-                <div class="user-info">
-                    <span>👤 Admin</span>
+        <nav class="menu">
+            <div class="menu-title">📊 Dashboard admin</div>
+            <a class="menu-item" href="http://localhost/SparkMind/views/backoffice/back.html">
+                <span class="nav-icon">📊</span>
+                <span>Demandes d'aide</span>
+            </a>
+            <a class="menu-item active" href="reponse.html">
+                <span class="nav-icon">💬</span>
+                <span>Gérer les Réponses</span>
+            </a>
+            <a class="menu-item" href="index.php?page=admin_users">
+                <span class="nav-icon">👥</span>
+                <span>Utilisateurs</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-foot">
+            <a class="link" href="index.php?page=main">← Retour au site</a>
+            <a class="link logout" href="index.php?page=logout">🚪 Déconnexion</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <header class="top-nav">
+            <div class="brand-block">
+                <img src="logo.png" alt="Logo SPARKMIND" class="logo-img">
+                <div class="brand-text-header">
+                    <span class="brand-name-header">SPARKMIND</span>
+                    <span class="brand-tagline-header">Gestion des Réponses</span>
                 </div>
-            </header>
+            </div>
 
+            <div class="header-actions">
+                <button class="btn-nav secondary" onclick="window.location.href='index.php?page=main'">🏠 Site</button>
+                <button class="btn-nav" onclick="window.location.href='index.php?page=logout'">🚪 Déconnexion</button>
+            </div>
+        </header>
+
+        <main class="admin-main">
             <!-- Zone de notification -->
             <div id="notification" class="notification"></div>
 
-            <!-- Statistiques des réponses -->
-            <section class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-icon">📩</div>
-                    <div class="stat-info">
-                        <h3 id="totalReponses">0</h3>
-                        <p>Total Réponses</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
-                    <div class="stat-info">
-                        <h3 id="demandesSansReponse">0</h3>
-                        <p>Sans Réponse</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-info">
-                        <h3 id="demandesAvecReponse">0</h3>
-                        <p>Avec Réponse</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📅</div>
-                    <div class="stat-info">
-                        <h3 id="reponsesDuJour">0</h3>
-                        <p>Aujourd'hui</p>
-                    </div>
-                </div>
-            </section>
+            <!-- SECTION: STATISTIQUES -->
+            <section class="content-section active">
+                <div class="admin-card">
+                    <h1>💬 Gestion des Réponses aux Demandes</h1>
+                    <p class="admin-subtitle">Suivez et gérez toutes les réponses apportées aux demandes d'assistance</p>
 
-            <!-- Filtres et recherche -->
-            <section class="filters-section">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="🔍 Rechercher par ID, nom, administrateur...">
-                </div>
-                <div class="filter-group">
-                    <select id="filterStatut">
-                        <option value="">Tous les statuts</option>
-                        <option value="en_attente">En attente</option>
-                        <option value="en_cours">En cours</option>
-                        <option value="traite">Traité</option>
-                        <option value="rejete">Rejeté</option>
-                    </select>
-                    <select id="filterAvecReponse">
-                        <option value="">Toutes les demandes</option>
-                        <option value="avec">Avec réponse</option>
-                        <option value="sans">Sans réponse</option>
-                    </select>
-                    <button id="btnReset" class="btn-reset">🔄 Réinitialiser</button>
-                </div>
-            </section>
+                    <!-- STATS -->
+                    <div class="stats-container">
+                        <div class="stat-card total">
+                            <div class="stat-icon">📩</div>
+                            <div class="stat-info">
+                                <h3 id="totalReponses">0</h3>
+                                <p>Total Réponses</p>
+                            </div>
+                        </div>
+                        <div class="stat-card pending">
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-info">
+                                <h3 id="demandesSansReponse">0</h3>
+                                <p>Sans Réponse</p>
+                            </div>
+                        </div>
+                        <div class="stat-card processed">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <h3 id="demandesAvecReponse">0</h3>
+                                <p>Avec Réponse</p>
+                            </div>
+                        </div>
+                        <div class="stat-card urgent">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-info">
+                                <h3 id="reponsesDuJour">0</h3>
+                                <p>Aujourd'hui</p>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Tableau des demandes avec réponses -->
-            <section class="table-section">
-                <div class="table-header">
-                    <h2>📋 Liste des Demandes</h2>
-                    <button id="btnRefresh" class="btn-refresh">🔄 Actualiser</button>
-                </div>
-                <div class="table-responsive">
-                    <table id="demandesTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Demandeur</th>
-                                <th>Statut</th>
-                                <th>Urgence</th>
-                                <th>Date Demande</th>
-                                <th>Réponses</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- Les données seront chargées dynamiquement -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination">
-                    <button id="btnPrev" class="btn-pagination">← Précédent</button>
-                    <span id="pageInfo">Page 1</span>
-                    <button id="btnNext" class="btn-pagination">Suivant →</button>
+                    <!-- FILTERS -->
+                    <div class="filters-section">
+                        <div class="search-wrapper">
+                            <span>🔍</span>
+                            <input type="text" id="searchInput" class="search-input" placeholder="Rechercher par ID, nom, administrateur...">
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Statut:</label>
+                            <select class="filter-select" id="filterStatut">
+                                <option value="">Tous les statuts</option>
+                                <option value="nouveau">Nouveau</option>
+                                <option value="en-cours">En cours</option>
+                                <option value="traite">Traité</option>
+                                <option value="refuse">Refusé</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Réponses:</label>
+                            <select class="filter-select" id="filterAvecReponse">
+                                <option value="">Toutes les demandes</option>
+                                <option value="avec">Avec réponse</option>
+                                <option value="sans">Sans réponse</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-filter" onclick="applyFilters()">Filtrer</button>
+                        <button class="btn-reset" id="btnReset">Réinitialiser</button>
+                    </div>
+
+                    <!-- TABLE -->
+                    <div class="table-container">
+                        <div class="table-header-actions">
+                            <h2>📋 Liste des Demandes</h2>
+                            <button id="btnRefresh" class="btn-refresh">🔄 Actualiser</button>
+                        </div>
+                        <table class="demandes-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Demandeur</th>
+                                    <th>Statut</th>
+                                    <th>Urgence</th>
+                                    <th>Date Demande</th>
+                                    <th>Réponses</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Les données seront chargées ici -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="paginationReponses">
+                        <button id="btnPrev" class="page-btn">← Précédent</button>
+                        <span id="pageInfo">Page 1</span>
+                        <button id="btnNext" class="page-btn">Suivant →</button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -145,23 +177,26 @@
         <div class="modal-content modal-large">
             <div class="modal-header">
                 <h2>💬 Réponses pour la demande #<span id="modalDemandeId"></span></h2>
-                <button class="close-btn" onclick="closeModal('modalReponses')">&times;</button>
+                <button class="modal-close" onclick="closeModal('modalReponses')">&times;</button>
             </div>
             <div class="modal-body">
                 <!-- Informations de la demande -->
-                <div class="demande-info">
+                <div class="detail-section demande-info">
                     <h3>📋 Informations de la demande</h3>
-                    <div class="info-grid">
-                        <div><strong>Demandeur:</strong> <span id="infoNom"></span></div>
-                        <div><strong>Email:</strong> <span id="infoEmail"></span></div>
-                        <div><strong>Téléphone:</strong> <span id="infoTelephone"></span></div>
-                        <div><strong>Urgence:</strong> <span id="infoUrgence"></span></div>
-                        <div class="full-width"><strong>Description:</strong> <span id="infoDescription"></span></div>
+                    <div class="detail-grid">
+                        <div class="detail-item"><strong>Demandeur:</strong> <span id="infoNom"></span></div>
+                        <div class="detail-item"><strong>Email:</strong> <span id="infoEmail"></span></div>
+                        <div class="detail-item"><strong>Téléphone:</strong> <span id="infoTelephone"></span></div>
+                        <div class="detail-item"><strong>Urgence:</strong> <span id="infoUrgence"></span></div>
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <strong>Description:</strong> 
+                            <span id="infoDescription"></span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Liste des réponses -->
-                <div class="reponses-list">
+                <div class="detail-section reponses-list">
                     <h3>💬 Historique des réponses (<span id="nbReponses">0</span>)</h3>
                     <div id="reponsesContainer">
                         <!-- Les réponses seront chargées ici -->
@@ -169,7 +204,7 @@
                 </div>
 
                 <!-- Formulaire d'ajout de réponse -->
-                <div class="add-reponse-form">
+                <div class="detail-section add-reponse-form">
                     <h3>✍️ Ajouter une réponse</h3>
                     <form id="formAddReponse">
                         <input type="hidden" id="reponseDemandeId">
@@ -185,9 +220,9 @@
                             <label>Changer le statut de la demande:</label>
                             <select id="reponseStatut">
                                 <option value="">Ne pas modifier</option>
-                                <option value="en_cours">En cours de traitement</option>
+                                <option value="en-cours">En cours de traitement</option>
                                 <option value="traite">Traité</option>
-                                <option value="rejete">Rejeté</option>
+                                <option value="refuse">Refusé</option>
                             </select>
                         </div>
                         <button type="submit" class="btn-submit">📤 Envoyer la réponse</button>
@@ -202,19 +237,229 @@
         <div class="modal-content modal-small">
             <div class="modal-header">
                 <h2>⚠️ Confirmation de suppression</h2>
-                <button class="close-btn" onclick="closeModal('modalDeleteReponse')">&times;</button>
+                <button class="modal-close" onclick="closeModal('modalDeleteReponse')">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer cette réponse ?</p>
-                <p class="warning-text">Cette action est irréversible.</p>
-                <div class="modal-actions">
-                    <button class="btn-cancel" onclick="closeModal('modalDeleteReponse')">Annuler</button>
-                    <button class="btn-delete" id="confirmDeleteReponse">Supprimer</button>
-                </div>
+                <p style="margin-bottom: 15px; font-size: 1.1em;">Êtes-vous sûr de vouloir supprimer cette réponse ?</p>
+                <p class="warning-text">⚠️ Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" onclick="closeModal('modalDeleteReponse')">Annuler</button>
+                <button class="btn-modal delete" id="confirmDeleteReponse">Supprimer</button>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script src="reponse.js"></script>
 </body>
 </html>
+<style>
+      body {
+          margin: 0;
+          min-height: 100vh;
+          background:
+              radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+              #FBEDD7;
+          font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+          color: #1A464F;
+      }
+
+      /* ✅ Layout avec sidebar */
+      .layout{
+          min-height:100vh;
+          display:flex;
+      }
+
+      /* ✅ Sidebar (identique à ton modèle) */
+      .sidebar{
+        width:260px;
+        background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+        border-right:1px solid rgba(0,0,0,.06);
+        padding:18px 14px;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        position:sticky;
+        top:0;
+        height:100vh;
+      }
+
+      .sidebar .brand{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        text-decoration:none;
+        padding:10px 10px;
+        border-radius:14px;
+        color:#1A464F;
+      }
+
+      .sidebar .logo{
+        width:42px;
+        height:42px;
+        border-radius:50%;
+        object-fit:cover;
+      }
+
+      .sidebar .brand-name{
+        font-family:'Playfair Display', serif;
+        font-weight:800;
+        font-size:18px;
+        color:#1A464F;
+      }
+
+      .menu{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        margin-top:6px;
+      }
+
+      .menu-item{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 12px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#1A464F;
+        font-weight:600;
+      }
+
+      .menu-item:hover{
+        background:#f5e2c4ff;
+      }
+
+      .menu-item.active{
+        background: #f5e2c4ff; !important;
+        color: #0b3936ff;
+      }
+
+      .sidebar-foot{
+        margin-top:auto;
+        padding-top:10px;
+        border-top:1px solid rgba(0,0,0,.06);
+      }
+
+      .sidebar-foot .link{
+        display:block;
+        padding:10px 12px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#1A464F;
+        font-weight:600;
+      }
+
+      .sidebar-foot .link:hover{
+        background:#f5e2c4ff;
+      }
+
+      /* ✅ Main (ton contenu reste pareil) */
+      .main{
+        flex:1;
+        min-width:0;
+      }
+
+      /* (tout le reste de ton CSS existant : inchangé) */
+      .site { min-height: 100vh; display: flex; flex-direction: column; }
+
+      .top-nav {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          backdrop-filter: blur(14px);
+          background: rgba(251, 237, 215, 0.96);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 24px;
+      }
+
+
+      .menu-title {
+        font-size: 10px;      /* ← taille du texte + emoji */
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: #1A464F;
+        padding: 8px 12px 6px;
+        text-transform: uppercase;
+        }
+
+
+      .brand-block { display: flex; align-items: center; gap: 12px; }
+      .logo-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+      .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+      .brand-name { font-family: 'Playfair Display', serif; font-size: 20px; color: #1A464F; }
+      .brand-tagline { font-size: 11px; color: #1A464F; opacity: 0.8; }
+
+      .header-actions { display: flex; gap: 10px; align-items: center; }
+      .btn-nav { border: none; cursor: pointer; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; background: #1A464F; color: #fff; }
+      .btn-nav.secondary { background: transparent; color: #1A464F; border: 1px solid rgba(26, 70, 79, 0.35); }
+
+      .admin-main { flex: 1; max-width: 1100px; margin: 32px auto 40px; padding: 0 18px 30px; }
+      .admin-card { background: rgba(255, 247, 239, 0.95); border-radius: 24px; padding: 24px 22px 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.18); }
+      .admin-card h1 { margin: 0 0 6px; font-family: 'Playfair Display', serif; font-size: 26px; }
+      .admin-subtitle { font-size: 13px; margin-bottom: 18px; color: #444; }
+
+      .filters-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 14px; border-radius: 16px; background: rgba(255,255,255,0.9); box-shadow: 0 8px 18px rgba(0,0,0,0.06); margin-bottom: 18px; }
+      .filters-bar .search-wrapper { flex: 1 1 220px; display: flex; align-items: center; gap: 6px; }
+      .search-input { flex: 1; padding: 8px 12px; border-radius: 999px; border: 1px solid #ccc; font-size: 13px; outline: none; background: #fff; }
+      .search-input:focus { border-color: #1A464F; box-shadow: 0 0 0 2px rgba(26,70,79,0.15); }
+
+      .filters-bar select { padding: 7px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 13px; background: #fff; min-width: 170px; }
+      .filters-bar label { font-size: 12px; color: #444; display: flex; flex-direction: column; gap: 4px; }
+
+      .stats-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 5px 0 14px; }
+      .stat-card { flex: 1 1 120px; background: rgba(255,255,255,0.9); padding: 10px 12px; border-radius: 14px; box-shadow: 0 8px 18px rgba(0,0,0,0.08); font-size: 13px; }
+      .stat-card strong { font-size: 15px; }
+
+      .admin-form-card { background: #fff7ef; border-radius: 18px; padding: 14px 14px 16px; box-shadow: 0 8px 18px rgba(0,0,0,0.08); margin-bottom: 18px; }
+      .admin-form-title { margin: 0 0 6px; font-size: 18px; font-weight: 600; }
+      .admin-form-sub { font-size: 12px; margin-bottom: 10px; color: #555; }
+
+      .admin-form-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+      .admin-form-field { flex: 1 1 150px; font-size: 13px; }
+      .admin-form-field label { display: block; margin-bottom: 3px; font-size: 12px; color: #444; }
+
+      .admin-form-field input, .admin-form-field select {
+          width: 100%;
+          padding: 6px 8px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 13px;
+          outline: none;
+          background: #fff;
+      }
+              /* Titres comme "Menu principal", "Actions rapides" */
+    .sidebar .menu-title {
+        color: #1A464F !important;
+    }
+
+      .users-table-wrapper { overflow-x: auto; background: #fff; border-radius: 18px; box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+      table { border-collapse: collapse; width: 100%; border-radius: 18px; overflow: hidden; }
+      table td, table th { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: middle; }
+      table th { background-color: #f7f1eb; }
+
+      .tag { padding: 2px 8px; border-radius: 999px; font-size: 11px; }
+      .tag-admin   { background:#ffe0b3; color:#8a4b00; }
+      .tag-user    { background:#e0f5ff; color:#005f8a; }
+      .tag-active  { background:#e0f9e5; color:#1b6b2a; }
+      .tag-blocked { background:#ffe0e0; color:#b02222; }
+
+      .btn-table { display:inline-block; padding:4px 10px; border-radius:999px; font-size:11px; border:none; cursor:pointer; text-decoration:none; margin:2px 0; }
+      .btn-table.view { background:#1A464F; color:#fff; }
+      .btn-table.delete { background:#E23B3B; color:#fff; }
+      .btn-table.block { background:#ffb3b3; color:#7a1010; }
+      .btn-table.unblock { background:#b9f4c4; color:#145321; }
+
+      @media (max-width: 900px) {
+        .sidebar{ width:220px; }
+      }
+      @media (max-width: 800px) {
+        .filters-bar { flex-direction: column; align-items: stretch; }
+        .sidebar{ position:relative; height:auto; }
+        .layout{ flex-direction:column; }
+      }
+    </style>

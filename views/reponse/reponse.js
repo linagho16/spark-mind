@@ -1,6 +1,13 @@
+// ==========================================
+// SPARKMIND - GESTION DES RÉPONSES
+// Version intégrée avec back.js
+// ==========================================
+
+console.log('🚀 Réponses.js chargé - Version intégrée !');
+
 // Configuration de l'API
-const API_BASE = '../../controllers/ReponseController.php';
-const DEMANDE_API = '../../controllers/DemandeController.php';
+const API_BASE = '/SparkMind/controllers/ReponseController.php';
+const DEMANDE_API = '/SparkMind/controllers/DemandeController.php';
 
 // Variables globales
 let currentPage = 1;
@@ -9,11 +16,14 @@ let allDemandes = [];
 let filteredDemandes = [];
 let currentDemandeId = null;
 let reponseToDelete = null;
-let reponsesCount = {}; // Stocke le nombre de réponses par demande
+let reponsesCount = {};
 
-// Initialisation au chargement de la page
+// ==========================================
+// INITIALISATION
+// ==========================================
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Initialisation de la page réponses...');
+    console.log('✅ Initialisation de la page réponses...');
     initializeEventListeners();
     loadAllData();
     
@@ -25,34 +35,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Initialiser tous les écouteurs d'événements
 function initializeEventListeners() {
-    // Recherche
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Recherche avec délai
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => handleSearch(), 300);
+        });
+    }
     
     // Filtres
-    document.getElementById('filterStatut').addEventListener('change', applyFilters);
-    document.getElementById('filterAvecReponse').addEventListener('change', applyFilters);
+    const filterStatut = document.getElementById('filterStatut');
+    const filterAvecReponse = document.getElementById('filterAvecReponse');
+    if (filterStatut) filterStatut.addEventListener('change', applyFilters);
+    if (filterAvecReponse) filterAvecReponse.addEventListener('change', applyFilters);
     
     // Boutons
-    document.getElementById('btnReset').addEventListener('click', resetFilters);
-    document.getElementById('btnRefresh').addEventListener('click', () => {
-        loadAllData();
-    });
-    document.getElementById('btnPrev').addEventListener('click', () => changePage(-1));
-    document.getElementById('btnNext').addEventListener('click', () => changePage(1));
+    const btnReset = document.getElementById('btnReset');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    
+    if (btnReset) btnReset.addEventListener('click', resetFilters);
+    if (btnRefresh) btnRefresh.addEventListener('click', () => loadAllData());
+    if (btnPrev) btnPrev.addEventListener('click', () => changePage(-1));
+    if (btnNext) btnNext.addEventListener('click', () => changePage(1));
     
     // Formulaire d'ajout de réponse
-    document.getElementById('formAddReponse').addEventListener('submit', handleAddReponse);
+    const formAddReponse = document.getElementById('formAddReponse');
+    if (formAddReponse) {
+        formAddReponse.addEventListener('submit', handleAddReponse);
+    }
     
     // Confirmation de suppression
-    document.getElementById('confirmDeleteReponse').addEventListener('click', handleDeleteReponse);
+    const confirmDeleteBtn = document.getElementById('confirmDeleteReponse');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', handleDeleteReponse);
+    }
 }
 
-// Charger toutes les données (demandes + réponses)
+// ==========================================
+// CHARGEMENT DES DONNÉES
+// ==========================================
+
 async function loadAllData() {
     console.log('📊 Chargement des données...');
     await Promise.all([
-        loadDemandes(),
         loadReponsesCount(),
+        loadDemandes(),
         loadStatistics()
     ]);
 }
@@ -64,7 +95,6 @@ async function loadReponsesCount() {
         const data = await response.json();
         
         if (data.success && data.reponses) {
-            // Compter les réponses par demande
             reponsesCount = {};
             data.reponses.forEach(reponse => {
                 if (!reponsesCount[reponse.demande_id]) {
@@ -73,7 +103,7 @@ async function loadReponsesCount() {
                 reponsesCount[reponse.demande_id]++;
             });
             
-            console.log('✅ Compteur de réponses chargé:', reponsesCount);
+            console.log('✅ Compteur de réponses chargé:', Object.keys(reponsesCount).length);
         }
     } catch (error) {
         console.error('❌ Erreur chargement compteur réponses:', error);
@@ -87,13 +117,10 @@ async function loadDemandes() {
         const data = await response.json();
         
         if (data.success) {
-            // Ajouter le nombre de réponses à chaque demande
-            allDemandes = data.demandes.map(demande => {
-                return {
-                    ...demande,
-                    nb_reponses: reponsesCount[demande.id] || 0
-                };
-            });
+            allDemandes = data.demandes.map(demande => ({
+                ...demande,
+                nb_reponses: reponsesCount[demande.id] || 0
+            }));
             
             filteredDemandes = [...allDemandes];
             console.log('✅ Demandes chargées:', allDemandes.length);
@@ -113,8 +140,6 @@ async function loadStatistics() {
         const response = await fetch(`${API_BASE}?action=getStatistics`);
         const data = await response.json();
         
-        console.log('📊 Statistiques reçues:', data);
-        
         if (data.success) {
             const stats = data.statistics;
             document.getElementById('totalReponses').textContent = stats.totalReponses || 0;
@@ -129,16 +154,19 @@ async function loadStatistics() {
     }
 }
 
-// Gérer la recherche
+// ==========================================
+// RECHERCHE ET FILTRES
+// ==========================================
+
 function handleSearch() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
     filteredDemandes = allDemandes.filter(demande => {
         return (
             demande.id.toString().includes(searchTerm) ||
-            demande.nom.toLowerCase().includes(searchTerm) ||
-            demande.email.toLowerCase().includes(searchTerm) ||
-            demande.gouvernorat.toLowerCase().includes(searchTerm)
+            (demande.nom && demande.nom.toLowerCase().includes(searchTerm)) ||
+            (demande.email && demande.email.toLowerCase().includes(searchTerm)) ||
+            (demande.gouvernorat && demande.gouvernorat.toLowerCase().includes(searchTerm))
         );
     });
     
@@ -146,24 +174,20 @@ function handleSearch() {
     displayDemandes();
 }
 
-// Appliquer les filtres
 function applyFilters() {
     const statutFilter = document.getElementById('filterStatut').value;
     const reponseFilter = document.getElementById('filterAvecReponse').value;
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
     filteredDemandes = allDemandes.filter(demande => {
-        // Filtre de recherche
         const matchSearch = !searchTerm || 
             demande.id.toString().includes(searchTerm) ||
-            demande.nom.toLowerCase().includes(searchTerm) ||
-            demande.email.toLowerCase().includes(searchTerm) ||
-            demande.gouvernorat.toLowerCase().includes(searchTerm);
+            (demande.nom && demande.nom.toLowerCase().includes(searchTerm)) ||
+            (demande.email && demande.email.toLowerCase().includes(searchTerm)) ||
+            (demande.gouvernorat && demande.gouvernorat.toLowerCase().includes(searchTerm));
         
-        // Filtre de statut
         const matchStatut = !statutFilter || demande.statut === statutFilter;
         
-        // Filtre avec/sans réponse
         let matchReponse = true;
         if (reponseFilter === 'avec') {
             matchReponse = demande.nb_reponses > 0;
@@ -178,7 +202,6 @@ function applyFilters() {
     displayDemandes();
 }
 
-// Réinitialiser les filtres
 function resetFilters() {
     document.getElementById('searchInput').value = '';
     document.getElementById('filterStatut').value = '';
@@ -189,17 +212,25 @@ function resetFilters() {
     showNotification('Filtres réinitialisés', 'info');
 }
 
-// Afficher les demandes
+// ==========================================
+// AFFICHAGE DES DEMANDES
+// ==========================================
+
 function displayDemandes() {
     const tbody = document.getElementById('tableBody');
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = filteredDemandes.slice(startIndex, endIndex);
     
-    console.log('📋 Affichage des demandes:', pageData.length);
-    
     if (pageData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">Aucune demande trouvée</td></tr>';
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 3em;">📭</div>
+                    <p>Aucune demande trouvée</p>
+                </td>
+            </tr>
+        `;
         updatePagination();
         return;
     }
@@ -208,14 +239,14 @@ function displayDemandes() {
         <tr>
             <td>#${demande.id}</td>
             <td>
-                <strong>${demande.nom}</strong><br>
-                <small>${demande.email}</small>
+                <strong>${demande.anonyme ? 'Anonyme' : demande.nom}</strong><br>
+                <small style="color: #666;">${demande.email || 'N/A'}</small>
             </td>
             <td>
-                <span class="badge badge-${demande.statut.replace('_', '-')}">${formatStatut(demande.statut)}</span>
+                <span class="status-badge ${demande.statut}">${formatStatut(demande.statut)}</span>
             </td>
             <td>
-                <span class="badge badge-${getUrgenceClass(demande.urgence)}">${formatUrgence(demande.urgence)}</span>
+                <span class="urgence-badge ${demande.urgence}">${formatUrgence(demande.urgence)}</span>
             </td>
             <td>${formatDate(demande.date_soumission)}</td>
             <td>
@@ -225,8 +256,8 @@ function displayDemandes() {
             </td>
             <td>
                 <div class="actions">
-                    <button class="btn-action btn-voir" onclick="viewReponses(${demande.id})">
-                        👁️ Voir
+                    <button class="btn-action btn-voir" onclick="viewReponses(${demande.id})" title="Voir les réponses">
+                        👁️
                     </button>
                 </div>
             </td>
@@ -236,7 +267,10 @@ function displayDemandes() {
     updatePagination();
 }
 
-// Changer de page
+// ==========================================
+// PAGINATION
+// ==========================================
+
 function changePage(direction) {
     const totalPages = Math.ceil(filteredDemandes.length / itemsPerPage);
     const newPage = currentPage + direction;
@@ -247,21 +281,29 @@ function changePage(direction) {
     }
 }
 
-// Mettre à jour la pagination
 function updatePagination() {
     const totalPages = Math.ceil(filteredDemandes.length / itemsPerPage);
-    document.getElementById('pageInfo').textContent = `Page ${currentPage} sur ${totalPages || 1}`;
-    document.getElementById('btnPrev').disabled = currentPage === 1;
-    document.getElementById('btnNext').disabled = currentPage === totalPages || totalPages === 0;
+    const pageInfo = document.getElementById('pageInfo');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    
+    if (pageInfo) {
+        pageInfo.textContent = `Page ${currentPage} sur ${totalPages || 1}`;
+    }
+    
+    if (btnPrev) btnPrev.disabled = currentPage === 1;
+    if (btnNext) btnNext.disabled = currentPage === totalPages || totalPages === 0;
 }
 
-// Voir les réponses d'une demande
-async function viewReponses(demandeId) {
+// ==========================================
+// GESTION DES RÉPONSES
+// ==========================================
+
+window.viewReponses = async function(demandeId) {
     console.log('👁️ Ouverture des réponses pour la demande:', demandeId);
     currentDemandeId = demandeId;
     
     try {
-        // Charger les informations de la demande
         const demandeResponse = await fetch(`${DEMANDE_API}?action=getOne&id=${demandeId}`);
         const demandeData = await demandeResponse.json();
         
@@ -272,40 +314,32 @@ async function viewReponses(demandeId) {
         
         const demande = demandeData.demande;
         
-        // Remplir les informations de la demande
         document.getElementById('modalDemandeId').textContent = demande.id;
-        document.getElementById('infoNom').textContent = demande.nom;
-        document.getElementById('infoEmail').textContent = demande.email;
-        document.getElementById('infoTelephone').textContent = demande.telephone;
-        document.getElementById('infoUrgence').innerHTML = `<span class="badge badge-${getUrgenceClass(demande.urgence)}">${formatUrgence(demande.urgence)}</span>`;
-        document.getElementById('infoDescription').textContent = demande.description_situation;
+        document.getElementById('infoNom').textContent = demande.anonyme ? 'Anonyme' : demande.nom;
+        document.getElementById('infoEmail').textContent = demande.email || 'Non fourni';
+        document.getElementById('infoTelephone').textContent = demande.telephone || 'Non fourni';
+        document.getElementById('infoUrgence').innerHTML = `<span class="urgence-badge ${demande.urgence}">${formatUrgence(demande.urgence)}</span>`;
+        document.getElementById('infoDescription').textContent = demande.description_situation || 'Non renseignée';
         
-        // Préparer le formulaire
         document.getElementById('reponseDemandeId').value = demandeId;
         document.getElementById('reponseAdmin').value = '';
         document.getElementById('reponseMessage').value = '';
         document.getElementById('reponseStatut').value = '';
         
-        // Charger les réponses
         await loadReponses(demandeId);
-        
-        // Ouvrir le modal
         openModal('modalReponses');
     } catch (error) {
         console.error('❌ Erreur:', error);
         showNotification('Erreur de connexion', 'error');
     }
-}
+};
 
-// Charger les réponses d'une demande
 async function loadReponses(demandeId) {
     console.log('📥 Chargement des réponses pour la demande:', demandeId);
     
     try {
         const response = await fetch(`${API_BASE}?action=getByDemande&demande_id=${demandeId}`);
         const data = await response.json();
-        
-        console.log('📨 Réponses reçues:', data);
         
         if (data.success) {
             const reponses = data.reponses;
@@ -337,7 +371,6 @@ async function loadReponses(demandeId) {
     }
 }
 
-// Gérer l'ajout d'une réponse
 async function handleAddReponse(e) {
     e.preventDefault();
     
@@ -345,8 +378,6 @@ async function handleAddReponse(e) {
     const admin = document.getElementById('reponseAdmin').value.trim();
     const message = document.getElementById('reponseMessage').value.trim();
     const nouveauStatut = document.getElementById('reponseStatut').value;
-    
-    console.log('📤 Envoi de la réponse:', {demandeId, admin, message, nouveauStatut});
     
     if (!admin || !message) {
         showNotification('Veuillez remplir tous les champs obligatoires', 'error');
@@ -365,25 +396,20 @@ async function handleAddReponse(e) {
         });
         
         const data = await response.json();
-        console.log('✉️ Résultat création réponse:', data);
         
         if (data.success) {
             showNotification('✅ Réponse ajoutée avec succès', 'success');
             
-            // Mettre à jour le statut si nécessaire
             if (nouveauStatut) {
                 await updateDemandeStatut(demandeId, nouveauStatut);
             }
             
-            // Recharger les réponses
             await loadReponses(demandeId);
             
-            // Réinitialiser le formulaire
             document.getElementById('reponseAdmin').value = '';
             document.getElementById('reponseMessage').value = '';
             document.getElementById('reponseStatut').value = '';
             
-            // Recharger toutes les données
             await loadAllData();
         } else {
             showNotification(data.message || 'Erreur lors de l\'ajout de la réponse', 'error');
@@ -394,31 +420,26 @@ async function handleAddReponse(e) {
     }
 }
 
-// Mettre à jour le statut d'une demande
 async function updateDemandeStatut(demandeId, nouveauStatut) {
     try {
-        const formData = new FormData();
-        formData.append('id', demandeId);
-        formData.append('statut', nouveauStatut);
-        
-        await fetch(`${DEMANDE_API}?action=updateStatus`, {
+        const response = await fetch(`${DEMANDE_API}?action=updateStatus`, {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: demandeId, statut: nouveauStatut })
         });
         
-        console.log('✅ Statut mis à jour');
+        const data = await response.json();
+        console.log('✅ Statut mis à jour:', data);
     } catch (error) {
         console.error('❌ Erreur mise à jour statut:', error);
     }
 }
 
-// Confirmer la suppression d'une réponse
-function confirmDeleteReponse(reponseId) {
+window.confirmDeleteReponse = function(reponseId) {
     reponseToDelete = reponseId;
     openModal('modalDeleteReponse');
-}
+};
 
-// Supprimer une réponse
 async function handleDeleteReponse() {
     if (!reponseToDelete) return;
     
@@ -434,11 +455,7 @@ async function handleDeleteReponse() {
         if (data.success) {
             showNotification('✅ Réponse supprimée avec succès', 'success');
             closeModal('modalDeleteReponse');
-            
-            // Recharger les réponses
             await loadReponses(currentDemandeId);
-            
-            // Recharger toutes les données
             await loadAllData();
         } else {
             showNotification(data.message || 'Erreur lors de la suppression', 'error');
@@ -451,19 +468,25 @@ async function handleDeleteReponse() {
     reponseToDelete = null;
 }
 
-// Ouvrir un modal
+// ==========================================
+// UTILITAIRES MODAL
+// ==========================================
+
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
-// Fermer un modal
-function closeModal(modalId) {
+window.closeModal = function(modalId) {
     const modal = document.getElementById(modalId);
-    modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
-}
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+};
 
 // Fermer les modals en cliquant en dehors
 window.addEventListener('click', (e) => {
@@ -472,56 +495,61 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Afficher une notification
+// ==========================================
+// NOTIFICATION
+// ==========================================
+
 function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.className = `notification ${type} show`;
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 3000);
+    if (notification) {
+        notification.textContent = message;
+        notification.className = `notification ${type} show`;
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
 }
 
-// Fonctions utilitaires de formatage
+// ==========================================
+// FONCTIONS DE FORMATAGE
+// ==========================================
+
 function formatStatut(statut) {
     const statuts = {
-        'en_attente': 'En attente',
-        'en_cours': 'En cours',
+        'nouveau': 'Nouveau',
+        'en-cours': 'En cours',
         'traite': 'Traité',
-        'rejete': 'Rejeté'
+        'refuse': 'Refusé'
     };
     return statuts[statut] || statut;
 }
 
 function formatUrgence(urgence) {
     const urgences = {
-        'tres_urgent': 'Très urgent',
-        'urgent': 'Urgent',
-        'moyen': 'Moyen',
-        'faible': 'Faible'
+        'tres-urgent': '🔴 Très urgent',
+        'urgent': '🟠 Urgent',
+        'important': '🟡 Important',
+        'peut-attendre': '🟢 Peut attendre'
     };
     return urgences[urgence] || urgence;
 }
 
-function getUrgenceClass(urgence) {
-    const classes = {
-        'tres_urgent': 'tres-urgent',
-        'urgent': 'urgent',
-        'moyen': 'moyen',
-        'faible': 'faible'
-    };
-    return classes[urgence] || 'faible';
-}
-
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        return dateString;
+    }
 }
+
+console.log('✅ Gestion des Réponses initialisée - Version Intégrée !');

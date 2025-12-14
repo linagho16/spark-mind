@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SparkMind - Demande d'Aide</title>
+    <title>SPARKMIND - Demande d'Aide</title>
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="formulaire.css">
 </head>
 <body>
     <!-- Navigation Top Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <img src="logo.png" alt="SparkMind Logo" class="brand-logo">
-                <div class="brand-text">
-                    <h1>SparkMind</h1>
-                    <p>Quand la pensée devient espoir</p>
-                </div>
+    <nav class="top-nav">
+        <div class="brand-block">
+            <img src="logo.png" alt="Logo SPARKMIND" class="logo-img">
+            <div class="brand-text">
+                <span class="brand-name">SPARKMIND</span>
+                <span class="brand-tagline">Quand la pensée devient espoir</span>
             </div>
-            <div class="nav-links">
-                <a href="#accueil">Accueil</a>
-                <a href="#aide" class="active">Demander de l'aide</a>
-                <a href="#dons">Faire un don</a>
-                <a href="#contact">Contact</a>
-                <button class="btn-chatbot-nav" onclick="toggleChatbot()">
-                    💬 Assistant
-                </button>
-            </div>
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-orange" onclick="window.location.href='index.php?page=profile'">
+                <span class="icon">⭐</span>
+                <span>Mon profil</span>
+            </button>
         </div>
     </nav>
 
@@ -65,8 +65,8 @@
                     <svg width="120" height="120">
                         <defs>
                             <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#166e6a;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#744ba1;stop-opacity:1" />
+                                <stop offset="0%" style="stop-color:#7d5aa6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ec7546;stop-opacity:1" />
                             </linearGradient>
                         </defs>
                         <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
@@ -418,7 +418,6 @@
                                     <span class="visibility-icon">🌍</span>
                                     <h4>Publique</h4>
                                     <p>Visible par tous les donateurs et associations</p>
-                                    <span class="visibility-badge"></span>
                                 </div>
                                 <span class="radio-check"></span>
                             </label>
@@ -428,7 +427,6 @@
                                     <span class="visibility-icon">👥</span>
                                     <h4>Semi-privée</h4>
                                     <p>Visible uniquement par les associations vérifiées</p>
-                                    <span class="visibility-badge"></span>
                                 </div>
                                 <span class="radio-check"></span>
                             </label>
@@ -438,7 +436,6 @@
                                     <span class="visibility-icon">🔒</span>
                                     <h4>Privée</h4>
                                     <p>Visible uniquement par les administrateurs</p>
-                                    <span class="visibility-badge"></span>
                                 </div>
                                 <span class="radio-check"></span>
                             </label>
@@ -447,7 +444,7 @@
                         <label class="anonymous-toggle">
                             <input type="checkbox" name="anonyme" value="1">
                             <div class="toggle-content">
-                                <span class="toggle-icon">🎭</span>
+                                <span class="toggle-icon"></span>
                                 <div>
                                     <h4>Rester anonyme</h4>
                                     <p>Votre identité ne sera pas affichée publiquement</p>

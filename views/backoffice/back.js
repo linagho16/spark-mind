@@ -62,15 +62,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event listener pour période personnalisée
     const periodeSelect = document.getElementById('exportPeriode');
     if (periodeSelect) {
         periodeSelect.addEventListener('change', function() {
             const customDateRange = document.getElementById('customDateRange');
-            if (this.value === 'custom') {
-                customDateRange.style.display = 'grid';
-            } else {
-                customDateRange.style.display = 'none';
+            if (customDateRange) {
+                if (this.value === 'custom') {
+                    customDateRange.style.display = 'grid';
+                } else {
+                    customDateRange.style.display = 'none';
+                }
             }
         });
     }
@@ -87,7 +88,7 @@ function showSection(event, sectionName) {
         section.classList.remove('active');
     });
     
-    document.querySelectorAll('.nav-item').forEach(item => {
+    document.querySelectorAll('.menu-item').forEach(item => {
         item.classList.remove('active');
     });
     
@@ -96,14 +97,12 @@ function showSection(event, sectionName) {
         targetSection.classList.add('active');
     }
     
-    event.target.closest('.nav-item').classList.add('active');
+    event.target.closest('.menu-item').classList.add('active');
     
     if (sectionName === 'categories') {
         renderCategoriesStats();
     } else if (sectionName === 'gouvernorats') {
         renderGouvernoratsStats();
-    } else if (sectionName === 'evolution') {
-        renderEvolutionStats();
     } else if (sectionName === 'carte') {
         renderCarte();
     } else if (sectionName === 'export') {
@@ -368,74 +367,6 @@ function renderGouvernoratsStats() {
     });
 }
 
-function renderEvolutionStats() {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-    
-    let aujourdhui = 0, semaine = 0, mois = 0;
-    
-    window.allDemandes.forEach(demande => {
-        const demandeDate = new Date(demande.date_soumission);
-        if (demandeDate >= today) aujourdhui++;
-        if (demandeDate >= weekAgo) semaine++;
-        if (demandeDate >= monthAgo) mois++;
-    });
-    
-    const moyenne = window.allDemandes.length > 0 ? Math.round(window.allDemandes.length / 30) : 0;
-    
-    document.getElementById('statAujourdhui').textContent = aujourdhui;
-    document.getElementById('statSemaine').textContent = semaine;
-    document.getElementById('statMois').textContent = mois;
-    document.getElementById('statMoyenne').textContent = moyenne;
-    
-    renderEvolutionChart();
-}
-
-function renderEvolutionChart() {
-    const monthsData = {};
-    
-    window.allDemandes.forEach(demande => {
-        const date = new Date(demande.date_soumission);
-        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        monthsData[monthKey] = (monthsData[monthKey] || 0) + 1;
-    });
-    
-    const sortedMonths = Object.entries(monthsData)
-        .sort((a, b) => b[0].localeCompare(a[0]))
-        .slice(0, 6)
-        .reverse();
-    
-    const chartDiv = document.getElementById('evolutionChart');
-    chartDiv.innerHTML = '';
-    
-    if (sortedMonths.length === 0) {
-        chartDiv.innerHTML = '<p style="text-align:center;color:#999">Aucune donnée disponible</p>';
-        return;
-    }
-    
-    const maxValue = Math.max(...sortedMonths.map(m => m[1]));
-    
-    sortedMonths.forEach(([month, count]) => {
-        const bar = document.createElement('div');
-        bar.className = 'chart-bar';
-        const height = (count / maxValue) * 200;
-        bar.style.height = height + 'px';
-        bar.innerHTML = `
-            <div class="bar-value">${count}</div>
-            <div class="bar-label">${formatMonth(month)}</div>
-        `;
-        chartDiv.appendChild(bar);
-    });
-}
-
-function formatMonth(monthKey) {
-    const [year, month] = monthKey.split('-');
-    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-    return `${months[parseInt(month) - 1]} ${year}`;
-}
-
 // ==========================================
 // CARTE TUNISIE
 // ==========================================
@@ -660,18 +591,9 @@ function exportCustom() {
             startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         } else if (periode === 'year') {
             startDate = new Date(now.getFullYear(), 0, 1);
-        } else if (periode === 'custom') {
-            const debut = document.getElementById('exportDateDebut').value;
-            const fin = document.getElementById('exportDateFin').value;
-            if (debut && fin) {
-                filtered = filtered.filter(d => {
-                    const date = new Date(d.date_soumission);
-                    return date >= new Date(debut) && date <= new Date(fin);
-                });
-            }
         }
         
-        if (startDate && periode !== 'custom') {
+        if (startDate) {
             filtered = filtered.filter(d => new Date(d.date_soumission) >= startDate);
         }
     }
@@ -715,49 +637,13 @@ function addExportHistory(type, filename, count) {
     if (exportHistory.length > 10) exportHistory.pop();
     
     localStorage.setItem('exportHistory', JSON.stringify(exportHistory));
-    displayExportHistory();
 }
 
 function loadExportHistory() {
     const saved = localStorage.getItem('exportHistory');
     if (saved) {
         exportHistory = JSON.parse(saved);
-        displayExportHistory();
     }
-}
-
-function displayExportHistory() {
-    const listDiv = document.getElementById('exportHistoryList');
-    if (!listDiv) return;
-    
-    if (exportHistory.length === 0) {
-        listDiv.innerHTML = '<p style="text-align:center;color:#999;padding:20px">Aucun export récent</p>';
-        return;
-    }
-    
-    listDiv.innerHTML = '';
-    exportHistory.forEach(item => {
-        const historyItem = document.createElement('div');
-        historyItem.className = 'export-history-item';
-        historyItem.innerHTML = `
-            <div class="export-history-info">
-                <div class="export-history-title">${item.type} - ${item.count} demandes</div>
-                <div class="export-history-date">${item.date}</div>
-            </div>
-            <div class="export-history-icon">${getExportIcon(item.type)}</div>
-        `;
-        listDiv.appendChild(historyItem);
-    });
-}
-
-function getExportIcon(type) {
-    const icons = {
-        'Excel': '📊',
-        'CSV': '📄',
-        'PDF': '📑',
-        'Statistiques': '📈'
-    };
-    return icons[type] || '📥';
 }
 
 // ==========================================
@@ -786,6 +672,7 @@ function resetFilters() {
     document.getElementById('filterStatut').value = '';
     document.getElementById('filterUrgence').value = '';
     document.getElementById('filterGouvernorat').value = '';
+    document.getElementById('searchDemandes').value = '';
     
     filteredDemandes = [...window.allDemandes];
     currentPage = 1;
@@ -829,8 +716,8 @@ function filterByCategory(category) {
     document.getElementById('section-categories').classList.remove('active');
     document.getElementById('section-demandes').classList.add('active');
     
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    document.querySelector('.nav-item[href="#demandes"]').classList.add('active');
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+    document.querySelector('.menu-item[href="#demandes"]').classList.add('active');
     
     filteredDemandes = window.allDemandes.filter(d => {
         let cats = d.categories_aide;
@@ -855,8 +742,8 @@ function filterByGouvernorat(gouvernorat) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.getElementById('section-demandes').classList.add('active');
         
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.querySelector('.nav-item[href="#demandes"]').classList.add('active');
+        document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+        document.querySelector('.menu-item[href="#demandes"]').classList.add('active');
     }
     
     filteredDemandes = window.allDemandes.filter(d => d.gouvernorat === gouvernorat);

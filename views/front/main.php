@@ -598,7 +598,8 @@
                 <span class="bubble">💭</span>
               </a>
 
-              <a class="space-card offer" href="#" id="offerLink">
+              <a class="space-card offer" href="index.php?page=offer_support" id="offerLink">
+
                 <span>Offre d’aide…</span>
                 <span class="badge">Proposer du soutien</span>
                 <span class="bubble">🤝</span>

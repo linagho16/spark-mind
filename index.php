@@ -111,6 +111,10 @@ switch ($page) {
     case 'admin_delete_user':
         $adminController->deleteUser();
         break;
+    case 'offer_support':
+        include __DIR__ . '/views/front/offer_support.php';
+        break;
+
 
     /* =======================
        ROUTE PAR DÉFAUT

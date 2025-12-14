@@ -11,8 +11,8 @@
   --white:#ffffff;
 
   /* UI */
-  --panel:#fff7ec;
-  --panel-2:#ffe9d8;
+  --panel:#7c4d0a;
+  --panel-2:#8b4a19;
   --ring: rgba(31,140,135,.25);
   --shadow:0 10px 20px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06);
   --radius:18px;
@@ -67,7 +67,7 @@ body{
 .search button{position:absolute;right:6px;top:50%;translate:0 -50%;width:36px;height:36px;border:0;border-radius:50%;cursor:pointer;background:#fff;box-shadow:var(--shadow)}
 .pill{
   border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);
-  background:linear-gradient(135deg,var(--turquoise),#48b3af);color:#083233
+  background:#48b3af
 }
 .pill.ghost{background:#fff}
 

@@ -205,6 +205,78 @@ class MailService {
 
         return self::send($toEmail, $subject, $body);
     }
+    public static function sendPasswordResetCode(string $toEmail, string $userName, string $code): bool
+    {
+        $subject = "Code de vérification pour réinitialiser votre mot de passe";
+
+        $body = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+
+            <!-- Bandeau haut -->
+            <div style='text-align:center;padding:25px;background:#1A464F;border-radius:8px 8px 0 0;'>
+                <img src='https://i.postimg.cc/3NHKx7sD/Gemini-Generated-Image-33cenv33cenv33ce-removebg-preview.png'
+                    alt='SPARKMIND Logo'
+                    style='width:70px;height:70px;border-radius:50%;margin-bottom:10px;'>
+                <h2 style='color:#FBEEDD;margin:0;font-size:24px;'>
+                    🔐 Code de vérification
+                </h2>
+            </div>
+
+            <!-- Corps -->
+            <div style='padding: 25px; background: #FFF7EF;'>
+                <p>Bonjour <strong>$userName</strong>,</p>
+
+                <p>
+                    Vous avez demandé à réinitialiser votre mot de passe
+                    <strong>SPARKMIND</strong>. Voici votre code de vérification :
+                </p>
+
+                <p style='text-align:center;margin:25px 0;'>
+                    <span style='display:inline-block;
+                                padding:10px 24px;
+                                border-radius:6px;
+                                background:#1A464F;
+                                color:#fff;
+                                font-size:20px;
+                                letter-spacing:4px;'>
+                        $code
+                    </span>
+                </p>
+
+                <p style='font-size:14px;color:#555;'>
+                    Ce code est valable pendant <strong>15 minutes</strong>.<br>
+                    Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.
+                </p>
+
+                <p style='text-align:center;margin-top:20px;'>
+                    <a href='http://localhost/sparkmind_mvc_100percent/index.php?page=reset_password'
+                    style='background:#1A464F;
+                            color:#fff;
+                            padding:10px 22px;
+                            border-radius:24px;
+                            text-decoration:none;
+                            font-size:14px;
+                            display:inline-block;'>
+                        ✨ Saisir mon code
+                    </a>
+                </p>
+            </div>
+
+            <!-- Pied -->
+            <div style='background:#F5DCC2;
+                        padding:12px;
+                        text-align:center;
+                        font-size:12px;
+                        color:#333;
+                        border-radius:0 0 8px 8px;'>
+                © 2024 SPARKMIND – Quand la pensée devient espoir
+            </div>
+
+        </div>";
+
+        return self::send($toEmail, $subject, $body);
+    }
+
 
 
     /**

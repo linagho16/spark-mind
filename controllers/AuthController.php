@@ -551,14 +551,22 @@ class AuthController
                 if (!$user) {
                     $errors[] = "Aucun compte trouvé avec ces informations.";
                 } else {
+                    // 👉 Génération d’un code à 6 chiffres
                     $code = (string) random_int(100000, 999999);
 
+                    // Stockage en session
                     $_SESSION['reset_user_id'] = $user['id'];
                     $_SESSION['reset_code']    = $code;
-                    $_SESSION['reset_expires'] = time() + 15 * 60;
+                    $_SESSION['reset_expires'] = time() + 15 * 60; // 15 minutes
 
-                    $_SESSION['reset_info'] = "Votre code de vérification (à envoyer par mail/SMS dans un vrai site) est : " . $code;
+                    // Envoi du mail avec le code
+                    $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
+                    MailService::sendPasswordResetCode($user['email'], $fullName, $code);
 
+                    // Message d’info affiché sur la page suivante
+                    $_SESSION['reset_info'] = "Un code de vérification vient d’être envoyé à votre adresse e-mail.";
+
+                    // Redirection vers la page où l’utilisateur saisit le code
                     header("Location: index.php?page=reset_password");
                     exit;
                 }

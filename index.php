@@ -86,9 +86,6 @@ switch ($page) {
         $adminController->users();
         break;
 
-    case 'admin_notifications':
-        $adminController->notifications();
-        break;
 
     case 'admin_help_requests':
         $adminController->helpRequests();

@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../models/Notification.php';
 require_once __DIR__ . '/../models/HelpRequest.php';
 require_once __DIR__ . '/../services/MailService.php';
 

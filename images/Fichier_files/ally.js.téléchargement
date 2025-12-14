@@ -1,0 +1,26 @@
+
+(function($) {
+    const allyLoaderEl = $('script[data-ally-loader]')[0];
+    if (!allyLoaderEl) {
+        console.warn('Ally loaded without data-ally-loader script attribute. Aborting.');
+        return;
+    }
+
+    // Grab the script tag and extract the Ally hostname from the src URL
+    const allyBaseUrl = new URL(allyLoaderEl.src);
+    window.ALLY_CFG = window.ALLY_CFG || {};
+    window.ALLY_CFG.baseUrl = allyBaseUrl.origin;
+
+    window.ally = window.ally || {};
+    window.ally.ready = window.ally.ready || function(callback, eventTracker) {
+        window.ALLY_CFG.eventTracker = window.ALLY_CFG.eventTracker || eventTracker;
+
+        callback = callback || function() {};
+        $.ajax({
+            'url': `${allyBaseUrl.origin }/static/integration/quill/ally.a36bd03aafcb3b1ac79e.js`,
+            'dataType': 'script',
+            'cache': true
+        });
+        return callback();
+    };
+})(window.jQuery);

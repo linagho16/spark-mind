@@ -234,7 +234,7 @@
 
   <!-- ✅ SIDEBAR GAUCHE -->
   <aside class="sidebar">
-    <a class="brand" href="index.php?page=main" title="Retour au site">
+    <a class="brand" >
       <img src="images/logo.jpg" alt="Logo SPARKMIND" class="logo" />
       <span class="brand-name">SPARKMIND</span>
     </a>
@@ -245,7 +245,7 @@
     <nav class="menu">
      <div class="menu-title">📊 Dashboard admin</div>
       <a class="menu-item active" href="index.php?page=admin_users">👥 Utilisateurs</a>
-      <a class="menu-item" >🙍‍♀️ Demandeurs</a>
+      <a href="index.php?page=backoffice" class="menu-item">👩‍🦰 Demandeurs</a>
       <a class="menu-item" >🎁 Donneurs</a>
       <a class="menu-item" >🗣 Expressions</a>
       <a class="menu-item" >📅 Événements</a>

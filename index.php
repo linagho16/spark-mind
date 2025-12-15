@@ -111,6 +111,18 @@ switch ($page) {
     case 'admin_delete_user':
         $adminController->deleteUser();
         break;
+    case 'demande':
+        require_once __DIR__ . '/views/frontoffice/formulaire.html';
+        break;
+    case 'backoffice':
+        require_once __DIR__ . '/views/backoffice/back.html';
+        break;  
+        
+    case 'reponse':
+        require_once __DIR__ . '/views/reponse/reponse.html';
+        break;
+  
+
 
     /* =======================
        ROUTE PAR DÉFAUT

@@ -4,24 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SparkMind - Demande d'Aide</title>
+
+    <base href="/sparkmind_mvc_100percent/views/frontoffice/">
+
     <link rel="stylesheet" href="formulaire.css">
 </head>
+
 <body>
     <!-- Navigation Top Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <img src="logo.png" alt="SparkMind Logo" class="brand-logo">
+                <img src="logo.jpg" alt="SparkMind Logo" class="brand-logo">
                 <div class="brand-text">
                     <h1>SparkMind</h1>
                     <p>Quand la pensée devient espoir</p>
                 </div>
             </div>
             <div class="nav-links">
-                <a href="#accueil">Accueil</a>
-                <a href="#aide" class="active">Demander de l'aide</a>
-                <a href="#dons">Faire un don</a>
-                <a href="#contact">Contact</a>
+                <a href="/sparkmind_mvc_100percent/index.php?page=main">Accueil</a>
+                <a href="/sparkmind_mvc_100percent/index.php?page=demande" class="active">Demander de l'aide</a>
+                <a href="/sparkmind_mvc_100percent/index.php?page=dons">Faire un don</a>
+                <a href="/sparkmind_mvc_100percent/index.php?page=contact">Contact</a>
                 <button class="btn-chatbot-nav" onclick="toggleChatbot()">
                     💬 Assistant
                 </button>

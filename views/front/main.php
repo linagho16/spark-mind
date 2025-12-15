@@ -592,7 +592,7 @@
             </p>
 
             <div class="card-row">
-              <a class="space-card ask" href="#" id="askLink">
+              <a class="space-card ask" href="index.php?page=demande" id="askLink">
                 <span>Demande de l’aide…</span>
                 <span class="badge">Créer une demande</span>
                 <span class="bubble">💭</span>

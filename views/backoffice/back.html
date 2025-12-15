@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SparkMind - Back Office | Gestion Complète</title>
+    <link rel="stylesheet" href="back.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="back.js" defer></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo.png" alt="SparkMind Logo" class="sidebar-logo">
+            <h2>SparkMind</h2>
+            <p class="admin-role">Administrateur</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#demandes" class="nav-item active" onclick="showSection(event, 'demandes')">
+                <span class="nav-icon">📊</span>
+                <span>Demandes d'aide</span>
+                <span class="badge" id="badgeEnAttente">0</span>
+            </a>
+            <a href="#categories" class="nav-item" onclick="showSection(event, 'categories')">
+                <span class="nav-icon">📁</span>
+                <span>Catégories d'aide</span>
+            </a>
+            <a href="#gouvernorats" class="nav-item" onclick="showSection(event, 'gouvernorats')">
+                <span class="nav-icon">🗺️</span>
+                <span>Par Gouvernorat</span>
+            </a>
+            <a href="#carte" class="nav-item" onclick="showSection(event, 'carte')">
+                <span class="nav-icon">🌍</span>
+                <span>Carte Tunisie</span>
+            </a>
+
+            <a href="#export" class="nav-item" onclick="showSection(event, 'export')">
+                <span class="nav-icon">📥</span>
+                <span>Export Données</span>
+            </a>
+            <a href="#" class="nav-item logout">
+                <span class="nav-icon">🚪</span>
+                <span>Déconnexion</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- SECTION 1: DEMANDES D'AIDE -->
+        <section id="section-demandes" class="content-section active">
+            <div class="top-bar">
+                <h1>Gestion des Demandes d'Aide</h1>
+                <div class="top-bar-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchDemandes" placeholder="Rechercher...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="user-profile">
+                        <span class="user-name">Admin</span>
+                        <div class="user-avatar">A</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card urgent">
+                    <div class="stat-icon">🔴</div>
+                    <div class="stat-info">
+                        <h3 id="statUrgentes">0</h3>
+                        <p>Demandes urgentes</p>
+                    </div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <h3 id="statEnAttente">0</h3>
+                        <p>En attente</p>
+                    </div>
+                </div>
+                <div class="stat-card processed">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="statTraitees">0</h3>
+                        <p>Traitées</p>
+                    </div>
+                </div>
+                <div class="stat-card total">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <h3 id="statTotal">0</h3>
+                        <p>Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Statut:</label>
+                    <select class="filter-select" id="filterStatut">
+                        <option value="">Tous</option>
+                        <option value="nouveau">Nouveau</option>
+                        <option value="en-cours">En cours</option>
+                        <option value="traite">Traité</option>
+                        <option value="refuse">Refusé</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Urgence:</label>
+                    <select class="filter-select" id="filterUrgence">
+                        <option value="">Toutes</option>
+                        <option value="tres-urgent">Très urgent</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="important">Important</option>
+                        <option value="peut-attendre">Peut attendre</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Gouvernorat:</label>
+                    <select class="filter-select" id="filterGouvernorat">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <button class="btn-filter" onclick="applyFilters()">Filtrer</button>
+                <button class="btn-reset" onclick="resetFilters()">Réinitialiser</button>
+            </div>
+
+            <div class="table-container">
+                <table class="demandes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Nom</th>
+                            <th>Gouvernorat</th>
+                            <th>Type d'aide</th>
+                            <th>Urgence</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="demandesTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="paginationDemandes"></div>
+        </section>
+
+        <!-- SECTION 2: CATEGORIES -->
+        <section id="section-categories" class="content-section">
+            <div class="top-bar">
+                <h1>📁 Demandes par Catégorie</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="stats-container" id="categoriesStats"></div>
+            <div class="table-container">
+                <table class="categories-table">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Nombre</th>
+                            <th>Urgentes</th>
+                            <th>En attente</th>
+                            <th>Traitées</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 3: GOUVERNORATS -->
+        <section id="section-gouvernorats" class="content-section">
+            <div class="top-bar">
+                <h1>🗺️ Par Gouvernorat</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="table-container">
+                <table class="gouvernorats-table">
+                    <thead>
+                        <tr>
+                            <th>Gouvernorat</th>
+                            <th>Nombre</th>
+                            <th>Urgentes</th>
+                            <th>En attente</th>
+                            <th>Traitées</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gouvernoratsTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CARTE TUNISIE -->
+        <section id="section-carte" class="content-section">
+            <div class="top-bar">
+                <h1>🌍 Carte de la Tunisie</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="carte-container">
+                <div class="carte-header">
+                    <h3>📍 Distribution géographique des demandes</h3>
+                    <div class="carte-legend">
+                        <div class="legend-item">
+                            <span class="legend-color hot"></span>
+                            <span>Plus de 20 demandes</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color warm"></span>
+                            <span>10 à 20 demandes</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color cool"></span>
+                            <span>5 à 10 demandes</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color cold"></span>
+                            <span>Moins de 5 demandes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="carte-wrapper">
+                    <div class="carte-image-container">
+                        <img src="carte.jpg" alt="Carte de la Tunisie" id="carteImage">
+                        <div id="carteMarkers"></div>
+                    </div>
+                    <div class="carte-stats">
+                        <h4>📊 Top 5 Gouvernorats</h4>
+                        <div id="topGouvernorats"></div>
+                    </div>
+                </div>
+                <div class="carte-details">
+                    <h4>🔍 Détails par Gouvernorat</h4>
+                    <div class="gouvernorat-grid" id="gouvernoratGrid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: EVOLUTION -->
+        <section id="section-evolution" class="content-section">
+            <div class="top-bar">
+                <h1>📈 Évolution des Demandes</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <h3 id="statAujourdhui">0</h3>
+                        <p>Aujourd'hui</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📆</div>
+                    <div class="stat-info">
+                        <h3 id="statSemaine">0</h3>
+                        <p>Cette semaine</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="statMois">0</h3>
+                        <p>Ce mois</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="statMoyenne">0</h3>
+                        <p>Moyenne/jour</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>Demandes par mois (6 derniers mois)</h3>
+                <div id="evolutionChart" class="evolution-chart"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: EXPORT DONNÉES -->
+        <section id="section-export" class="content-section">
+            <div class="top-bar">
+                <h1>📥 Export des Données</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="export-container">
+                <div class="export-options">
+                    <div class="export-card">
+                        <div class="export-icon">📊</div>
+                        <h3>Export Excel</h3>
+                        <p>Format .xlsx pour analyse</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportToExcel('all')">📥 Tout exporter</button>
+                            <button class="btn-export secondary" onclick="exportToExcel('filtered')">🔍 Données filtrées</button>
+                        </div>
+                    </div>
+                    <div class="export-card">
+                        <div class="export-icon">📄</div>
+                        <h3>Export CSV</h3>
+                        <p>Format .csv universel</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportToCSV('all')">📥 Tout exporter</button>
+                            <button class="btn-export secondary" onclick="exportToCSV('filtered')">🔍 Données filtrées</button>
+                        </div>
+                    </div>
+                    <div class="export-card">
+                        <div class="export-icon">📑</div>
+                        <h3>Rapport PDF</h3>
+                        <p>Rapport statistique complet</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportToPDF()">📥 Générer PDF</button>
+                        </div>
+                    </div>
+                    <div class="export-card">
+                        <div class="export-icon">📈</div>
+                        <h3>Statistiques JSON</h3>
+                        <p>Stats détaillées au format JSON</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportStatistics()">📥 Exporter Stats</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-filters">
+                    <h3>⚙️ Options d'Export Personnalisées</h3>
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label>Période:</label>
+                            <select id="exportPeriode">
+                                <option value="all">Toutes les périodes</option>
+                                <option value="today">Aujourd'hui</option>
+                                <option value="week">Cette semaine</option>
+                                <option value="month">Ce mois</option>
+                                <option value="year">Cette année</option>
+                                <option value="custom">Personnalisée</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Statut:</label>
+                            <select id="exportStatut">
+                                <option value="all">Tous les statuts</option>
+                                <option value="nouveau">Nouveau</option>
+                                <option value="en-cours">En cours</option>
+                                <option value="traite">Traité</option>
+                                <option value="refuse">Refusé</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Urgence:</label>
+                            <select id="exportUrgence">
+                                <option value="all">Toutes les urgences</option>
+                                <option value="tres-urgent">Très urgent</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="important">Important</option>
+                                <option value="peut-attendre">Peut attendre</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Gouvernorat:</label>
+                            <select id="exportGouvernorat">
+                                <option value="all">Tous les gouvernorats</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="custom-date-range" id="customDateRange" style="display:none">
+                        <div class="filter-item">
+                            <label>Date de début:</label>
+                            <input type="date" id="exportDateDebut">
+                        </div>
+                        <div class="filter-item">
+                            <label>Date de fin:</label>
+                            <input type="date" id="exportDateFin">
+                        </div>
+                    </div>
+                    <button class="btn-export-custom" onclick="exportCustom()">🎯 Lancer l'Export Personnalisé</button>
+                </div>
+
+                <div class="export-history">
+                    <h3>📋 Historique des Exports</h3>
+                    <div id="exportHistoryList">
+                        <p style="text-align:center;color:#999;padding:20px">Aucun export récent</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Modification Statut -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content status-modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifier le Statut</h2>
+                <button class="modal-close" onclick="closeModal('statusModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:20px;color:#666">
+                    Demande <strong>#<span id="currentDemandeId">-</span></strong>
+                </p>
+                <div class="status-options">
+                    <div class="status-option nouveau" onclick="selectStatus(this,'nouveau')">
+                        <div class="status-option-icon">🆕</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Nouveau</div>
+                            <div class="status-option-description">Demande reçue récemment</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option en-cours" onclick="selectStatus(this,'en-cours')">
+                        <div class="status-option-icon">⏳</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">En cours</div>
+                            <div class="status-option-description">En cours de traitement</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option traite" onclick="selectStatus(this,'traite')">
+                        <div class="status-option-icon">✅</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Traité</div>
+                            <div class="status-option-description">Demande terminée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option refuse" onclick="selectStatus(this,'refuse')">
+                        <div class="status-option-icon">❌</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Refusé</div>
+                            <div class="status-option-description">Demande non acceptée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" onclick="closeModal('statusModal')">Annuler</button>
+                <button class="btn-modal confirm" id="confirmStatusBtn" onclick="confirmStatusChange()" disabled>Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Détails Demande -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Détails de la Demande</h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+</body>
+</html>

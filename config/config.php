@@ -1,7 +1,8 @@
 <?php
+
 $host = 'localhost';
-$db   = 'sparkmind';   // le nom de ta base
-$user = 'root';        // XAMPP/WAMP : root
+$db   = 'sparkmind';   // nom de ta base
+$user = 'root';        // XAMPP : root
 $pass = '';            // souvent vide en local
 $charset = 'utf8mb4';
 

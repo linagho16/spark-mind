@@ -12,12 +12,11 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 // Inclure les fichiers nécessaires
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../models/Demande.php';
 
-// Initialiser la connexion à la base de données
-$database = new Database();
-$db = $database->getConnection();
+require_once __DIR__ . '/../models/Demande.php';
+require_once __DIR__ . '/../config/config.php';
+$db = $pdo;
+
 
 // Vérifier la connexion
 if($db === null) {

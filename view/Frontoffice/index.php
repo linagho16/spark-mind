@@ -29,768 +29,960 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aide Solidaire - Plateforme de Don et Solidarité</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    :root{
+      --orange:#ec7546;
+      --turquoise:#1f8c87;
+      --violet:#7d5aa6;
+      --bg:#FBEDD7;
+    }
 
-        body {
-            font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background-color: #FBEDD7;
-            color: #333;
-            line-height: 1.6;
-            display: flex;
-            min-height: 100vh;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        /* ====== SIDEBAR STYLES ====== */
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+            radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+            var(--bg);
+        font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #1A464F;
+    }
+
+    /* ✅ Layout avec sidebar */
+    .layout{
+        min-height:100vh;
+        display:flex;
+    }
+
+    /* ✅ Sidebar */
+    .sidebar{
+      width:260px;
+      background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+      border-right:1px solid rgba(0,0,0,.06);
+      padding:18px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
+
+    .sidebar .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      padding:10px 10px;
+      border-radius:14px;
+      color:#1A464F;
+      margin-bottom: 10px;
+    }
+
+    .sidebar .brand-name{
+      font-family:'Playfair Display', serif;
+      font-weight:800;
+      font-size:18px;
+      color:#1A464F;
+      text-transform: lowercase;
+    }
+
+    /* ✅ Titres sidebar : MENU PRINCIPAL */
+    .menu-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #7a6f66;
+      padding: 10px 12px 4px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .menu-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#1A464F;
+      font-weight:600;
+      font-size: 14px;
+    }
+
+    .menu-item:hover{
+      background:#f5e2c4ff;
+    }
+
+    .menu-item.active{
+      background:#1A464F !important;
+      color:#ddad56ff !important;
+    }
+
+    .sidebar-foot{
+      margin-top:auto;
+      padding-top:10px;
+      border-top:1px solid rgba(0,0,0,.06);
+    }
+
+    .sidebar-foot .link{
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#1A464F;
+      font-weight:600;
+      font-size: 14px;
+    }
+
+    .sidebar-foot .link:hover{
+      background:#f5e2c4ff;
+    }
+
+    /* ✅ Main */
+    .main{
+      flex:1;
+      min-width:0;
+      padding: 0;
+      overflow-y: auto;
+    }
+
+    /* ✅ Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(251, 237, 215, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      animation: navFade 0.7s ease-out;
+    }
+
+    .top-nav::after{
+      content:"";
+      position:absolute;
+      inset:auto 40px -2px 40px;
+      height:2px;
+      background:linear-gradient(90deg,#7d5aa6,#ec7546,#1f8c87);
+      opacity:.35;
+      border-radius:999px;
+    }
+
+    .brand-block { 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+    }
+
+    .logo-img {
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow:0 6px 14px rgba(79, 73, 73, 0.18);
+      animation: logoPop 0.6s ease-out;
+    }
+
+    .brand-text { 
+      display:flex; 
+      flex-direction:column; 
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1A464F;
+      letter-spacing: 1px;
+      text-transform:uppercase;
+      animation: titleGlow 2.8s ease-in-out infinite alternate;
+    }
+
+    .brand-tagline { 
+      font-size: 12px; 
+      color: #1A464F; 
+      opacity: 0.8; 
+    }
+
+    .header-actions { 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+    }
+
+    @keyframes navFade { 
+      from {opacity:0; transform:translateY(-16px);} 
+      to {opacity:1; transform:translateY(0);} 
+    }
+
+    @keyframes logoPop{ 
+      from{transform:scale(0.8) translateY(-6px); opacity:0;} 
+      to{transform:scale(1) translateY(0); opacity:1;} 
+    }
+
+    @keyframes titleGlow{ 
+      from{text-shadow:0 0 0 rgba(125,90,166,0.0);} 
+      to{text-shadow:0 4px 16px rgba(125,90,166,0.55);} 
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(236, 117, 70, 0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position:relative;
+      overflow:hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .btn-orange::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,rgba(255,255,255,.35),transparent 60%);
+      transform:translateX(-120%);
+      transition:transform .4s ease;
+    }
+
+    .btn-orange:hover::before{ 
+      transform:translateX(20%); 
+    }
+
+    .btn-orange:hover {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(1.05);
+      box-shadow: 0 10px 24px rgba(236, 117, 70, 0.55);
+    }
+
+    .page-quote {
+      text-align: center;
+      margin: 22px auto 14px auto;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1A464F;
+      opacity: 0.95;
+      position:relative;
+      animation: quoteFade 1s ease-out;
+    }
+
+    .page-quote::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-8px;
+      width:90px;
+      height:3px;
+      border-radius:999px;
+      background:linear-gradient(90deg,#7d5aa6,#ec7546,#1f8c87);
+      opacity:.6;
+    }
+
+    @keyframes quoteFade{ 
+      from{opacity:0; transform:translateY(-8px);} 
+      to{opacity:1; transform:translateY(0);} 
+    }
+
+    .space-main { 
+      padding: 10px 20px 60px; 
+    }
+
+    .space-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      max-width: 1100px;
+      margin: 10px auto 40px auto;
+      box-shadow: 0 18px 40px rgba(96, 84, 84, 0.18);
+      background: #f5f5f5;
+    }
+
+    .space-hero::before,
+    .space-hero::after{
+      content:"";
+      position:absolute;
+      border-radius:999px;
+      filter:blur(18px);
+      opacity:.55;
+      mix-blend-mode:screen;
+      animation: floatBlob 10s ease-in-out infinite alternate;
+    }
+
+    .space-hero::before{
+      width:120px; height:120px; top:-40px; left:20px;
+      background:rgba(127, 71, 192, 0.6);
+    }
+
+    .space-hero::after{
+      width:160px; height:160px; bottom:-50px; right:10px;
+      background:rgba(31,140,135,.7);
+      animation-delay:-4s;
+    }
+
+    @keyframes floatBlob{ 
+      from{transform:translateY(0) translateX(0);} 
+      to{transform:translateY(16px) translateX(-8px);} 
+    }
+
+    .space-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 32px 30px 30px;
+    }
+
+    .space-title{
+      font-family:'Playfair Display', serif;
+      font-size: 30px;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(18px);
+      color:#02282f !important;
+    }
+
+    .space-text{
+      font-size: 17px;
+      line-height: 1.7;
+      margin: 0;
+      max-width: 820px;
+      opacity: 0;
+      transform: translateY(18px);
+      color:#020202 !important;
+    }
+
+    .card-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .space-card {
+      position: relative;
+      flex: 1 1 260px;
+      min-width: 240px;
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      text-decoration: none;
+      color: #1A464F;
+      font-size: 16px;
+      background: #FFF7EF;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .space-card::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:radial-gradient(circle at top left,rgba(255,255,255,.4),transparent 60%);
+      opacity:0;
+      transition:opacity .25s ease;
+    }
+
+    .space-card:hover { 
+      transform: translateY(-4px) scale(1.02); 
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35); 
+    }
+
+    .space-card:hover::before{ 
+      opacity:1; 
+    }
+
+    .space-card.dons { 
+      background:linear-gradient(135deg,#1f8c87,#56c7c2); 
+      color:#072828; 
+    }
+
+    .space-card.groupes { 
+      background:linear-gradient(135deg,#7d5aa6,#b58bf0); 
+      color:#1a0f22; 
+    }
+
+    .space-card.opportunities { 
+      background:linear-gradient(135deg,#ec7546,#ffb38f); 
+      color:#2c130d; 
+    }
+
+    .space-card strong {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .space-card span {
+      font-size: 14px;
+    }
+
+    .space-card .bubble { 
+      position: absolute; 
+      right: 12px; 
+      bottom: 10px; 
+      font-size: 26px; 
+      opacity: 0.85; 
+    }
+
+    /* ✅ Recent Content Sections */
+    .recent-section {
+        background: rgba(255, 247, 239, 0.95);
+        border-radius: 24px;
+        padding: 24px 22px 26px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .section-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 22px;
+        color: #1A464F;
+        margin: 0;
+    }
+
+    .view-all {
+        background: var(--violet);
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .view-all:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(125, 90, 166, 0.45);
+    }
+
+    /* ✅ Grid Layout */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    /* ✅ Content Cards */
+    .content-card {
+        background: rgba(255,255,255,0.95);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .content-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .card-icon {
+        font-size: 32px;
+    }
+
+    .card-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 18px;
+        color: #1A464F;
+        margin: 0;
+    }
+
+    .card-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #7a6f66;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .card-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .card-description {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: none;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        flex: 1;
+    }
+
+    .btn-primary {
+        background: var(--turquoise);
+        color: #fff;
+    }
+
+    .btn-secondary {
+        background: var(--orange);
+        color: #fff;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* ✅ Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #7a6f66;
+        background: rgba(255,255,255,0.8);
+        border-radius: 18px;
+        border: 2px dashed rgba(122, 111, 102, 0.3);
+    }
+
+    .empty-state p {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    /* ✅ Footer */
+    .footer {
+        background: rgba(255, 247, 239, 0.95);
+        border-top: 1px solid rgba(0,0,0,0.06);
+        padding: 30px 24px;
+        margin-top: 30px;
+        text-align: center;
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 24px;
+    }
+
+    .footer p {
+        margin-bottom: 20px;
+        color: #1A464F;
+        font-size: 16px;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .footer-links a {
+        color: #1A464F;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .footer-links a:hover {
+        text-decoration: underline;
+    }
+
+    /* ✅ Mobile Toggle Button */
+    .mobile-toggle {
+        display: none;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        background: #1A464F;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* ✅ Responsive Design */
+    @media (max-width: 900px) {
         .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, #1f8c87 0%, #7eddd5 100%);
-            color: white;
-            display: flex;
+            width: 220px;
+        }
+        
+        .grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .layout {
             flex-direction: column;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-            z-index: 1000;
-            transition: transform 0.3s ease;
         }
-
-        .sidebar.mobile-hidden {
-            transform: translateX(-100%);
+        
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            padding: 15px;
         }
-
-        .logo {
-            padding: 2rem 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        
+        .main {
+            padding: 0;
         }
-
-        .logo h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .nav-menu {
-            flex: 1;
-            padding: 1.5rem 0;
-            overflow-y: auto;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            margin: 0.3rem 1rem;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateX(5px);
-        }
-
-        .nav-item.active {
-            background: rgba(255,255,255,0.2);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-item .icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            width: 30px;
-            text-align: center;
-        }
-
-        .sidebar-footer {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Mobile Toggle Button */
+        
         .mobile-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            border: none;
-            padding: 0.8rem 1rem;
-            border-radius: 12px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        /* ====== MAIN CONTENT AREA ====== */
-        .main-wrapper {
-            flex: 1;
-            margin-left: 280px;
-            display: flex;
-            flex-direction: column;
-            transition: margin-left 0.3s ease;
-        }
-
-        /* Header - Dashboard Style */
-        .header {
-            background: linear-gradient(135deg, #fbdcc1 0%, #ec9d78 15%, #b095c6 55%, #7dc9c4 90%);
-            color: white;
-            padding: 3rem 2rem 4rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 2.5rem;
-            border-radius: 0 0 20px 20px;
-        }
-
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-
-        .pigeon-bg {
-            position: absolute;
-            bottom: 20px;
-            right: 5%;
-            font-size: 8rem;
-            opacity: 0.15;
-            z-index: 1;
-        }
-
-        /* Stats Bar - Dashboard Style */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: -3rem auto 3rem;
-            max-width: 1000px;
-            padding: 0 2rem;
-            z-index: 2;
-            position: relative;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.8rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            text-align: center;
-            min-width: 180px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-        }
-
-        .stat-card:nth-child(1)::before {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-        }
-
-        .stat-card:nth-child(2)::before {
-            background: linear-gradient(135deg, #7d5aa6, #b58ce0);
-        }
-
-        .stat-card:nth-child(3)::before {
-            background: linear-gradient(135deg, #ec9d78, #fbdcc1);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #333;
             display: block;
         }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.95rem;
-            margin-top: 0.5rem;
+        
+        .sidebar.collapsed {
+            display: none;
         }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem 3rem;
+        
+        .card-row {
+            flex-direction: column;
         }
-
-        /* Sections */
-        .section {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2.5rem 0;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        
+        .space-card {
+            flex: 1 1 100%;
         }
-
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.2rem;
-            border-bottom: 2px solid #f1f3f5;
-        }
-
-        .section-title h2 {
-            color: #333;
-            font-size: 1.6rem;
-            font-weight: 600;
-        }
-
-        .view-all {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            padding: 0.7rem 1.8rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .view-all:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(31,140,135,0.3);
-        }
-
-        /* Grid Layouts */
+        
         .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.8rem;
-}
-
-@media (max-width: 1100px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            border: 1px solid #f1f3f5;
+            grid-template-columns: 1fr;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
         }
-
-        .card-header {
-            padding: 1.8rem 1.8rem 0;
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 1.5rem 1.8rem;
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1.2rem;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .card-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .card-description {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-
+        
         .card-actions {
-            display: flex;
-            gap: 0.8rem;
+            flex-direction: column;
         }
-
-        .btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+        
+        .top-nav {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 15px;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
+        
+        .top-nav::after {
+            inset: auto 20px -2px 20px;
         }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #7d5aa6, #b58ce0);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-
-        /* Quick Actions - Dashboard Style */
-        .quick-actions {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2.5rem 0;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-        }
-
-        .quick-actions h3 {
-            color: #333;
-            margin-bottom: 1.8rem;
-            font-size: 1.6rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.2rem;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            padding: 1.2rem 1.5rem;
-            border: none;
-            border-radius: 15px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: white;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .action-btn:nth-child(1) {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-        }
-
-        .action-btn:nth-child(2) {
-            background: linear-gradient(135deg, #7d5aa6, #b58ce0);
-        }
-
-        .action-btn:nth-child(3) {
-            background: linear-gradient(135deg, #ec9d78, #fbdcc1);
-        }
-
-        .action-btn:nth-child(4) {
-            background: linear-gradient(135deg, #ec7546, #f4a261);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
-
-        /* Footer */
-        .footer {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            text-align: center;
-            padding: 2.5rem;
-            margin-top: 3rem;
-        }
-
-        .footer p {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
+        
         .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
+            flex-direction: column;
+            gap: 15px;
         }
+    }
 
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            opacity: 0.9;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+    @media (max-width: 480px) {
+        .space-main {
+            padding: 10px 15px 40px;
         }
-
-        .footer-links a:hover {
-            opacity: 1;
-            transform: translateY(-2px);
+        
+        .space-hero {
+            border-radius: 18px;
         }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border: 2px dashed #e1e5e9;
+        
+        .space-content {
+            padding: 24px 20px 22px;
         }
-
-        .empty-state p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
+        
+        .space-title {
+            font-size: 24px;
         }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            }
+        
+        .space-text {
+            font-size: 15px;
         }
-
-        @media (max-width: 968px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.mobile-visible {
-                transform: translateX(0);
-            }
-
-            .main-wrapper {
-                margin-left: 0;
-            }
-
-            .mobile-toggle {
-                display: block;
-            }
+        
+        .recent-section {
+            padding: 20px;
         }
-
-        @media (max-width: 768px) {
-            .header {
-                padding: 2rem 1rem 3rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .stats-bar {
-                flex-direction: column;
-                gap: 1rem;
-                margin: -1.5rem auto 2rem;
-                padding: 0 1rem;
-            }
-            
-            .stat-card {
-                min-width: auto;
-            }
-            
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .card-actions {
-                flex-direction: column;
-            }
-            
-            .section {
-                padding: 1.5rem;
-            }
-            
-            .section-title {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
+        
+        .btn {
+            padding: 8px 12px;
+            font-size: 12px;
         }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 1rem 2rem;
-            }
-            
-            .btn {
-                padding: 0.8rem;
-                font-size: 0.85rem;
-            }
-            
-            .action-btn {
-                padding: 1rem;
-                font-size: 0.9rem;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
+        
+        .page-quote {
+            font-size: 18px;
         }
-    </style>
+    }
+  </style>
 </head>
 <body>
     <!-- Mobile Toggle Button -->
     <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar" id="sidebar">
-        <div class="logo">
-            <h2>🕊️ Aide Solidaire</h2>
-        </div>
-        <nav class="nav-menu">
-            <!-- Accueil -->
-            <a href="index.php" class="nav-item active">
-                <span class="icon">🏠</span>
-                <span>Accueil</span>
+    <!-- Layout Container -->
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <a href="index.php" class="brand">
+                <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                <div class="brand-name">SPARKMIND</div>
             </a>
-            <!-- Dons -->
-            <a href="browse_dons.php" class="nav-item">
-                <span class="icon">🎁</span>
-                <span>Parcourir les Dons</span>
-            </a>
-            <!-- Groupes -->
-            <a href="browse_groupes.php" class="nav-item">
-                <span class="icon">👥</span>
-                <span>Parcourir les Groupes</span>
-            </a>
-            <!-- Faire un Don -->
-            <a href="create_don.php" class="nav-item">
-                <span class="icon">➕</span>
-                <span>Faire un Don</span>
-            </a>
-            <!-- Créer un Groupe -->
-            <a href="create_groupe.php" class="nav-item">
-                <span class="icon">✨</span>
-                <span>Créer un Groupe</span>
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <a href="../Backoffice/dashboard.php" class="nav-item">
-                <span class="icon">🔒</span>
-                <span>Espace Admin</span>
-            </a>
-        </div>
-    </aside>
 
-    <!-- Main Wrapper -->
-    <div class="main-wrapper">
-        <!-- Header -->
-        <header class="header">
-            <h1>🤝 Aide Solidaire</h1>
-            <p>Plateforme de don et de solidarité. Partagez, donnez, et rejoignez des initiatives qui changent des vies.</p>
-            <div class="pigeon-bg">🕊️</div>
-        </header>
+            <div class="menu-title">MENU PRINCIPAL</div>
+            <nav class="menu">
+                <a href="index.php" class="menu-item active">
+                    <span class="icon">🏠</span>
+                    <span>Accueil</span>
+                </a>
+                <a href="browse_dons.php" class="menu-item">
+                    <span class="icon">🎁</span>
+                    <span>Parcourir les Dons</span>
+                </a>
+                <a href="browse_groupes.php" class="menu-item">
+                    <span class="icon">👥</span>
+                    <span>Parcourir les Groupes</span>
+                </a>
+                <a href="create_don.php" class="menu-item">
+                    <span class="icon">➕</span>
+                    <span>Faire un Don</span>
+                </a>
+                <a href="create_groupe.php" class="menu-item">
+                    <span class="icon">✨</span>
+                    <span>Créer un Groupe</span>
+                </a>
+            </nav>
 
-        <!-- Stats -->
-        <div class="stats-bar">
-            <div class="stat-card">
-                <span class="stat-number"><?php echo count($activeDons ?? []); ?></span>
-                <span class="stat-label">Dons actifs</span>
+            <div class="sidebar-foot">
+                <a href="../Backoffice/dashboard.php" class="link">
+                    <span class="icon">🔒</span>
+                    <span>Espace Admin</span>
+                </a>
             </div>
-            <div class="stat-card">
-                <span class="stat-number"><?php echo count($activeGroupes ?? []); ?></span>
-                <span class="stat-label">Groupes actifs</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number"><?php echo (count($activeDons ?? []) + count($activeGroupes ?? [])); ?></span>
-                <span class="stat-label">Opportunités</span>
-            </div>
-        </div>
+        </aside>
 
-        <!-- Main Content -->
-        <main class="container">
-            
-
-            <!-- Recent Donations -->
-            <section class="section">
-                <div class="section-title">
-                    <h2>🎁 Dons récents</h2>
-                    <a href="browse_dons.php" class="view-all">Voir tous →</a>
-                </div>
-                
-                <?php if (!empty($recentDons)): ?>
-                    <div class="grid">
-                        <?php foreach ($recentDons as $don): ?>
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon">
-                                    <?php 
-                                    $icons = [
-                                        'Vêtements' => '👕',
-                                        'Nourriture' => '🍞',
-                                        'Médicaments' => '💊',
-                                        'Équipement' => '🔧',
-                                        'Argent' => '💰',
-                                        'Services' => '🤝',
-                                        'Autre' => '🎁'
-                                    ];
-                                    echo $icons[$don['type_don']] ?? '🎁';
-                                    ?>
-                                </div>
-                                <h3 class="card-title"><?php echo htmlspecialchars($don['type_don']); ?></h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="card-meta">
-                                    <span>📦 <?php echo htmlspecialchars($don['quantite']); ?> unités</span>
-                                    <span>📍 <?php echo htmlspecialchars($don['region']); ?></span>
-                                </div>
-                                <p class="card-description"><?php echo substr(htmlspecialchars($don['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
-                                <div class="card-actions">
-                                    <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">Voir détails</a>
-                                </div>
-                            </div>
+        <!-- Main Content Area -->
+        <div class="main">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <div class="brand-block">
+                        <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                        <div class="brand-text">
+                            <div class="brand-name">SPARKMIND</div>
+                            <div class="brand-tagline">Plateforme de solidarité</div>
                         </div>
-                        <?php endforeach; ?>
                     </div>
-                <?php else: ?>
-                    <div class="empty-state">
-                        <p>📭 Aucun don disponible pour le moment.</p>
-                        <a href="create_don.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Soyez le premier à donner</a>
-                    </div>
-                <?php endif; ?>
-            </section>
-
-            <!-- Recent Groups -->
-            <section class="section">
-                <div class="section-title">
-                    <h2>👥 Groupes récents</h2>
-                    <a href="browse_groupes.php" class="view-all">Voir tous →</a>
                 </div>
-                
-                <?php if (!empty($recentGroupes)): ?>
-                    <div class="grid">
-                        <?php foreach ($recentGroupes as $groupe): ?>
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon">
-                                    <?php 
-                                    $icons = [
-                                        'Santé' => '🏥',
-                                        'Éducation' => '📚',
-                                        'Seniors' => '👵',
-                                        'Jeunesse' => '👦',
-                                        'Culture' => '🎨',
-                                        'Urgence' => '🚨',
-                                        'Animaux' => '🐾',
-                                        'Environnement' => '🌿'
-                                    ];
-                                    echo $icons[$groupe['type']] ?? '👥';
-                                    ?>
-                                </div>
-                                <h3 class="card-title"><?php echo htmlspecialchars($groupe['nom']); ?></h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="card-meta">
-                                    <span>📍 <?php echo htmlspecialchars($groupe['region']); ?></span>
-                                    <span>👤 <?php echo htmlspecialchars($groupe['responsable']); ?></span>
-                                </div>
-                                <p class="card-description"><?php echo substr(htmlspecialchars($groupe['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
-                                <div class="card-actions">
-                                    <a href="view_groupe.php?id=<?php echo $groupe['id']; ?>" class="btn btn-primary">Voir groupe</a>
-                                    <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="btn btn-secondary">Contacter</a>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="empty-state">
-                        <p>👥 Aucun groupe disponible pour le moment.</p>
-                        <a href="create_groupe.php" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Créer le premier groupe</a>
-                    </div>
-                <?php endif; ?>
-            </section>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2025 Aide Solidaire - Ensemble, faisons la différence ❤️</p>
-            <div class="footer-links">
-                <a href="index.php">🏠 Accueil</a>
-                <a href="../Backoffice/dashboard.php">🔒 Espace Admin</a>
+                <div class="header-actions">
+                    <button class="btn-orange" onclick="window.location.href='create_don.php'">
+                        <span>➕</span>
+                        <span>Créer un don</span>
+                    </button>
+                </div>
             </div>
-        </footer>
+
+            <!-- Page Quote -->
+            <div class="page-quote">
+                Partagez, donnez, et rejoignez des initiatives qui changent des vies
+            </div>
+
+            <!-- Main Content -->
+            <div class="space-main">
+                <!-- Hero Section -->
+                <div class="space-hero">
+                    <div class="space-content">
+                        <h2 class="space-title">🤝 Aide Solidaire</h2>
+                        <p class="space-text">
+                            Ensemble, faisons la différence. Notre plateforme connecte ceux qui veulent donner 
+                            avec ceux qui en ont besoin, créant ainsi une chaîne de solidarité sans frontières.
+                        </p>
+                        
+                        <!-- Stats Cards -->
+                        <div class="card-row">
+                            <a href="browse_dons.php" class="space-card dons" style="animation-delay: 0.2s">
+                                <strong><?php echo count($activeDons ?? []); ?></strong>
+                                <span>Dons actifs</span>
+                                <div class="bubble">🎁</div>
+                            </a>
+                            
+                            <a href="browse_groupes.php" class="space-card groupes" style="animation-delay: 0.4s">
+                                <strong><?php echo count($activeGroupes ?? []); ?></strong>
+                                <span>Groupes actifs</span>
+                                <div class="bubble">👥</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Donations -->
+                <section class="recent-section">
+                    <div class="section-header">
+                        <h2>🎁 Dons récents</h2>
+                        <a href="browse_dons.php" class="view-all">Voir tous →</a>
+                    </div>
+                    
+                    <?php if (!empty($recentDons)): ?>
+                        <div class="grid">
+                            <?php foreach ($recentDons as $don): ?>
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <?php 
+                                        $icons = [
+                                            'Vêtements' => '👕',
+                                            'Nourriture' => '🍞',
+                                            'Médicaments' => '💊',
+                                            'Équipement' => '🔧',
+                                            'Argent' => '💰',
+                                            'Services' => '🤝',
+                                            'Autre' => '🎁'
+                                        ];
+                                        echo $icons[$don['type_don']] ?? '🎁';
+                                        ?>
+                                    </div>
+                                    <h3 class="card-title"><?php echo htmlspecialchars($don['type_don']); ?></h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-meta">
+                                        <span>📦 <?php echo htmlspecialchars($don['quantite']); ?> unités</span>
+                                        <span>📍 <?php echo htmlspecialchars($don['region']); ?></span>
+                                    </div>
+                                    <p class="card-description"><?php echo substr(htmlspecialchars($don['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
+                                    <div class="card-actions">
+                                        <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">Voir détails</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <p>📭 Aucun don disponible pour le moment.</p>
+                            <a href="create_don.php" class="btn btn-primary">Soyez le premier à donner</a>
+                        </div>
+                    <?php endif; ?>
+                </section>
+
+                <!-- Recent Groups -->
+                <section class="recent-section">
+                    <div class="section-header">
+                        <h2>👥 Groupes récents</h2>
+                        <a href="browse_groupes.php" class="view-all">Voir tous →</a>
+                    </div>
+                    
+                    <?php if (!empty($recentGroupes)): ?>
+                        <div class="grid">
+                            <?php foreach ($recentGroupes as $groupe): ?>
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <?php 
+                                        $icons = [
+                                            'Santé' => '🏥',
+                                            'Éducation' => '📚',
+                                            'Seniors' => '👵',
+                                            'Jeunesse' => '👦',
+                                            'Culture' => '🎨',
+                                            'Urgence' => '🚨',
+                                            'Animaux' => '🐾',
+                                            'Environnement' => '🌿'
+                                        ];
+                                        echo $icons[$groupe['type']] ?? '👥';
+                                        ?>
+                                    </div>
+                                    <h3 class="card-title"><?php echo htmlspecialchars($groupe['nom']); ?></h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-meta">
+                                        <span>📍 <?php echo htmlspecialchars($groupe['region']); ?></span>
+                                        <span>👤 <?php echo htmlspecialchars($groupe['responsable']); ?></span>
+                                    </div>
+                                    <p class="card-description"><?php echo substr(htmlspecialchars($groupe['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
+                                    <div class="card-actions">
+                                        <a href="view_groupe.php?id=<?php echo $groupe['id']; ?>" class="btn btn-primary">Voir groupe</a>
+                                        <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="btn btn-secondary">Contacter</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <p>👥 Aucun groupe disponible pour le moment.</p>
+                            <a href="create_groupe.php" class="btn btn-primary">Créer le premier groupe</a>
+                        </div>
+                    <?php endif; ?>
+                </section>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>© 2025 Aide Solidaire - Ensemble, faisons la différence ❤️</p>
+                    <div class="footer-links">
+                        <a href="index.php">🏠 Accueil</a>
+                        <a href="../Backoffice/dashboard.php">🔒 Espace Admin</a>
+                    </div>
+                </footer>
+            </div>
+        </div>
     </div>
 
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('mobile-visible');
+            sidebar.classList.toggle('collapsed');
         }
 
         // Close sidebar when clicking outside on mobile
@@ -798,12 +990,51 @@ try {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.querySelector('.mobile-toggle');
             
-            if (window.innerWidth <= 968 && 
+            if (window.innerWidth <= 768 && 
                 !sidebar.contains(event.target) && 
                 !toggle.contains(event.target) &&
-                sidebar.classList.contains('mobile-visible')) {
-                sidebar.classList.remove('mobile-visible');
+                !sidebar.classList.contains('collapsed')) {
+                sidebar.classList.add('collapsed');
             }
+        });
+
+        // Auto-close sidebar on mobile when clicking a link
+        document.querySelectorAll('.menu-item, .link').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.add('collapsed');
+                }
+            });
+        });
+
+        // Animate elements on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate hero elements
+            const spaceTitle = document.querySelector('.space-title');
+            const spaceText = document.querySelector('.space-text');
+            const spaceCards = document.querySelectorAll('.space-card');
+            
+            setTimeout(() => {
+                if (spaceTitle) {
+                    spaceTitle.style.opacity = '1';
+                    spaceTitle.style.transform = 'translateY(0)';
+                }
+            }, 300);
+            
+            setTimeout(() => {
+                if (spaceText) {
+                    spaceText.style.opacity = '1';
+                    spaceText.style.transform = 'translateY(0)';
+                }
+            }, 600);
+            
+            spaceCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) scale(1)';
+                }, 800 + (index * 200));
+            });
         });
     </script>
 

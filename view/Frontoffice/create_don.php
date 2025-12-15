@@ -495,22 +495,21 @@ if ($showStripeForm && !empty($tempDonData)) {
                             headers: {
                                 "Content-Type": "application/json",
                             },
-                           // Dans la partie save_don_after_payment du script Stripe, assurez-vous que groupe_id est envoyé :
-body: JSON.stringify({
-    type_don: "Argent",
-    quantite: 1,
-    region: "<?php echo addslashes($tempDonData['region']); ?>",
-    description: "<?php echo addslashes($tempDonData['description'] ?: ''); ?>",
-    contact_name: "<?php echo addslashes($tempDonData['contact_name']); ?>",
-    contact_email: "<?php echo addslashes($tempDonData['contact_email']); ?>",
-    contact_phone: "<?php echo addslashes($tempDonData['contact_phone']); ?>",
-    montant: <?php echo $tempDonData['montant']; ?>,
-    etat_object: "<?php echo addslashes($tempDonData['etat_object']); ?>",
-    photos: "<?php echo addslashes($tempDonData['photos']); ?>",
-    groupe_id: <?php echo isset($tempDonData['groupe_id']) && $tempDonData['groupe_id'] !== null ? $tempDonData['groupe_id'] : 'null'; ?>, // CORRECTION ICI
-    payment_intent_id: result.paymentIntent.id,
-    statut: "payé"
-})
+                            body: JSON.stringify({
+                                type_don: "Argent",
+                                quantite: 1,
+                                region: "<?php echo addslashes($tempDonData['region']); ?>",
+                                description: "<?php echo addslashes($tempDonData['description'] ?: ''); ?>",
+                                contact_name: "<?php echo addslashes($tempDonData['contact_name']); ?>",
+                                contact_email: "<?php echo addslashes($tempDonData['contact_email']); ?>",
+                                contact_phone: "<?php echo addslashes($tempDonData['contact_phone']); ?>",
+                                montant: <?php echo $tempDonData['montant']; ?>,
+                                etat_object: "<?php echo addslashes($tempDonData['etat_object']); ?>",
+                                photos: "<?php echo addslashes($tempDonData['photos']); ?>",
+                                groupe_id: <?php echo isset($tempDonData['groupe_id']) && $tempDonData['groupe_id'] !== null ? $tempDonData['groupe_id'] : 'null'; ?>,
+                                payment_intent_id: result.paymentIntent.id,
+                                statut: "payé"
+                            })
                         });
                         
                         const donResult = await donResponse.json();
@@ -544,554 +543,917 @@ body: JSON.stringify({
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faire un Don - Aide Solidaire</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    :root{
+      --orange:#ec7546;
+      --turquoise:#1f8c87;
+      --violet:#7d5aa6;
+      --bg:#FBEDD7;
+    }
 
-        body {
-            font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background-color: #FBEDD7;
-            color: #333;
-            line-height: 1.6;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        .header {
-            background: linear-gradient(135deg, #fbdcc1 0%, #ec9d78 15%, #b095c6 55%, #7dc9c4 90%);
-            color: white;
-            padding: 3rem 2rem 4rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 2.5rem;
-            border-radius: 0 0 20px 20px;
-        }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+            radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+            var(--bg);
+        font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #1A464F;
+    }
 
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
+    /* ✅ Layout avec sidebar */
+    .layout{
+        min-height:100vh;
+        display:flex;
+    }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
+    /* ✅ Sidebar */
+    .sidebar{
+      width:260px;
+      background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+      border-right:1px solid rgba(0,0,0,.06);
+      padding:18px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
 
-        .pigeon-bg {
-            position: absolute;
-            bottom: 20px;
-            right: 5%;
-            font-size: 8rem;
-            opacity: 0.15;
-            z-index: 1;
-        }
+    .sidebar .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      padding:10px 10px;
+      border-radius:14px;
+      color:#1A464F;
+      margin-bottom: 10px;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem 3rem;
-        }
+    .sidebar .logo-img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 
-        .form-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: white;
-            border-radius: 25px;
-            padding: 2.5rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
+    .sidebar .brand-name{
+      font-family:'Playfair Display', serif;
+      font-weight:800;
+      font-size:18px;
+      color:#1A464F;
+      text-transform: lowercase;
+    }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            color: #1f8c87;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
+    /* ✅ Titres sidebar : MENU PRINCIPAL */
+    .menu-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #7a6f66;
+      padding: 10px 12px 4px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
 
-        .back-link:hover {
-            background: rgba(31, 140, 135, 0.1);
-            transform: translateX(-5px);
-        }
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+    }
 
-        .form-title {
-            text-align: center;
-            color: #333;
-            margin-bottom: 2.5rem;
-            font-size: 2rem;
-            font-weight: 700;
-            position: relative;
-        }
+    .menu-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#1A464F;
+      font-weight:600;
+      font-size: 14px;
+    }
 
-        .form-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            margin: 0.5rem auto;
-            border-radius: 2px;
-        }
+    .menu-item:hover{
+      background:#f5e2c4ff;
+    }
 
-        .form-group {
-            margin-bottom: 2rem;
-        }
+    .menu-item.active{
+      background:#1A464F !important;
+      color:#ddad56ff !important;
+    }
 
-        .form-label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: #333;
-            font-size: 1rem;
-        }
+    .sidebar-foot{
+      margin-top:auto;
+      padding-top:10px;
+      border-top:1px solid rgba(0,0,0,.06);
+    }
 
-        .form-label.required::after {
-            content: " *";
-            color: #dc3545;
-        }
+    .sidebar-foot .link{
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#1A464F;
+      font-weight:600;
+      font-size: 14px;
+    }
 
-        .form-input, .form-select, .form-textarea, .form-file {
-            width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-            background: #fff;
-            color: #333;
-        }
+    .sidebar-foot .link:hover{
+      background:#f5e2c4ff;
+    }
 
-        .form-file {
-            padding: 0.8rem 1.2rem;
-        }
+    /* ✅ Main */
+    .main{
+      flex:1;
+      min-width:0;
+      padding: 0;
+      overflow-y: auto;
+    }
 
-        .form-input:focus, .form-select:focus, .form-textarea:focus, .form-file:focus {
-            outline: none;
-            border-color: #1f8c87;
-            box-shadow: 0 0 0 3px rgba(31, 140, 135, 0.15);
-            transform: translateY(-1px);
-        }
+    /* ✅ Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(251, 237, 215, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      animation: navFade 0.7s ease-out;
+    }
 
-        .form-textarea {
-            min-height: 150px;
-            resize: vertical;
-            line-height: 1.5;
-        }
+    .top-nav::after{
+      content:"";
+      position:absolute;
+      inset:auto 40px -2px 40px;
+      height:2px;
+      background:linear-gradient(90deg,#7d5aa6,#ec7546,#1f8c87);
+      opacity:.35;
+      border-radius:999px;
+    }
 
+    .brand-block { 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+    }
+
+    .logo-img {
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow:0 6px 14px rgba(79, 73, 73, 0.18);
+      animation: logoPop 0.6s ease-out;
+    }
+
+    .brand-text { 
+      display:flex; 
+      flex-direction:column; 
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1A464F;
+      letter-spacing: 1px;
+      text-transform:uppercase;
+      animation: titleGlow 2.8s ease-in-out infinite alternate;
+    }
+
+    .brand-tagline { 
+      font-size: 12px; 
+      color: #1A464F; 
+      opacity: 0.8; 
+    }
+
+    .header-actions { 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+    }
+
+    @keyframes navFade { 
+      from {opacity:0; transform:translateY(-16px);} 
+      to {opacity:1; transform:translateY(0);} 
+    }
+
+    @keyframes logoPop{ 
+      from{transform:scale(0.8) translateY(-6px); opacity:0;} 
+      to{transform:scale(1) translateY(0); opacity:1;} 
+    }
+
+    @keyframes titleGlow{ 
+      from{text-shadow:0 0 0 rgba(125,90,166,0.0);} 
+      to{text-shadow:0 4px 16px rgba(125,90,166,0.55);} 
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(236, 117, 70, 0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position:relative;
+      overflow:hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-orange::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,rgba(255,255,255,.35),transparent 60%);
+      transform:translateX(-120%);
+      transition:transform .4s ease;
+    }
+
+    .btn-orange:hover::before{ 
+      transform:translateX(20%); 
+    }
+
+    .btn-orange:hover {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(1.05);
+      box-shadow: 0 10px 24px rgba(236, 117, 70, 0.55);
+    }
+
+    .page-quote {
+      text-align: center;
+      margin: 22px auto 14px auto;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1A464F;
+      opacity: 0.95;
+      position:relative;
+      animation: quoteFade 1s ease-out;
+    }
+
+    .page-quote::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-8px;
+      width:90px;
+      height:3px;
+      border-radius:999px;
+      background:linear-gradient(90deg,#7d5aa6,#ec7546,#1f8c87);
+      opacity:.6;
+    }
+
+    @keyframes quoteFade{ 
+      from{opacity:0; transform:translateY(-8px);} 
+      to{opacity:1; transform:translateY(0);} 
+    }
+
+    /* ✅ Form Container */
+    .space-main { 
+      padding: 10px 20px 60px; 
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .form-container {
+      background: rgba(255, 247, 239, 0.95);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      margin-bottom: 30px;
+    }
+
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: #1A464F;
+      margin: 0 0 25px;
+      text-align: center;
+      position: relative;
+    }
+
+    .form-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #7d5aa6, #ec7546, #1f8c87);
+      margin: 10px auto;
+      border-radius: 2px;
+      opacity: 0.6;
+    }
+
+    /* ✅ Form Styles */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #1A464F;
+      font-size: 14px;
+    }
+
+    .form-label.required::after {
+      content: " *";
+      color: #ec7546;
+    }
+
+    .form-input, .form-select, .form-textarea, .form-file {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid rgba(26, 70, 79, 0.1);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      color: #1A464F;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus, .form-file:focus {
+      outline: none;
+      border-color: var(--turquoise);
+      box-shadow: 0 0 0 3px rgba(31, 140, 135, 0.15);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-submit {
+      background: linear-gradient(135deg, var(--turquoise), #7eddd5);
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .form-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(31, 140, 135, 0.3);
+    }
+
+    /* ✅ Alert Messages */
+    .alert {
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      border-left: 4px solid;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .alert-error {
+      background: rgba(248, 215, 218, 0.2);
+      color: #721c24;
+      border-left-color: #dc3545;
+    }
+
+    .alert-success {
+      background: rgba(212, 237, 218, 0.2);
+      color: #155724;
+      border-left-color: #28a745;
+    }
+
+    /* ✅ Info Box */
+    .info-box {
+      background: rgba(232, 244, 253, 0.3);
+      border-radius: 18px;
+      padding: 25px;
+      margin-top: 30px;
+      border-left: 5px solid var(--turquoise);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .info-box h4 {
+      color: var(--turquoise);
+      margin-bottom: 15px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-box p {
+      margin-bottom: 8px;
+      padding-left: 15px;
+      position: relative;
+      color: #555;
+    }
+
+    .info-box p::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--turquoise);
+      font-weight: bold;
+    }
+
+    /* ✅ Payment Section */
+    .payment-section {
+      background: rgba(248, 249, 250, 0.8);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 25px 0;
+      border-left: 5px solid var(--turquoise);
+    }
+
+    .payment-section h3 {
+      color: var(--turquoise);
+      margin-bottom: 15px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .payment-info {
+      background: rgba(232, 245, 233, 0.6);
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+      border-left: 4px solid #4caf50;
+    }
+
+    .payment-info h5 {
+      color: #2e7d32;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .payment-info ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .payment-info li {
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    .payment-info li:before {
+      content: "✓";
+      color: #4caf50;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    /* ✅ Groupe Help */
+    .groupe-help {
+      background: rgba(232, 244, 248, 0.6);
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #17a2b8;
+      border-left: 4px solid #17a2b8;
+    }
+
+    /* ✅ Image Preview */
+    .image-preview {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .image-preview img {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 12px;
+      border: 2px solid rgba(26, 70, 79, 0.1);
+    }
+
+    /* ✅ Footer */
+    .footer {
+      background: rgba(255, 247, 239, 0.95);
+      border-top: 1px solid rgba(0,0,0,0.06);
+      padding: 25px;
+      margin-top: 30px;
+      text-align: center;
+      border-radius: 18px;
+    }
+
+    .footer p {
+      margin-bottom: 15px;
+      color: #1A464F;
+      font-size: 14px;
+    }
+
+    /* ✅ Mobile Toggle */
+    .mobile-toggle {
+        display: none;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        background: #1A464F;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* ✅ Responsive Design */
+    @media (max-width: 900px) {
+        .sidebar {
+            width: 220px;
+        }
+        
         .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            grid-template-columns: 1fr;
         }
+    }
 
-        .form-submit {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            border: none;
-            padding: 1.2rem 2.5rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
+    @media (max-width: 768px) {
+        .layout {
+            flex-direction: column;
+        }
+        
+        .sidebar {
             width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 2rem;
-            letter-spacing: 0.5px;
-        }
-
-        .form-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(31, 140, 135, 0.3);
-        }
-
-        .alert {
-            padding: 1.5rem 1.8rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border-left: 6px solid;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: slideIn 0.5s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .alert-success {
-            background: linear-gradient(135deg, rgba(212, 237, 218, 0.2), rgba(40, 167, 69, 0.1));
-            color: #155724;
-            border-left-color: #28a745;
-        }
-
-        .alert-error {
-            background: linear-gradient(135deg, rgba(248, 215, 218, 0.2), rgba(220, 53, 69, 0.1));
-            color: #721c24;
-            border-left-color: #dc3545;
-        }
-
-        .info-box {
-            background: linear-gradient(135deg, rgba(232, 244, 253, 0.3), rgba(31, 140, 135, 0.1));
-            border-radius: 15px;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-left: 5px solid #1f8c87;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .info-box h4 {
-            color: #1f8c87;
-            margin-bottom: 1.2rem;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .info-box p {
-            margin-bottom: 0.8rem;
-            padding-left: 1rem;
+            height: auto;
             position: relative;
-            color: #555;
-        }
-
-        .info-box p::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #1f8c87;
-            font-weight: bold;
-        }
-
-        .payment-section {
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border-left: 5px solid #1f8c87;
-        }
-
-        .payment-info {
-            background: #e8f5e9;
-            border-radius: 10px;
             padding: 15px;
-            margin-top: 15px;
-            border-left: 4px solid #4caf50;
         }
-
-        .payment-info h5 {
-            color: #2e7d32;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        
+        .main {
+            padding: 0;
         }
-
-        .payment-info ul {
-            list-style: none;
-            padding-left: 0;
+        
+        .mobile-toggle {
+            display: block;
         }
-
-        .payment-info li {
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .payment-info li:before {
-            content: "✓";
-            color: #4caf50;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .footer {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            text-align: center;
-            padding: 2.5rem;
-            margin-top: 3rem;
-        }
-
-        .test-card-info {
-            background: #fff3cd;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            border-left: 4px solid #ffc107;
-        }
-
-        .test-card-info h6 {
-            color: #856404;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .image-preview {
-            margin-top: 10px;
+        
+        .sidebar.collapsed {
             display: none;
         }
-
-        .image-preview img {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 10px;
-            border: 2px solid #e1e5e9;
+        
+        .space-main {
+            padding: 10px 15px 40px;
         }
-
-        .groupe-help {
-            background: #e8f4f8;
-            border-radius: 10px;
+        
+        .form-container {
+            padding: 20px;
+        }
+        
+        .top-nav {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
             padding: 15px;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #17a2b8;
-            border-left: 4px solid #17a2b8;
         }
+        
+        .top-nav::after {
+            inset: auto 20px -2px 20px;
+        }
+        
+        .form-title {
+            font-size: 24px;
+        }
+    }
 
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .form-container {
-                padding: 1.8rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
+    @media (max-width: 480px) {
+        .form-container {
+            padding: 18px;
         }
+        
+        .form-title {
+            font-size: 22px;
+        }
+        
+        .form-input, .form-select, .form-textarea, .form-file {
+            padding: 10px 14px;
+        }
+        
+        .form-submit {
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+        
+        .page-quote {
+            font-size: 18px;
+        }
+        
+        .info-box, .payment-section {
+            padding: 18px;
+        }
+    }
     </style>
 </head>
 <body>
-    <header class="header">
-        <h1>🎁 Faire un Don</h1>
-        <p>Partagez ce que vous pouvez offrir pour aider les autres</p>
-        <div class="pigeon-bg">🕊️</div>
-    </header>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 
-    <main class="container">
-        <div class="form-container">
-            <a href="index.php" class="back-link">
-                <span>←</span>
-                <span>Retour à l'accueil</span>
+    <!-- Layout Container -->
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <a href="index.php" class="brand">
+                <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                <div class="brand-name">SPARKMIND</div>
             </a>
-            
-            <?php if ($success): ?>
-                <div class="alert alert-success">
-                    <span style="font-size: 1.5rem;">✅</span>
-                    <span><?php echo $success; ?></span>
-                </div>
-            <?php endif; ?>
-            
-            <?php if ($error): ?>
-                <div class="alert alert-error">
-                    <span style="font-size: 1.5rem;">❌</span>
-                    <span><?php echo $error; ?></span>
-                </div>
-            <?php endif; ?>
-            
-            <h2 class="form-title">Proposer votre don</h2>
-            
-            <form method="POST" action="" id="donForm" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label required">Type de don</label>
-                        <select name="type_don" id="typeDonSelect" class="form-select" required onchange="togglePaymentSection()">
-                            <option value="">Choisissez un type</option>
-                            <option value="Vêtements" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Vêtements' ? 'selected' : ''; ?>>👕 Vêtements</option>
-                            <option value="Nourriture" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Nourriture' ? 'selected' : ''; ?>>🍞 Nourriture</option>
-                            <option value="Médicaments" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Médicaments' ? 'selected' : ''; ?>>💊 Médicaments</option>
-                            <option value="Équipement" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Équipement' ? 'selected' : ''; ?>>🔧 Équipement</option>
-                            <option value="Argent" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Argent' ? 'selected' : ''; ?>>💰 Argent (Paiement en ligne)</option>
-                            <option value="Services" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Services' ? 'selected' : ''; ?>>🤝 Services</option>
-                            <option value="Autre" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Autre' ? 'selected' : ''; ?>>🎁 Autre</option>
-                        </select>
+
+            <div class="menu-title">MENU PRINCIPAL</div>
+            <nav class="menu">
+                <a href="index.php" class="menu-item">
+                    <span class="icon">🏠</span>
+                    <span>Accueil</span>
+                </a>
+                <a href="browse_dons.php" class="menu-item">
+                    <span class="icon">🎁</span>
+                    <span>Parcourir les Dons</span>
+                </a>
+                <a href="browse_groupes.php" class="menu-item">
+                    <span class="icon">👥</span>
+                    <span>Parcourir les Groupes</span>
+                </a>
+                <a href="create_don.php" class="menu-item active">
+                    <span class="icon">➕</span>
+                    <span>Faire un Don</span>
+                </a>
+                <a href="create_groupe.php" class="menu-item">
+                    <span class="icon">✨</span>
+                    <span>Créer un Groupe</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <a href="../Backoffice/dashboard.php" class="link">
+                    <span class="icon">🔒</span>
+                    <span>Espace Admin</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <div class="brand-block">
+                        <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                        <div class="brand-text">
+                            <div class="brand-name">SPARKMIND</div>
+                            <div class="brand-tagline">Plateforme de solidarité</div>
+                        </div>
                     </div>
+                </div>
+                <div class="header-actions">
+                    <a href="create_don.php" class="btn-orange">
+                        <span>➕</span>
+                        <span>Créer un don</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Page Quote -->
+            <div class="page-quote">
+                Partagez votre générosité, faites la différence
+            </div>
+
+            <!-- Main Content -->
+            <div class="space-main">
+                <!-- Form Container -->
+                <div class="form-container">
+                    <?php if ($error): ?>
+                        <div class="alert alert-error">
+                            <span style="font-size: 1.2rem;">❌</span>
+                            <span><?php echo $error; ?></span>
+                        </div>
+                    <?php endif; ?>
                     
-                    <div class="form-group" id="quantityField">
-                        <label class="form-label required">Quantité</label>
-                        <input type="number" name="quantite" class="form-input" 
-                               min="1" max="1000" placeholder="Ex: 5"
-                               value="<?php echo isset($_POST['quantite']) ? htmlspecialchars($_POST['quantite']) : ''; ?>">
-                    </div>
-                </div>
-                
-                <!-- NOUVEAU CHAMP : Image -->
-                <div class="form-group">
-                    <label class="form-label">Image du don (optionnel)</label>
-                    <input type="file" name="photo" id="photoInput" class="form-file" accept="image/*" onchange="previewImage(event)">
-                    <small style="color: #666; display: block; margin-top: 5px;">
-                        Formats acceptés: JPG, PNG, GIF, WEBP (max 5MB)
-                    </small>
-                    <div class="image-preview" id="imagePreview">
-                        <img id="previewImage" src="#" alt="Aperçu de l'image">
-                    </div>
-                </div>
-                
-                <!-- Section Paiement (visible quand Argent est sélectionné) -->
-                <div class="payment-section" id="paymentSection" style="display: none;">
-                    <h3 style="color: #1f8c87; margin-bottom: 20px;">
-                        <i class="fas fa-credit-card"></i> Paiement en ligne
-                    </h3>
+                    <?php if ($success): ?>
+                        <div class="alert alert-success">
+                            <span style="font-size: 1.2rem;">✅</span>
+                            <span><?php echo $success; ?></span>
+                        </div>
+                    <?php endif; ?>
                     
-                    <div class="form-row">
+                    <h2 class="form-title">🎁 Proposer votre don</h2>
+                    
+                    <form method="POST" action="" id="donForm" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label required">Type de don</label>
+                                <select name="type_don" id="typeDonSelect" class="form-select" required onchange="togglePaymentSection()">
+                                    <option value="">Choisissez un type</option>
+                                    <option value="Vêtements" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Vêtements' ? 'selected' : ''; ?>>👕 Vêtements</option>
+                                    <option value="Nourriture" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Nourriture' ? 'selected' : ''; ?>>🍞 Nourriture</option>
+                                    <option value="Médicaments" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Médicaments' ? 'selected' : ''; ?>>💊 Médicaments</option>
+                                    <option value="Équipement" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Équipement' ? 'selected' : ''; ?>>🔧 Équipement</option>
+                                    <option value="Argent" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Argent' ? 'selected' : ''; ?>>💰 Argent (Paiement en ligne)</option>
+                                    <option value="Services" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Services' ? 'selected' : ''; ?>>🤝 Services</option>
+                                    <option value="Autre" <?php echo isset($_POST['type_don']) && $_POST['type_don'] == 'Autre' ? 'selected' : ''; ?>>🎁 Autre</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="quantityField">
+                                <label class="form-label required">Quantité</label>
+                                <input type="number" name="quantite" class="form-input" 
+                                       min="1" max="1000" placeholder="Ex: 5"
+                                       value="<?php echo isset($_POST['quantite']) ? htmlspecialchars($_POST['quantite']) : ''; ?>">
+                            </div>
+                        </div>
+                        
+                        <!-- Image Upload -->
                         <div class="form-group">
-                            <label class="form-label required">Montant (TND)</label>
-                            <div style="position: relative;">
-                                <input type="number" name="montant" id="montantInput" class="form-input" 
-                                       min="1" max="10000" step="0.01" placeholder="50.00"
-                                       value="<?php echo isset($_POST['montant']) ? htmlspecialchars($_POST['montant']) : ''; ?>">
-                                <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666; font-weight: 600;">TND</span>
+                            <label class="form-label">Image du don (optionnel)</label>
+                            <input type="file" name="photo" id="photoInput" class="form-file" accept="image/*" onchange="previewImage(event)">
+                            <small style="color: #7a6f66; display: block; margin-top: 5px;">
+                                Formats acceptés: JPG, PNG, GIF, WEBP (max 5MB)
+                            </small>
+                            <div class="image-preview" id="imagePreview">
+                                <img id="previewImage" src="#" alt="Aperçu de l'image">
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Section (visible when Argent is selected) -->
+                        <div class="payment-section" id="paymentSection" style="display: none;">
+                            <h3>💳 Paiement en ligne</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label required">Montant (TND)</label>
+                                    <div style="position: relative;">
+                                        <input type="number" name="montant" id="montantInput" class="form-input" 
+                                               min="1" max="10000" step="0.01" placeholder="50.00"
+                                               value="<?php echo isset($_POST['montant']) ? htmlspecialchars($_POST['montant']) : ''; ?>">
+                                        <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #7a6f66; font-weight: 600;">TND</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Téléphone (optionnel)</label>
+                                    <input type="tel" name="contact_phone" class="form-input" 
+                                           placeholder="+216 12 345 678"
+                                           value="<?php echo isset($_POST['contact_phone']) ? htmlspecialchars($_POST['contact_phone']) : ''; ?>">
+                                </div>
+                            </div>
+                            
+                            <div class="payment-info">
+                                <h5>🛡️ Paiement 100% sécurisé</h5>
+                                <ul>
+                                    <li>Processus sécurisé via Stripe (leader mondial)</li>
+                                    <li>Aucune donnée bancaire stockée sur nos serveurs</li>
+                                    <li>Reçu disponible par email</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">État (si applicable)</label>
+                                <select name="etat_object" class="form-select">
+                                    <option value="">Ne s'applique pas</option>
+                                    <option value="Neuf" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'Neuf' ? 'selected' : ''; ?>>Neuf</option>
+                                    <option value="Bon état" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'Bon état' ? 'selected' : ''; ?>>Bon état</option>
+                                    <option value="Usagé" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'Usagé' ? 'selected' : ''; ?>>Usagé</option>
+                                    <option value="À réparer" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'À réparer' ? 'selected' : ''; ?>>À réparer</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label required">Région</label>
+                                <select name="region" class="form-select" required>
+                                    <option value="">Sélectionnez votre région</option>
+                                    <option value="Tunis" <?php echo isset($_POST['region']) && $_POST['region'] == 'Tunis' ? 'selected' : ''; ?>>Tunis</option>
+                                    <option value="Sfax" <?php echo isset($_POST['region']) && $_POST['region'] == 'Sfax' ? 'selected' : ''; ?>>Sfax</option>
+                                    <option value="Sousse" <?php echo isset($_POST['region']) && $_POST['region'] == 'Sousse' ? 'selected' : ''; ?>>Sousse</option>
+                                    <option value="Kairouan" <?php echo isset($_POST['region']) && $_POST['region'] == 'Kairouan' ? 'selected' : ''; ?>>Kairouan</option>
+                                    <option value="Bizerte" <?php echo isset($_POST['region']) && $_POST['region'] == 'Bizerte' ? 'selected' : ''; ?>>Bizerte</option>
+                                    <option value="Gabès" <?php echo isset($_POST['region']) && $_POST['region'] == 'Gabès' ? 'selected' : ''; ?>>Gabès</option>
+                                    <option value="Ariana" <?php echo isset($_POST['region']) && $_POST['region'] == 'Ariana' ? 'selected' : ''; ?>>Ariana</option>
+                                    <option value="Gafsa" <?php echo isset($_POST['region']) && $_POST['region'] == 'Gafsa' ? 'selected' : ''; ?>>Gafsa</option>
+                                    <option value="Monastir" <?php echo isset($_POST['region']) && $_POST['region'] == 'Monastir' ? 'selected' : ''; ?>>Monastir</option>
+                                    <option value="Autre" <?php echo isset($_POST['region']) && $_POST['region'] == 'Autre' ? 'selected' : ''; ?>>Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Groupe Association -->
+                        <div class="form-group">
+                            <label class="form-label">Associer à un groupe (optionnel)</label>
+                            <select name="groupe_id" id="groupeSelect" class="form-select">
+                                <option value="">Aucun groupe (don indépendant)</option>
+                                <?php foreach ($groupes as $groupe): ?>
+                                    <option value="<?php echo $groupe['id']; ?>" 
+                                        <?php echo isset($_POST['groupe_id']) && $_POST['groupe_id'] == $groupe['id'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($groupe['nom']); ?> 
+                                        (<?php echo htmlspecialchars($groupe['type']); ?> - <?php echo htmlspecialchars($groupe['region']); ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <small style="color: #7a6f66; display: block; margin-top: 5px;">
+                                Vous pouvez associer ce don à un groupe existant pour une meilleure gestion
+                            </small>
+                            <div class="groupe-help">
+                                <p><strong>💡 Pourquoi associer à un groupe ?</strong></p>
+                                <p>• Le don apparaîtra dans la liste des dons du groupe</p>
+                                <p>• Le groupe sera notifié de votre don</p>
+                                <p>• Meilleure coordination pour la distribution</p>
+                            </div>
+                            <div style="margin-top: 15px; text-align: center;">
+                                <a href="create_groupe.php" class="btn-orange" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.2rem; background: linear-gradient(135deg, var(--violet), #b58ce0);">
+                                    <span>👥</span>
+                                    <span>Créer un nouveau groupe</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label required">Votre nom</label>
+                                <input type="text" name="contact_name" class="form-input" required 
+                                       placeholder="Ex: Mohamed Ali"
+                                       value="<?php echo isset($_POST['contact_name']) ? htmlspecialchars($_POST['contact_name']) : ''; ?>">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label required">Votre email</label>
+                                <input type="email" name="contact_email" class="form-input" required 
+                                       placeholder="exemple@email.tn"
+                                       value="<?php echo isset($_POST['contact_email']) ? htmlspecialchars($_POST['contact_email']) : ''; ?>">
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Téléphone (optionnel)</label>
-                            <input type="tel" name="contact_phone" class="form-input" 
-                                   placeholder="+216 12 345 678"
-                                   value="<?php echo isset($_POST['contact_phone']) ? htmlspecialchars($_POST['contact_phone']) : ''; ?>">
+                            <label class="form-label">Description détaillée</label>
+                            <textarea name="description" class="form-textarea" 
+                                      placeholder="Décrivez votre don, comment il peut aider, conditions de récupération..."><?php echo isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ''; ?></textarea>
                         </div>
-                    </div>
+                        
+                        <button type="submit" class="form-submit" id="submitBtn">
+                            <span style="font-size: 1.2rem; margin-right: 0.5rem;">✅</span>
+                            <span id="submitText">Soumettre mon don</span>
+                        </button>
+                    </form>
                     
-                    <div class="payment-info">
-                        <h5><i class="fas fa-shield-alt"></i> Paiement 100% sécurisé</h5>
-                        <ul>
-                            <li>Processus sécurisé via Stripe (leader mondial)</li>
-                            <li>Aucune donnée bancaire stockée sur nos serveurs</li>
-                            <li>Reçu disponible par email</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="test-card-info">
-                        <h6><i class="fas fa-vial"></i> Carte de test Stripe</h6>
-                        <p><strong>Carte:</strong> 4242 4242 4242 4242</p>
-                        <p><strong>Date:</strong> 12/34</p>
-                        <p><strong>CVC:</strong> 123</p>
-                        <p><strong>Code postal:</strong> 12345</p>
+                    <div class="info-box">
+                        <h4>📝 Comment ça marche ?</h4>
+                        <p>1. Vous remplissez ce formulaire</p>
+                        <p>2. Pour les dons financiers: redirection vers paiement sécurisé</p>
+                        <p>3. Votre don est enregistré après confirmation</p>
+                        <p>4. Votre don apparaîtra dans la liste des dons disponibles</p>
+                        <p>5. Si associé à un groupe, il sera visible dans les dons du groupe</p>
                     </div>
                 </div>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">État (si applicable)</label>
-                        <select name="etat_object" class="form-select">
-                            <option value="">Ne s'applique pas</option>
-                            <option value="Neuf" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'Neuf' ? 'selected' : ''; ?>>Neuf</option>
-                            <option value="Bon état" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'Bon état' ? 'selected' : ''; ?>>Bon état</option>
-                            <option value="Usagé" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'Usagé' ? 'selected' : ''; ?>>Usagé</option>
-                            <option value="À réparer" <?php echo isset($_POST['etat_object']) && $_POST['etat_object'] == 'À réparer' ? 'selected' : ''; ?>>À réparer</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label required">Région</label>
-                        <select name="region" class="form-select" required>
-                            <option value="">Sélectionnez votre région</option>
-                            <option value="Tunis" <?php echo isset($_POST['region']) && $_POST['region'] == 'Tunis' ? 'selected' : ''; ?>>Tunis</option>
-                            <option value="Sfax" <?php echo isset($_POST['region']) && $_POST['region'] == 'Sfax' ? 'selected' : ''; ?>>Sfax</option>
-                            <option value="Sousse" <?php echo isset($_POST['region']) && $_POST['region'] == 'Sousse' ? 'selected' : ''; ?>>Sousse</option>
-                            <option value="Kairouan" <?php echo isset($_POST['region']) && $_POST['region'] == 'Kairouan' ? 'selected' : ''; ?>>Kairouan</option>
-                            <option value="Bizerte" <?php echo isset($_POST['region']) && $_POST['region'] == 'Bizerte' ? 'selected' : ''; ?>>Bizerte</option>
-                            <option value="Gabès" <?php echo isset($_POST['region']) && $_POST['region'] == 'Gabès' ? 'selected' : ''; ?>>Gabès</option>
-                            <option value="Ariana" <?php echo isset($_POST['region']) && $_POST['region'] == 'Ariana' ? 'selected' : ''; ?>>Ariana</option>
-                            <option value="Gafsa" <?php echo isset($_POST['region']) && $_POST['region'] == 'Gafsa' ? 'selected' : ''; ?>>Gafsa</option>
-                            <option value="Monastir" <?php echo isset($_POST['region']) && $_POST['region'] == 'Monastir' ? 'selected' : ''; ?>>Monastir</option>
-                            <option value="Autre" <?php echo isset($_POST['region']) && $_POST['region'] == 'Autre' ? 'selected' : ''; ?>>Autre</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- NOUVEAU CHAMP : Groupe -->
-                <div class="form-group">
-                    <label class="form-label">Associer à un groupe (optionnel)</label>
-                    <select name="groupe_id" id="groupeSelect" class="form-select">
-                        <option value="">Aucun groupe (don indépendant)</option>
-                        <?php foreach ($groupes as $groupe): ?>
-                            <option value="<?php echo $groupe['id']; ?>" 
-                                <?php echo isset($_POST['groupe_id']) && $_POST['groupe_id'] == $groupe['id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($groupe['nom']); ?> 
-                                (<?php echo htmlspecialchars($groupe['type']); ?> - <?php echo htmlspecialchars($groupe['region']); ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <small style="color: #666; display: block; margin-top: 5px;">
-                        Vous pouvez associer ce don à un groupe existant pour une meilleure gestion
-                    </small>
-                    <div class="groupe-help">
-                        <p><strong>💡 Pourquoi associer à un groupe ?</strong></p>
-                        <p>• Le don apparaîtra dans la liste des dons du groupe</p>
-                        <p>• Le groupe sera notifié de votre don</p>
-                        <p>• Meilleure coordination pour la distribution</p>
-                    </div>
-                    <div style="margin-top: 15px; text-align: center;">
-                        <a href="create_groupe.php" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.2rem; background: linear-gradient(135deg, #7d5aa6, #b58ce0); color: white; text-decoration: none; border-radius: 10px; font-size: 0.95rem; transition: all 0.3s ease;">
-                            <span>👥</span>
-                            <span>Créer un nouveau groupe</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label required">Votre nom</label>
-                        <input type="text" name="contact_name" class="form-input" required 
-                               placeholder="Ex: Mohamed Ali"
-                               value="<?php echo isset($_POST['contact_name']) ? htmlspecialchars($_POST['contact_name']) : ''; ?>">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label required">Votre email</label>
-                        <input type="email" name="contact_email" class="form-input" required 
-                               placeholder="exemple@email.tn"
-                               value="<?php echo isset($_POST['contact_email']) ? htmlspecialchars($_POST['contact_email']) : ''; ?>">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Description détaillée</label>
-                    <textarea name="description" class="form-textarea" 
-                              placeholder="Décrivez votre don, comment il peut aider, conditions de récupération..."><?php echo isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ''; ?></textarea>
-                </div>
-                
-                <button type="submit" class="form-submit" id="submitBtn">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">✅</span>
-                    <span id="submitText">Soumettre mon don</span>
-                </button>
-            </form>
-            
-            <div class="info-box">
-                <h4><span>📝</span> Comment ça marche ?</h4>
-                <p>1. Vous remplissez ce formulaire</p>
-                <p>2. Pour les dons financiers: redirection vers paiement sécurisé</p>
-                <p>3. Votre don est enregistré après confirmation</p>
-                <p>4. Votre don apparaîtra dans la liste des dons disponibles</p>
-                <p>5. Si associé à un groupe, il sera visible dans les dons du groupe</p>
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>© 2025 Aide Solidaire - Merci pour votre générosité ❤️</p>
+                </footer>
             </div>
         </div>
-    </main>
-
-    <footer class="footer">
-        <p>© 2025 Aide Solidaire - Merci pour votre générosité ❤️</p>
-    </footer>
+    </div>
 
     <script>
         function togglePaymentSection() {
@@ -1142,9 +1504,40 @@ body: JSON.stringify({
             }
         }
         
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+        
+        // Auto-close sidebar on mobile when clicking a link
+        document.querySelectorAll('.menu-item, .link').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.add('collapsed');
+                }
+            });
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(event.target) && 
+                !toggle.contains(event.target) &&
+                !sidebar.classList.contains('collapsed')) {
+                sidebar.classList.add('collapsed');
+            }
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize payment section visibility
             togglePaymentSection();
             
+            // Auto-hide alerts after 8 seconds
             setTimeout(() => {
                 const alerts = document.querySelectorAll('.alert');
                 alerts.forEach(alert => {
@@ -1152,6 +1545,22 @@ body: JSON.stringify({
                     setTimeout(() => alert.remove(), 1000);
                 });
             }, 8000);
+            
+            // Show mobile toggle on small screens
+            if (window.innerWidth <= 768) {
+                document.querySelector('.mobile-toggle').style.display = 'block';
+            }
+        });
+        
+        // Window resize handler
+        window.addEventListener('resize', function() {
+            const toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768) {
+                toggle.style.display = 'block';
+            } else {
+                toggle.style.display = 'none';
+                document.getElementById('sidebar').classList.remove('collapsed');
+            }
         });
     </script>
 </body>

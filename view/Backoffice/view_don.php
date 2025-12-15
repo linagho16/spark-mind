@@ -1,607 +1,905 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Don - Dashboard Admin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détails du Don - Dashboard Admin</title>
+  <style>
+      body {
+          margin: 0;
+          min-height: 100vh;
+          background:
+              radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+              #FBEDD7;
+          font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+          color: #1A464F;
+      }
 
-        body {
-            font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background-color: #FBEDD7;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-        }
+      /* ✅ Layout avec sidebar */
+      .layout{
+          min-height:100vh;
+          display:flex;
+      }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            padding: 2rem 0;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
+      /* ✅ Sidebar (comme la capture) */
+      .sidebar{
+        width:260px;
+        background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+        border-right:1px solid rgba(0,0,0,.06);
+        padding:18px 14px;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        position:sticky;
+        top:0;
+        height:100vh;
+      }
 
-        .logo {
-            text-align: center;
-            padding: 0 1.5rem 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            margin-bottom: 2rem;
-        }
+      .sidebar .brand{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        text-decoration:none;
+        padding:10px 10px;
+        border-radius:14px;
+        color:#1A464F;
+      }
 
-        .logo h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+      .sidebar .logo{
+        width:42px;
+        height:42px;
+        border-radius:50%;
+        object-fit:cover;
+      }
 
-        .nav-menu {
-            flex: 1;
-            padding: 0 1rem;
-        }
+      .sidebar .brand-name{
+        font-family:'Playfair Display', serif;
+        font-weight:800;
+        font-size:18px;
+        color:#1A464F;
+        text-transform: lowercase;
+      }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.9rem 1.2rem;
-            color: rgba(255,255,255,0.85);
-            text-decoration: none;
-            border-radius: 12px;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
+      /* ✅ Titres sidebar : MENU PRINCIPAL / ACTIONS RAPIDES */
+      .menu-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #7a6f66;
+        padding: 10px 12px 4px;
+        text-transform: uppercase;
+        margin-top: 8px;
+      }
 
-        .nav-item:hover {
-            background-color: rgba(255,255,255,0.15);
-            color: white;
-            transform: translateX(5px);
-        }
+      .menu{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        margin-top:6px;
+      }
 
-        .nav-item.active {
-            background-color: rgba(255,255,255,0.25);
-            color: white;
-            font-weight: 600;
-        }
+      .menu-item{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 12px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#1A464F;
+        font-weight:600;
+      }
 
-        .nav-item .icon {
-            font-size: 1.3rem;
-        }
+      .menu-item:hover{
+        background:#f5e2c4ff;
+      }
 
-        .sidebar-footer {
-            padding: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            margin-top: auto;
-        }
+      .menu-item.active{
+        background:#1A464F !important;
+        color:#ddad56ff !important;
+      }
 
-        /* MAIN CONTENT */
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 2rem;
-            width: calc(100% - 260px);
-        }
+      .sidebar-foot{
+        margin-top:auto;
+        padding-top:10px;
+        border-top:1px solid rgba(0,0,0,.06);
+      }
 
-        /* TOP HEADER */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-            background: linear-gradient(135deg, #fbdcc1 0%, #ec9d78 15%, #b095c6 55%, #7dc9c4 90%);
-            padding: 2rem;
-            border-radius: 20px;
-            color: white;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-        }
+      .sidebar-foot .link{
+        display:block;
+        padding:10px 12px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#1A464F;
+        font-weight:600;
+      }
 
-        .header-left h1 {
-            font-size: 2rem;
-            margin-bottom: 0.3rem;
-            font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
+      .sidebar-foot .link:hover{
+        background:#f5e2c4ff;
+      }
 
-        .header-left p {
-            opacity: 0.95;
-            font-size: 1rem;
-        }
+      /* ✅ Main */
+      .main{
+        flex:1;
+        min-width:0;
+      }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
+      /* ✅ Top Navigation - FIXED ALIGNMENT */
+      .top-nav {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          backdrop-filter: blur(14px);
+          background: rgba(251, 237, 215, 0.96);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          padding: 10px 24px;
+          border-bottom: 1px solid rgba(0,0,0,0.05);
+      }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            position: relative;
-        }
+      /* Brand section on the left */
+      .top-nav-left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-shrink: 0;
+      }
 
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #ec7546;
-            color: white;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 50%;
-            font-weight: 600;
-            z-index: 10;
-        }
+      /* Right section with search and avatar */
+      .header-actions {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-left: auto;
+      }
 
-        .avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 2px solid rgba(255,255,255,0.6);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+      /* ✅ Search Box - Improved Alignment */
+      .search-box {
+          position: relative;
+          width: 300px;
+          min-width: 200px;
+      }
 
-        .avatar:hover {
-            transform: scale(1.1);
-            background-color: rgba(255,255,255,0.4);
-        }
+      .search-box input {
+          width: 100%;
+          padding: 10px 16px;
+          padding-left: 40px;
+          border: 2px solid rgba(26, 70, 79, 0.1);
+          border-radius: 999px;
+          font-size: 14px;
+          background: white;
+          color: #1A464F;
+          font-family: 'Poppins', sans-serif;
+          transition: all 0.3s ease;
+      }
 
-        /* DETAILS CONTAINER */
-        .details-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            margin: 1rem 0;
-            max-width: 900px;
-        }
+      .search-box input:focus {
+          outline: none;
+          border-color: #1A464F;
+          box-shadow: 0 0 0 3px rgba(26, 70, 79, 0.15);
+      }
 
-        .details-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid #f1f3f5;
-        }
+      .search-icon {
+          position: absolute;
+          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #7a6f66;
+          pointer-events: none;
+      }
 
-        .don-icon {
-            font-size: 3rem;
-            margin-right: 1.5rem;
-        }
+      /* ✅ User Profile - Perfectly Aligned */
+      .user-profile {
+          display: flex;
+          align-items: center;
+          position: relative;
+      }
 
-        .don-title h2 {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
+      /* Avatar with perfect centering */
+      .avatar {
+          width: 45px;
+          height: 45px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #7d5aa6, #b58bf0);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 20px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+      }
 
-        .don-title .don-id {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
+      .avatar:hover {
+          transform: scale(1.05);
+      }
 
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+      /* ✅ Notification Badge - Perfectly Positioned */
+      .notification-badge {
+          position: absolute;
+          top: -3px;
+          right: -3px;
+          background: linear-gradient(135deg, #ec7546, #ffb38f);
+          color: white;
+          font-size: 11px;
+          padding: 2px 6px;
+          border-radius: 50%;
+          font-weight: 600;
+          min-width: 18px;
+          height: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 2px solid rgba(251, 237, 215, 0.96);
+          z-index: 10;
+      }
 
-        .detail-section {
-            margin-bottom: 1.5rem;
-        }
+      .brand-block { 
+          display:flex; 
+          align-items:center; 
+          gap:10px; 
+      }
 
-        .detail-section h3 {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e1e5e9;
-        }
+      .logo-img {
+          width: 40px; 
+          height: 40px; 
+          border-radius: 50%;
+          object-fit: cover;
+          box-shadow:0 6px 14px rgba(79, 73, 73, 0.18);
+      }
 
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.8rem;
-            padding: 0.8rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
+      .brand-text { 
+          display:flex; 
+          flex-direction:column; 
+      }
 
-        .detail-label {
-            font-weight: 600;
-            color: #495057;
-        }
+      .brand-name {
+          font-family: 'Playfair Display', serif;
+          font-size: 22px;
+          color: #1A464F;
+          letter-spacing: 1px;
+          text-transform:uppercase;
+      }
 
-        .detail-value {
-            color: #2c3e50;
-            text-align: right;
-        }
+      .brand-tagline { 
+          font-size: 12px; 
+          color: #1A464F; 
+          opacity: 0.8; 
+      }
 
-        .badge {
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-        }
+      /* ✅ Admin Main Content */
+      .admin-main {
+          flex: 1;
+          max-width: 1100px;
+          margin: 32px auto 40px;
+          padding: 0 18px 30px;
+      }
 
-        .badge-active {
-            background-color: #d4edda;
-            color: #155724;
-        }
+      /* ✅ Details Header */
+      .dashboard-header {
+          background: rgba(255, 247, 239, 0.95);
+          border-radius: 24px;
+          padding: 24px 22px;
+          margin-bottom: 30px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      }
 
-        .badge-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
+      .dashboard-header h1 {
+          margin: 0 0 6px;
+          font-family: 'Playfair Display', serif;
+          font-size: 26px;
+          color:#1A464F;
+      }
 
-        .description-section {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
-        }
+      .dashboard-subtitle {
+          font-size: 13px;
+          margin-bottom: 18px;
+          color: #555;
+      }
 
-        .description-section h3 {
-            margin-bottom: 1rem;
-            color: #2c3e50;
-        }
+      /* ✅ Details Container */
+      .details-container {
+          background: rgba(255, 247, 239, 0.95);
+          border-radius: 24px;
+          padding: 30px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+          margin-bottom: 30px;
+      }
 
-        .description-content {
-            line-height: 1.6;
-            color: #495057;
-        }
+      .details-header {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-bottom: 30px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid rgba(26, 70, 79, 0.1);
+      }
 
-        .photo-section {
-            margin: 2rem 0;
-        }
+      .don-icon {
+          font-size: 48px;
+          width: 80px;
+          height: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          border-radius: 20px;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      }
 
-        .photo-section h3 {
-            margin-bottom: 1rem;
-            color: #2c3e50;
-        }
+      .don-title h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 28px;
+          color: #1A464F;
+          margin: 0 0 5px;
+      }
 
-        .photo-container {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
+      .don-title .don-id {
+          font-size: 14px;
+          color: #7a6f66;
+          font-weight: 500;
+      }
 
-        .photo-item {
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-        }
+      /* ✅ Details Grid */
+      .details-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 25px;
+          margin-bottom: 30px;
+      }
 
-        .photo-item img {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 8px;
-        }
+      .detail-section {
+          background: white;
+          border-radius: 20px;
+          padding: 22px;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
 
-        .no-photo {
-            color: #6c757d;
-            font-style: italic;
-            padding: 2rem;
-            text-align: center;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 2px dashed #dee2e6;
-        }
+      .detail-section h3 {
+          font-family: 'Playfair Display', serif;
+          font-size: 18px;
+          color: #1A464F;
+          margin: 0 0 18px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(26, 70, 79, 0.1);
+      }
 
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e1e5e9;
-        }
+      .detail-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 0;
+          border-bottom: 1px solid rgba(0,0,0,0.05);
+      }
 
-        .btn-back {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
-        }
+      .detail-item:last-child {
+          border-bottom: none;
+      }
 
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
-        }
+      .detail-label {
+          font-weight: 600;
+          color: #1A464F;
+          font-size: 14px;
+      }
 
-        .btn-edit {
-            background: linear-gradient(135deg, #1f8c87, #7eddd5);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(31, 140, 135, 0.3);
-        }
+      .detail-value {
+          color: #555;
+          text-align: right;
+          font-size: 14px;
+          font-weight: 500;
+      }
 
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(31, 140, 135, 0.4);
-        }
+      /* ✅ Badge Styles */
+      .badge {
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          display: inline-block;
+      }
 
-        /* RESPONSIVE */
-        @media (max-width: 1200px) {
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+      .badge-active {
+          background: rgba(212, 237, 218, 0.3);
+          color: #155724;
+          border: 1px solid rgba(21, 87, 36, 0.2);
+      }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 1.5rem 0;
-            }
+      .badge-pending {
+          background: rgba(255, 243, 205, 0.3);
+          color: #856404;
+          border: 1px solid rgba(133, 100, 4, 0.2);
+      }
 
-            .logo h2 {
-                font-size: 1.5rem;
-            }
+      /* ✅ Description Section */
+      .description-section {
+          background: white;
+          border-radius: 20px;
+          padding: 22px;
+          margin: 25px 0;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
 
-            .nav-item span:not(.icon) {
-                display: none;
-            }
+      .description-section h3 {
+          font-family: 'Playfair Display', serif;
+          font-size: 18px;
+          color: #1A464F;
+          margin: 0 0 18px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(26, 70, 79, 0.1);
+      }
 
-            .nav-item {
-                justify-content: center;
-                padding: 0.9rem;
-            }
+      .description-content {
+          line-height: 1.7;
+          color: #555;
+          font-size: 15px;
+          padding: 5px 0;
+      }
 
-            .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 1rem;
-            }
+      /* ✅ Photo Section */
+      .photo-section {
+          background: white;
+          border-radius: 20px;
+          padding: 22px;
+          margin: 25px 0;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      }
 
-            .top-header {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
+      .photo-section h3 {
+          font-family: 'Playfair Display', serif;
+          font-size: 18px;
+          color: #1A464F;
+          margin: 0 0 18px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(26, 70, 79, 0.1);
+      }
 
-            .details-container {
-                padding: 1.5rem;
-            }
+      .photo-container {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+          justify-content: center;
+      }
 
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
+      .photo-item {
+          border: 2px solid rgba(26, 70, 79, 0.1);
+          border-radius: 16px;
+          padding: 15px;
+          text-align: center;
+          transition: all 0.3s ease;
+          background: #f9f9f9;
+      }
 
-            .action-buttons {
-                flex-direction: column;
-            }
+      .photo-item:hover {
+          transform: translateY(-5px);
+          border-color: rgba(26, 70, 79, 0.3);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      }
 
-            .btn-back, .btn-edit {
-                width: 100%;
-                text-align: center;
-                justify-content: center;
-            }
-        }
-    </style>
+      .photo-item img {
+          max-width: 280px;
+          max-height: 200px;
+          border-radius: 12px;
+          object-fit: cover;
+      }
+
+      .no-photo {
+          color: #7a6f66;
+          font-style: italic;
+          padding: 40px 20px;
+          text-align: center;
+          background: rgba(26, 70, 79, 0.03);
+          border-radius: 16px;
+          border: 2px dashed rgba(26, 70, 79, 0.15);
+          width: 100%;
+          font-size: 16px;
+      }
+
+      /* ✅ Action Buttons */
+      .action-buttons {
+          display: flex;
+          gap: 15px;
+          justify-content: flex-end;
+          margin-top: 30px;
+          padding-top: 25px;
+          border-top: 1px solid rgba(26, 70, 79, 0.1);
+      }
+
+      .btn {
+          padding: 12px 24px;
+          border-radius: 999px;
+          border: none;
+          font-family: 'Poppins', sans-serif;
+          font-weight: 600;
+          cursor: pointer;
+          text-decoration: none;
+          font-size: 14px;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+      }
+
+      .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      .btn-back {
+          background: transparent;
+          color: #1A464F;
+          border: 1px solid rgba(26, 70, 79, 0.35);
+      }
+
+      .btn-edit {
+          background: linear-gradient(135deg, #1f8c87, #7eddd5);
+          color: white;
+      }
+
+      /* ✅ Mobile Responsive Fixes */
+      @media (max-width: 768px) {
+          .top-nav {
+              flex-direction: column;
+              align-items: stretch;
+              gap: 15px;
+              padding: 15px;
+          }
+          
+          .top-nav-left {
+              width: 100%;
+              justify-content: space-between;
+          }
+          
+          .header-actions {
+              width: 100%;
+              justify-content: space-between;
+              margin-left: 0;
+          }
+          
+          .search-box {
+              width: calc(100% - 60px);
+          }
+          
+          .action-buttons {
+              flex-direction: column;
+          }
+          
+          .btn {
+              width: 100%;
+              justify-content: center;
+          }
+          
+          .details-grid {
+              grid-template-columns: 1fr;
+          }
+          
+          .details-header {
+              flex-direction: column;
+              text-align: center;
+              gap: 15px;
+          }
+          
+          .photo-container {
+              flex-direction: column;
+              align-items: center;
+          }
+          
+          .photo-item img {
+              max-width: 100%;
+          }
+      }
+
+      @media (max-width: 480px) {
+          .search-box {
+              width: calc(100% - 50px);
+              min-width: 0;
+          }
+          
+          .avatar {
+              width: 40px;
+              height: 40px;
+              font-size: 18px;
+          }
+          
+          .notification-badge {
+              top: -2px;
+              right: -2px;
+              font-size: 10px;
+              min-width: 16px;
+              height: 16px;
+          }
+          
+          .admin-main {
+              padding: 0 15px 20px;
+          }
+          
+          .details-container {
+              padding: 20px;
+          }
+          
+          .don-icon {
+              width: 60px;
+              height: 60px;
+              font-size: 36px;
+          }
+          
+          .don-title h2 {
+              font-size: 22px;
+          }
+      }
+  </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-   <aside class="sidebar">
-    <div class="logo">
-        <h2>🕊️ Admin</h2>
-    </div>
-    <nav class="nav-menu">
-        <!-- Dashboard -->
-        <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="nav-item">
-            <span class="icon">📊</span>
-            <span>Dashboard</span>
-        </a>
-        <!-- Dons -->
-        <a href="/aide_solitaire/controller/donC.php?action=dons" class="nav-item">
-            <span class="icon">🎁</span>
-            <span>Dons</span>
-        </a>
-        <!-- Groupes (ADDED) -->
-        <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="nav-item">
-            <span class="icon">👥</span>
-            <span>Groupes</span>
-        </a>
-        <!-- Statistiques -->
-        <a href="/aide_solitaire/controller/donC.php?action=statistics" class="nav-item">
-            <span class="icon">📈</span>
-            <span>Statistiques</span>
-        </a>
-    </nav>
-    <div class="sidebar-footer">
-        <a href="#" class="nav-item">
-            <span class="icon">🚪</span>
-            <span>Déconnexion</span>
-        </a>
-    </div>
-</aside>
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1>Détails du Don</h1>
-                <p>Informations complètes sur ce don</p>
-            </div>
-            <div class="header-right">
-                <div class="user-profile">
-                    <div class="avatar">👤</div>
-                </div>
-            </div>
-        </header>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()" style="display: none; position: fixed; top: 10px; left: 10px; z-index: 1001; background: #1A464F; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">☰</button>
 
-        <!-- Details Container -->
-        <div class="details-container">
-            <!-- Donation Header -->
-            <div class="details-header">
-                <div class="don-icon">
-                    <?php 
-                    $icons = [
-                        'Vêtements' => '👕',
-                        'Nourriture' => '🍞',
-                        'Médicaments' => '💊',
-                        'Équipement' => '🔧',
-                        'Argent' => '💰',
-                        'Services' => '🤝',
-                        'Autre' => '🎁'
-                    ];
-                    echo $icons[$don['type_don']] ?? '🎁';
-                    ?>
-                </div>
-                <div class="don-title">
-                    <h2><?php echo htmlspecialchars($don['type_don']); ?></h2>
-                    <div class="don-id">Don #<?php echo $don['id']; ?></div>
-                </div>
+    <!-- ✅ Layout avec sidebar -->
+    <div class="layout">
+        <!-- ✅ Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="brand">
+                <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo">
+                <div class="brand-name">SPARKMIND</div>
+            </a>
+
+            <div class="menu-title">MENU PRINCIPAL</div>
+            <nav class="menu">
+                <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="menu-item">
+                    <span class="icon">📊</span>
+                    <span>Tableau de bord</span>
+                </a>
+            </nav>
+
+            <div class="menu-title">GESTION DES DONS</div>
+            <nav class="menu">
+                <a href="/aide_solitaire/controller/donC.php?action=dons" class="menu-item active">
+                    <span class="icon">🎁</span>
+                    <span>Tous les dons</span>
+                </a>
+                
+                <a href="/aide_solitaire/controller/donC.php?action=create_don" class="menu-item">
+                    <span class="icon">➕</span>
+                    <span>Ajouter un don</span>
+                </a>
+                
+                <a href="/aide_solitaire/controller/donC.php?action=statistics" class="menu-item">
+                    <span class="icon">📈</span>
+                    <span>Statistiques dons</span>
+                </a>
+            </nav>
+
+            <div class="menu-title">GESTION DES GROUPES</div>
+            <nav class="menu">
+                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="menu-item">
+                    <span class="icon">👥</span>
+                    <span>Tous les groupes</span>
+                </a>
+                
+                <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="menu-item">
+                    <span class="icon">➕</span>
+                    <span>Ajouter un groupe</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <a href="/aide_solitaire/view/frontoffice/index.php" class="link">
+                    <span class="icon">🌐</span>
+                    <span>Voir le site public</span>
+                </a>
             </div>
+        </aside>
 
-            <!-- Main Details Grid -->
-            <div class="details-grid">
-                <!-- Basic Information -->
-                <div class="detail-section">
-                    <h3>Informations de base</h3>
-                    <div class="detail-item">
-                        <span class="detail-label">ID:</span>
-                        <span class="detail-value">#<?php echo $don['id']; ?></span>
+        <!-- ✅ Main Content Area -->
+        <div class="main">
+            <!-- ✅ Top Navigation -->
+            <div class="top-nav">
+                <!-- Brand section -->
+                <div class="top-nav-left">
+                    <div class="brand-block">
+                        <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                        <div class="brand-text">
+                            <div class="brand-name">SPARKMIND</div>
+                            <div class="brand-tagline">Administration</div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Type:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['type_don']); ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Quantité:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['quantite']); ?></span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Région:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['region']); ?></span>
-                    </div>
-                    <?php if (!empty($don['etat_object'])): ?>
-                    <div class="detail-item">
-                        <span class="detail-label">État:</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($don['etat_object']); ?></span>
-                    </div>
-                    <?php endif; ?>
                 </div>
-
-                <!-- Date Information -->
-                <div class="detail-section">
-                    <h3>Dates et statut</h3>
-                    <div class="detail-item">
-                        <span class="detail-label">Date de création:</span>
-                        <span class="detail-value"><?php echo date('d/m/Y à H:i', strtotime($don['date_don'])); ?></span>
+                
+                <!-- Right section - Perfectly aligned -->
+                <div class="header-actions">
+                    <!-- Search Box -->
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" placeholder="Rechercher...">
                     </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Dernière modification:</span>
-                        <span class="detail-value">
-                            <?php echo isset($don['date_modification']) ? date('d/m/Y à H:i', strtotime($don['date_modification'])) : 'Jamais'; ?>
-                        </span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Statut:</span>
-                        <span class="detail-value">
-                            <span class="badge badge-active"><?php echo ucfirst($don['statut'] ?? 'actif'); ?></span>
-                        </span>
+                    
+                    <!-- User Profile with Notification Badge -->
+                    <div class="user-profile">
+                        <span class="notification-badge">3</span>
+                        <div class="avatar">👤</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Description -->
-            <div class="description-section">
-                <h3>Description détaillée</h3>
-                <div class="description-content">
-                    <?php echo nl2br(htmlspecialchars($don['description'])); ?>
+            <!-- ✅ Main Content -->
+            <div class="admin-main">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h1>Détails du Don</h1>
+                    <p class="dashboard-subtitle">Informations complètes sur ce don</p>
                 </div>
-            </div>
 
-            <!-- Photos -->
-            <div class="photo-section">
-                <h3>Photos</h3>
-                <div class="photo-container">
-                    <?php if (!empty($don['photos'])): ?>
-                        <div class="photo-item">
-                            <?php if (file_exists($don['photos'])): ?>
-                                <img src="/aide_solitaire/<?php echo $don['photos']; ?>" alt="Photo du don" onerror="this.style.display='none'">
-                                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
-                                    <?php echo basename($don['photos']); ?>
+                <!-- Details Container -->
+                <div class="details-container">
+                    <!-- Donation Header -->
+                    <div class="details-header">
+                        <div class="don-icon">
+                            <?php 
+                            $icons = [
+                                'Vêtements' => '👕',
+                                'Nourriture' => '🍞',
+                                'Médicaments' => '💊',
+                                'Équipement' => '🔧',
+                                'Argent' => '💰',
+                                'Services' => '🤝',
+                                'Autre' => '🎁'
+                            ];
+                            echo $icons[$don['type_don']] ?? '🎁';
+                            ?>
+                        </div>
+                        <div class="don-title">
+                            <h2><?php echo htmlspecialchars($don['type_don']); ?></h2>
+                            <div class="don-id">Don #<?php echo $don['id']; ?></div>
+                        </div>
+                    </div>
+
+                    <!-- Main Details Grid -->
+                    <div class="details-grid">
+                        <!-- Basic Information -->
+                        <div class="detail-section">
+                            <h3>Informations de base</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">ID:</span>
+                                <span class="detail-value">#<?php echo $don['id']; ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type:</span>
+                                <span class="detail-value"><?php echo htmlspecialchars($don['type_don']); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Quantité:</span>
+                                <span class="detail-value"><?php echo htmlspecialchars($don['quantite']); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Région:</span>
+                                <span class="detail-value"><?php echo htmlspecialchars($don['region']); ?></span>
+                            </div>
+                            <?php if (!empty($don['etat_object'])): ?>
+                            <div class="detail-item">
+                                <span class="detail-label">État:</span>
+                                <span class="detail-value"><?php echo htmlspecialchars($don['etat_object']); ?></span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Date Information -->
+                        <div class="detail-section">
+                            <h3>Dates et statut</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Date de création:</span>
+                                <span class="detail-value"><?php echo date('d/m/Y à H:i', strtotime($don['date_don'])); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Dernière modification:</span>
+                                <span class="detail-value">
+                                    <?php echo isset($don['date_modification']) ? date('d/m/Y à H:i', strtotime($don['date_modification'])) : 'Jamais'; ?>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Statut:</span>
+                                <span class="detail-value">
+                                    <span class="badge badge-active"><?php echo ucfirst($don['statut'] ?? 'actif'); ?></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="description-section">
+                        <h3>Description détaillée</h3>
+                        <div class="description-content">
+                            <?php echo nl2br(htmlspecialchars($don['description'])); ?>
+                        </div>
+                    </div>
+
+                    <!-- Photos -->
+                    <div class="photo-section">
+                        <h3>Photos</h3>
+                        <div class="photo-container">
+                            <?php if (!empty($don['photos'])): ?>
+                                <div class="photo-item">
+                                    <?php if (file_exists($don['photos'])): ?>
+                                        <img src="/aide_solitaire/<?php echo $don['photos']; ?>" alt="Photo du don" onerror="this.style.display='none'">
+                                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                                            <?php echo basename($don['photos']); ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="no-photo">
+                                            ❌ Photo non trouvée<br>
+                                            <small><?php echo basename($don['photos']); ?></small>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             <?php else: ?>
                                 <div class="no-photo">
-                                    ❌ Photo non trouvée<br>
-                                    <small><?php echo basename($don['photos']); ?></small>
+                                    📷 Aucune photo disponible
                                 </div>
                             <?php endif; ?>
                         </div>
-                    <?php else: ?>
-                        <div class="no-photo">
-                            📷 Aucune photo disponible
-                        </div>
-                    <?php endif; ?>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn btn-back">
+                            ← Retour à la liste
+                        </a>
+                        <a href="/aide_solitaire/controller/donC.php?action=edit_don&id=<?php echo $don['id']; ?>" class="btn btn-edit">
+                            ✏️ Modifier ce don
+                        </a>
+                    </div>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="btn-back">
-                    ← Retour à la liste
-                </a>
-                <a href="/aide_solitaire/controller/donC.php?action=edit_don&id=<?php echo $don['id']; ?>" class="btn-edit">
-                    ✏️ Modifier ce don
-                </a>
-            </div>
         </div>
-    </main>
+    </div>
 
     <script>
-        // Auto-hide messages after 5 seconds (if any)
-        setTimeout(function() {
-            const messages = document.querySelectorAll('.message-success, .message-error');
-            messages.forEach(message => {
-                message.style.opacity = '0';
-                message.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => message.remove(), 500);
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        // Mobile responsive behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show mobile toggle on small screens
+            if (window.innerWidth <= 768) {
+                document.querySelector('.mobile-toggle').style.display = 'block';
+            }
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                const sidebar = document.getElementById('sidebar');
+                const toggle = document.querySelector('.mobile-toggle');
+                
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(event.target) && 
+                    !toggle.contains(event.target) &&
+                    !sidebar.classList.contains('collapsed')) {
+                    sidebar.classList.add('collapsed');
+                }
             });
-        }, 5000);
+
+            // Auto-close sidebar on mobile when clicking a link
+            document.querySelectorAll('.menu-item, .link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        const sidebar = document.getElementById('sidebar');
+                        sidebar.classList.add('collapsed');
+                    }
+                });
+            });
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', function() {
+            const toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768) {
+                toggle.style.display = 'block';
+            } else {
+                toggle.style.display = 'none';
+                document.getElementById('sidebar').classList.remove('collapsed');
+            }
+        });
     </script>
 </body>
 </html>

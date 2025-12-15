@@ -33,515 +33,1162 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du Groupe - Aide Solidaire</title>
     <style>
-        /* Using same base styles with group-specific adjustments */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    :root{
+      --orange:#ec7546;
+      --turquoise:#1f8c87;
+      --violet:#7d5aa6;
+      --bg:#FBEDD7;
+    }
 
-        body {
-            font-family: "Poppins", sans-serif;
-            background-color: #f5f9ff;
-            color: #333;
-            line-height: 1.6;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #7d5aa6 0%, #b58ce0 50%, #7eddd5 100%);
-            color: white;
-            padding: 3rem 1rem 4rem;
-            text-align: center;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-            position: relative;
-            overflow: hidden;
-        }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+            radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+            var(--bg);
+        font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #1A464F;
+    }
 
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
+    /* ✅ Layout avec sidebar */
+    .layout{
+        min-height:100vh;
+        display:flex;
+    }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            max-width: 600px;
-            margin: 0 auto 1rem;
-        }
+    /* ✅ Sidebar */
+    .sidebar{
+      width:260px;
+      background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+      border-right:1px solid rgba(0,0,0,.06);
+      padding:18px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      position:sticky;
+      top:0;
+      height:100vh;
+    }
 
-        .pigeon-bg {
-            position: absolute;
-            bottom: 10px;
-            right: 5%;
-            font-size: 6rem;
-            opacity: 0.2;
-        }
+    .sidebar .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      padding:10px 10px;
+      border-radius:14px;
+      color:#1A464F;
+      margin-bottom: 10px;
+    }
 
-        /* Main Container */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 2rem 3rem;
-        }
+    .sidebar .logo-img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 
-        /* Back Button */
-        .back-btn {
-            display: inline-block;
-            margin: -1rem 0 2rem;
-            padding: 0.6rem 1.2rem;
-            background: #6c757d;
-            color: white;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
+    .sidebar .brand-name{
+      font-family:'Playfair Display', serif;
+      font-weight:800;
+      font-size:18px;
+      color:#1A464F;
+      text-transform: lowercase;
+    }
 
-        .back-btn:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
+    /* ✅ Titres sidebar : MENU PRINCIPAL */
+    .menu-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #7a6f66;
+      padding: 10px 12px 4px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
 
-        /* Group Details Card */
-        .details-card {
-            background: white;
-            border-radius: 25px;
-            padding: 2.5rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
+    .menu{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+    }
 
-        .group-header {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid #f1f3f5;
-        }
+    .menu-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#1A464F;
+      font-weight:600;
+      font-size: 14px;
+    }
 
-        .group-icon {
-            font-size: 4rem;
-        }
+    .menu-item:hover{
+      background:#f5e2c4ff;
+    }
 
-        .group-title h2 {
-            font-size: 1.8rem;
-            color: #7d5aa6;
-            margin-bottom: 0.5rem;
-        }
+    .menu-item.active{
+      background:#1A464F !important;
+      color:#ddad56ff !important;
+    }
 
-        .group-subtitle {
-            color: #666;
-            font-size: 0.9rem;
-        }
+    .sidebar-foot{
+      margin-top:auto;
+      padding-top:10px;
+      border-top:1px solid rgba(0,0,0,.06);
+    }
 
-        /* Type Badge */
-        .type-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-left: 1rem;
-            background: #e2d9f3;
-            color: #4a235a;
-        }
+    .sidebar-foot .link{
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#1A464F;
+      font-weight:600;
+      font-size: 14px;
+    }
 
-        /* Details Grid */
+    .sidebar-foot .link:hover{
+      background:#f5e2c4ff;
+    }
+
+    /* ✅ Main */
+    .main{
+      flex:1;
+      min-width:0;
+      padding: 0;
+      overflow-y: auto;
+    }
+
+    /* ✅ Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(251, 237, 215, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      animation: navFade 0.7s ease-out;
+    }
+
+    .top-nav::after{
+      content:"";
+      position:absolute;
+      inset:auto 40px -2px 40px;
+      height:2px;
+      background:linear-gradient(90deg,#7d5aa6,#ec7546,#1f8c87);
+      opacity:.35;
+      border-radius:999px;
+    }
+
+    .brand-block { 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+    }
+
+    .logo-img {
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow:0 6px 14px rgba(79, 73, 73, 0.18);
+      animation: logoPop 0.6s ease-out;
+    }
+
+    .brand-text { 
+      display:flex; 
+      flex-direction:column; 
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1A464F;
+      letter-spacing: 1px;
+      text-transform:uppercase;
+      animation: titleGlow 2.8s ease-in-out infinite alternate;
+    }
+
+    .brand-tagline { 
+      font-size: 12px; 
+      color: #1A464F; 
+      opacity: 0.8; 
+    }
+
+    .header-actions { 
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+    }
+
+    @keyframes navFade { 
+      from {opacity:0; transform:translateY(-16px);} 
+      to {opacity:1; transform:translateY(0);} 
+    }
+
+    @keyframes logoPop{ 
+      from{transform:scale(0.8) translateY(-6px); opacity:0;} 
+      to{transform:scale(1) translateY(0); opacity:1;} 
+    }
+
+    @keyframes titleGlow{ 
+      from{text-shadow:0 0 0 rgba(125,90,166,0.0);} 
+      to{text-shadow:0 4px 16px rgba(125,90,166,0.55);} 
+    }
+
+    .btn-orange {
+      background: var(--orange);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(236, 117, 70, 0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position:relative;
+      overflow:hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-orange::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,rgba(255,255,255,.35),transparent 60%);
+      transform:translateX(-120%);
+      transition:transform .4s ease;
+    }
+
+    .btn-orange:hover::before{ 
+      transform:translateX(20%); 
+    }
+
+    .btn-orange:hover {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(1.05);
+      box-shadow: 0 10px 24px rgba(236, 117, 70, 0.55);
+    }
+
+    .page-quote {
+      text-align: center;
+      margin: 22px auto 14px auto;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: #1A464F;
+      opacity: 0.95;
+      position:relative;
+      animation: quoteFade 1s ease-out;
+    }
+
+    .page-quote::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-8px;
+      width:90px;
+      height:3px;
+      border-radius:999px;
+      background:linear-gradient(90deg,#7d5aa6,#ec7546,#1f8c87);
+      opacity:.6;
+    }
+
+    @keyframes quoteFade{ 
+      from{opacity:0; transform:translateY(-8px);} 
+      to{opacity:1; transform:translateY(0);} 
+    }
+
+    /* ✅ Main Content */
+    .space-main { 
+      padding: 10px 20px 60px; 
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ✅ Back Button */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1A464F;
+      background: rgba(255, 247, 239, 0.9);
+      border: 1px solid rgba(26, 70, 79, 0.15);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(26, 70, 79, 0.1);
+      transform: translateX(-5px);
+      border-color: rgba(26, 70, 79, 0.3);
+    }
+
+    /* ✅ Group Details Card */
+    .details-card {
+      background: rgba(255, 247, 239, 0.95);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      margin-bottom: 30px;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(26, 70, 79, 0.1);
+    }
+
+    .group-icon {
+      font-size: 48px;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .group-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: #1A464F;
+      margin: 0 0 10px;
+    }
+
+    .group-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ✅ Type Badge */
+    .type-badge {
+      background: linear-gradient(135deg, var(--violet), #b58bf0);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ✅ Status Badge */
+    .status-badge {
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-active {
+      background: rgba(212, 237, 218, 0.3);
+      color: #155724;
+      border: 1px solid rgba(21, 87, 36, 0.2);
+    }
+
+    .status-pending {
+      background: rgba(255, 243, 205, 0.3);
+      color: #856404;
+      border: 1px solid rgba(133, 100, 4, 0.2);
+    }
+
+    .status-inactif {
+      background: rgba(248, 215, 218, 0.3);
+      color: #721c24;
+      border: 1px solid rgba(114, 28, 36, 0.2);
+    }
+
+    /* ✅ Details Grid */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .detail-section {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .detail-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: #1A464F;
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(26, 70, 79, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #1A464F;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .detail-value {
+      color: #555;
+      text-align: right;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* ✅ Contact Items */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: white;
+      border-radius: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+    }
+
+    .contact-icon {
+      font-size: 24px;
+      color: var(--violet);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(125, 90, 166, 0.1);
+      border-radius: 12px;
+    }
+
+    .contact-info h4 {
+      margin: 0 0 4px;
+      color: #1A464F;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .contact-info p {
+      margin: 0;
+      color: #7a6f66;
+      font-size: 13px;
+    }
+
+    /* ✅ Description Box */
+    .description-box {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      margin: 25px 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border-left: 4px solid var(--turquoise);
+    }
+
+    .description-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: #1A464F;
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(26, 70, 79, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .description-content {
+      line-height: 1.7;
+      color: #555;
+      font-size: 15px;
+      padding: 5px 0;
+    }
+
+    /* ✅ Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+      padding-top: 25px;
+      border-top: 1px solid rgba(26, 70, 79, 0.1);
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 200px;
+      justify-content: center;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .action-primary {
+      background: linear-gradient(135deg, var(--turquoise), #7eddd5);
+      color: white;
+    }
+
+    .action-secondary {
+      background: linear-gradient(135deg, var(--violet), #b58bf0);
+      color: white;
+    }
+
+    .action-tertiary {
+      background: linear-gradient(135deg, var(--orange), #ffb38f);
+      color: white;
+    }
+
+    /* ✅ Join Form */
+    .join-form {
+      background: rgba(255, 247, 239, 0.95);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      margin-top: 30px;
+    }
+
+    .join-form h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #1A464F;
+      margin: 0 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .join-form p {
+      color: #7a6f66;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid rgba(26, 70, 79, 0.1);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      color: #1A464F;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--turquoise);
+      box-shadow: 0 0 0 3px rgba(31, 140, 135, 0.15);
+    }
+
+    /* ✅ Related Section */
+    .related-section {
+      background: rgba(255, 247, 239, 0.95);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      margin-top: 30px;
+    }
+
+    .related-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #1A464F;
+      margin: 0 0 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .related-section p {
+      color: #7a6f66;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .related-links {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .related-link {
+      padding: 10px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .related-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* ✅ Error State */
+    .error-state {
+      background: rgba(255, 247, 239, 0.95);
+      border-radius: 24px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+
+    .error-state h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: #1A464F;
+      margin: 0 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .error-state p {
+      color: #7a6f66;
+      margin-bottom: 30px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ✅ Footer */
+    .footer {
+      background: rgba(255, 247, 239, 0.95);
+      border-top: 1px solid rgba(0,0,0,0.06);
+      padding: 25px;
+      margin-top: 30px;
+      text-align: center;
+      border-radius: 18px;
+    }
+
+    .footer p {
+      margin-bottom: 15px;
+      color: #1A464F;
+      font-size: 14px;
+    }
+
+    /* ✅ Mobile Toggle */
+    .mobile-toggle {
+        display: none;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        background: #1A464F;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* ✅ Responsive Design */
+    @media (max-width: 900px) {
+        .sidebar {
+            width: 220px;
+        }
+        
         .details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr;
         }
+    }
 
-        .detail-section {
-            margin-bottom: 1.5rem;
+    @media (max-width: 768px) {
+        .layout {
+            flex-direction: column;
         }
-
-        .detail-section h3 {
-            font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e1e5e9;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.8rem;
-            padding: 0.8rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .detail-value {
-            color: #2c3e50;
-            text-align: right;
-        }
-
-        /* Contact Items */
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .contact-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .contact-icon {
-            font-size: 1.5rem;
-            color: #7d5aa6;
-        }
-
-        .contact-info h4 {
-            margin: 0;
-            color: #333;
-            font-size: 1rem;
-        }
-
-        .contact-info p {
-            margin: 0.2rem 0 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Description */
-        .description-box {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin: 1.5rem 0;
-        }
-
-        .description-box h3 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .description-content {
-            line-height: 1.6;
-            color: #495057;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e1e5e9;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 1rem;
-            border-radius: 12px;
-            font-weight: 600;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .action-primary {
-            background: linear-gradient(135deg, #7d5aa6, #b58ce0);
-            color: white;
-        }
-
-        .action-secondary {
-            background: #f1f3f5;
-            color: #333;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Join Form */
-        .join-form {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            margin-top: 2rem;
-        }
-
-        .join-form h3 {
-            color: #7d5aa6;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-input {
+        
+        .sidebar {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 1rem;
+            height: auto;
+            position: relative;
+            padding: 15px;
         }
-
-        /* Footer */
-        .footer {
-            background: #7d5aa6;
-            color: white;
+        
+        .main {
+            padding: 0;
+        }
+        
+        .mobile-toggle {
+            display: block;
+        }
+        
+        .sidebar.collapsed {
+            display: none;
+        }
+        
+        .space-main {
+            padding: 10px 15px 40px;
+        }
+        
+        .group-header {
+            flex-direction: column;
             text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
+            gap: 15px;
         }
+        
+        .group-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+        }
+        
+        .group-title h2 {
+            font-size: 22px;
+        }
+        
+        .group-subtitle {
+            justify-content: center;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            width: 100%;
+        }
+        
+        .related-links {
+            flex-direction: column;
+        }
+        
+        .related-link {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .top-nav {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 15px;
+        }
+        
+        .top-nav::after {
+            inset: auto 20px -2px 20px;
+        }
+    }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .group-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-            .action-buttons {
-                flex-direction: column;
-            }
-            .header h1 {
-                font-size: 2rem;
-            }
+    @media (max-width: 480px) {
+        .space-main {
+            padding: 10px 12px 30px;
         }
+        
+        .details-card {
+            padding: 20px;
+        }
+        
+        .detail-section {
+            padding: 18px;
+        }
+        
+        .contact-item {
+            padding: 12px;
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+        }
+        
+        .join-form, .related-section {
+            padding: 20px;
+        }
+        
+        .page-quote {
+            font-size: 18px;
+        }
+    }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <h1>👥 Détails du Groupe</h1>
-        <p>Découvrez cette initiative solidaire et rejoignez-la</p>
-        <div class="pigeon-bg">🕊️</div>
-    </header>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 
-    <main class="container">
-        <?php if ($groupe): ?>
-            <!-- Back Button -->
-           <a href="/aide_solitaire/controller/groupeC.php?action=list&context=frontoffice" class="back-btn"></a>
-            
-            <!-- Group Details -->
-            <div class="details-card">
-                <!-- Header -->
-                <div class="group-header">
-                    <div class="group-icon">
-                        <?php 
-                        $icons = [
-                            'Santé' => '🏥',
-                            'Éducation' => '📚',
-                            'Seniors' => '👵',
-                            'Jeunesse' => '👦',
-                            'Culture' => '🎨',
-                            'Urgence' => '🚨',
-                            'Animaux' => '🐾',
-                            'Environnement' => '🌿',
-                            'Religieux' => '🌙',
-                            'Social' => '🤝'
-                        ];
-                        echo $icons[$groupe['type']] ?? '👥';
-                        ?>
-                    </div>
-                    <div class="group-title">
-                        <h2><?php echo htmlspecialchars($groupe['nom']); ?></h2>
-                        <div class="group-subtitle">
-                            <span class="type-badge"><?php echo htmlspecialchars($groupe['type']); ?></span>
-                            <span class="status-badge status-<?php echo $groupe['statut']; ?>">
-                                <?php 
-                                $statusText = [
-                                    'actif' => 'Actif',
-                                    'en_attente' => 'En attente',
-                                    'inactif' => 'Inactif'
-                                ];
-                                echo $statusText[$groupe['statut']] ?? $groupe['statut'];
-                                ?>
-                            </span>
+    <!-- Layout Container -->
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <a href="index.php" class="brand">
+                <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                <div class="brand-name">SPARKMIND</div>
+            </a>
+
+            <div class="menu-title">MENU PRINCIPAL</div>
+            <nav class="menu">
+                <a href="index.php" class="menu-item">
+                    <span class="icon">🏠</span>
+                    <span>Accueil</span>
+                </a>
+                <a href="browse_dons.php" class="menu-item">
+                    <span class="icon">🎁</span>
+                    <span>Parcourir les Dons</span>
+                </a>
+                <a href="browse_groupes.php" class="menu-item">
+                    <span class="icon">👥</span>
+                    <span>Parcourir les Groupes</span>
+                </a>
+                <a href="create_don.php" class="menu-item">
+                    <span class="icon">➕</span>
+                    <span>Faire un Don</span>
+                </a>
+                <a href="create_groupe.php" class="menu-item">
+                    <span class="icon">✨</span>
+                    <span>Créer un Groupe</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-foot">
+                <a href="../Backoffice/dashboard.php" class="link">
+                    <span class="icon">🔒</span>
+                    <span>Espace Admin</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="top-nav-left">
+                    <div class="brand-block">
+                        <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                        <div class="brand-text">
+                            <div class="brand-name">SPARKMIND</div>
+                            <div class="brand-tagline">Plateforme de solidarité</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Details Grid -->
-                <div class="details-grid">
-                    <div class="detail-section">
-                        <h3>📋 Informations du groupe</h3>
-                        <div class="detail-item">
-                            <span class="detail-label">Type:</span>
-                            <span class="detail-value"><?php echo htmlspecialchars($groupe['type']); ?></span>
+                <div class="header-actions">
+                    <a href="create_groupe.php" class="btn-orange">
+                        <span>✨</span>
+                        <span>Créer un groupe</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Page Quote -->
+            <div class="page-quote">
+                Rejoignez une communauté - Faites la différence
+            </div>
+
+            <!-- Main Content -->
+            <div class="space-main">
+                <?php if ($groupe): ?>
+                    <!-- Back Button -->
+                    <a href="/aide_solitaire/view/frontoffice/browse_groupes.php" class="back-link">
+                        <span>←</span>
+                        <span>Retour aux groupes</span>
+                    </a>
+                    
+                    <!-- Group Details -->
+                    <div class="details-card">
+                        <!-- Header -->
+                        <div class="group-header">
+                            <div class="group-icon">
+                                <?php 
+                                $icons = [
+                                    'Santé' => '🏥',
+                                    'Éducation' => '📚',
+                                    'Seniors' => '👵',
+                                    'Jeunesse' => '👦',
+                                    'Culture' => '🎨',
+                                    'Urgence' => '🚨',
+                                    'Animaux' => '🐾',
+                                    'Environnement' => '🌿',
+                                    'Religieux' => '🌙',
+                                    'Social' => '🤝'
+                                ];
+                                echo $icons[$groupe['type']] ?? '👥';
+                                ?>
+                            </div>
+                            <div class="group-title">
+                                <h2><?php echo htmlspecialchars($groupe['nom']); ?></h2>
+                                <div class="group-subtitle">
+                                    <span class="type-badge"><?php echo htmlspecialchars($groupe['type']); ?></span>
+                                    <span class="status-badge status-<?php echo $groupe['statut']; ?>">
+                                        <?php 
+                                        $statusText = [
+                                            'actif' => 'Actif',
+                                            'en_attente' => 'En attente',
+                                            'inactif' => 'Inactif'
+                                        ];
+                                        echo $statusText[$groupe['statut']] ?? $groupe['statut'];
+                                        ?>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Région:</span>
-                            <span class="detail-value">📍 <?php echo htmlspecialchars($groupe['region']); ?></span>
+                        
+                        <!-- Details Grid -->
+                        <div class="details-grid">
+                            <div class="detail-section">
+                                <h3><span>📋</span> Informations du groupe</h3>
+                                <div class="detail-item">
+                                    <span class="detail-label"><span>🏷️</span> Type:</span>
+                                    <span class="detail-value"><?php echo htmlspecialchars($groupe['type']); ?></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><span>📍</span> Région:</span>
+                                    <span class="detail-value"><?php echo htmlspecialchars($groupe['region']); ?></span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><span>📅</span> Date de création:</span>
+                                    <span class="detail-value">
+                                        <?php echo isset($groupe['created_at']) ? date('d/m/Y', strtotime($groupe['created_at'])) : 'Non spécifiée'; ?>
+                                    </span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><span>🔄</span> Statut:</span>
+                                    <span class="detail-value">
+                                        <span class="status-badge status-<?php echo $groupe['statut']; ?>">
+                                            <?php echo $statusText[$groupe['statut']] ?? $groupe['statut']; ?>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3><span>👤</span> Responsable</h3>
+                                <div class="contact-item">
+                                    <div class="contact-icon">👤</div>
+                                    <div class="contact-info">
+                                        <h4><?php echo htmlspecialchars($groupe['responsable']); ?></h4>
+                                        <p>Responsable du groupe</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <div class="contact-icon">📧</div>
+                                    <div class="contact-info">
+                                        <h4>Email</h4>
+                                        <p><?php echo htmlspecialchars($groupe['email']); ?></p>
+                                    </div>
+                                </div>
+                                
+                                <?php if (!empty($groupe['telephone'])): ?>
+                                <div class="contact-item">
+                                    <div class="contact-icon">📞</div>
+                                    <div class="contact-info">
+                                        <h4>Téléphone</h4>
+                                        <p><?php echo htmlspecialchars($groupe['telephone']); ?></p>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Date de création:</span>
-                            <span class="detail-value">
-                                <?php echo isset($groupe['created_at']) ? date('d/m/Y', strtotime($groupe['created_at'])) : 'Non spécifiée'; ?>
-                            </span>
+                        
+                        <!-- Description -->
+                        <?php if (!empty($groupe['description'])): ?>
+                        <div class="description-box">
+                            <h3><span>📝</span> Description du groupe</h3>
+                            <div class="description-content">
+                                <?php echo nl2br(htmlspecialchars($groupe['description'])); ?>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Statut:</span>
-                            <span class="detail-value">
-                                <span class="status-badge status-<?php echo $groupe['statut']; ?>">
-                                    <?php echo $statusText[$groupe['statut']] ?? $groupe['statut']; ?>
-                                </span>
-                            </span>
+                        <?php endif; ?>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="action-btn action-primary">
+                                <span>📧</span>
+                                <span>Contacter le responsable</span>
+                            </a>
+                            <a href="browse_groupes.php?type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
+                                <span>🔍</span>
+                                <span>Voir d'autres groupes similaires</span>
+                            </a>
                         </div>
                     </div>
                     
-                    <div class="detail-section">
-                        <h3>👤 Responsable</h3>
-                        <div class="contact-item">
-                            <div class="contact-icon">👤</div>
-                            <div class="contact-info">
-                                <h4><?php echo htmlspecialchars($groupe['responsable']); ?></h4>
-                                <p>Responsable du groupe</p>
-                            </div>
-                        </div>
+                    <!-- Join Form -->
+                    <div class="join-form">
+                        <h3><span>🤝</span> Rejoindre ce groupe</h3>
+                        <p>Intéressé par ce groupe ? Laissez vos coordonnées et le responsable vous contactera.</p>
                         
-                        <div class="contact-item">
-                            <div class="contact-icon">📧</div>
-                            <div class="contact-info">
-                                <h4>Email</h4>
-                                <p><?php echo htmlspecialchars($groupe['email']); ?></p>
+                        <form id="joinForm" style="margin-top: 1.5rem;">
+                            <div class="form-group">
+                                <input type="text" class="form-input" placeholder="Votre nom" required>
                             </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <div class="contact-icon">📞</div>
-                            <div class="contact-info">
-                                <h4>Téléphone</h4>
-                                <p><?php echo htmlspecialchars($groupe['telephone']); ?></p>
+                            <div class="form-group">
+                                <input type="email" class="form-input" placeholder="Votre email" required>
                             </div>
+                            <div class="form-group">
+                                <input type="tel" class="form-input" placeholder="Votre téléphone">
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-input" placeholder="Pourquoi souhaitez-vous rejoindre ce groupe ?" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="action-btn action-primary" style="width: 100%;">
+                                <span>✨</span>
+                                <span>Envoyer ma demande</span>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Related Groups -->
+                    <div class="join-form">
+                        <h3><span>💡</span> Groupes similaires</h3>
+                        <p>Découvrez d'autres groupes dans la même région ou du même type.</p>
+                        <div class="action-buttons" style="margin-top: 20px; padding-top: 0; border-top: none;">
+                            <a href="/aide_solitaire/view/frontoffice/browse_groupes.php?region=<?php echo urlencode($groupe['region']); ?>" class="action-btn action-tertiary">
+                                <span>📍</span>
+                                <span>Groupes à <?php echo htmlspecialchars($groupe['region']); ?></span>
+                            </a>
+                            <a href="/aide_solitaire/view/frontoffice/browse_groupes.php?type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
+                                <span>👥</span>
+                                <span>Tous les groupes <?php echo htmlspecialchars($groupe['type']); ?></span>
+                            </a>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Description -->
-                <?php if (!empty($groupe['description'])): ?>
-                <div class="description-box">
-                    <h3>📝 Description du groupe</h3>
-                    <div class="description-content">
-                        <?php echo nl2br(htmlspecialchars($groupe['description'])); ?>
+                    
+                <?php else: ?>
+                    <!-- Error State -->
+                    <div class="error-state">
+                        <h2><span>❌</span> Groupe non trouvé</h2>
+                        <p>Le groupe que vous cherchez n'existe pas ou n'est plus disponible.</p>
+                        <div class="action-buttons">
+                            <a href="browse_groupes.php" class="action-btn action-primary">
+                                <span>🔍</span>
+                                <span>Parcourir les groupes</span>
+                            </a>
+                            <a href="index.php" class="action-btn action-tertiary">
+                                <span>🏠</span>
+                                <span>Retour à l'accueil</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
                 <?php endif; ?>
                 
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="action-btn action-primary">
-                        📧 Contacter le responsable
-                    </a>
-                    <a href="browse_groupes.php?type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
-                        🔍 Voir d'autres groupes similaires
-                    </a>
-                </div>
+                <!-- Footer -->
+                <footer class="footer">
+                    <p>© 2025 Aide Solidaire - Ensemble, créons des communautés fortes ! ❤️</p>
+                </footer>
             </div>
-            
-            <!-- Join Form -->
-            <div class="join-form">
-                <h3>🤝 Rejoindre ce groupe</h3>
-                <p>Intéressé par ce groupe ? Laissez vos coordonnées et le responsable vous contactera.</p>
-                
-                <form id="joinForm" style="margin-top: 1.5rem;">
-                    <div class="form-group">
-                        <input type="text" class="form-input" placeholder="Votre nom" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" class="form-input" placeholder="Votre email" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="tel" class="form-input" placeholder="Votre téléphone">
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-input" placeholder="Pourquoi souhaitez-vous rejoindre ce groupe ?" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="action-btn action-primary" style="width: 100%;">
-                        ✨ Envoyer ma demande
-                    </button>
-                </form>
-            </div>
-            
-            <!-- Related Groups -->
-            <div class="join-form">
-                <h3>💡 Groupes similaires</h3>
-                <p>Découvrez d'autres groupes dans la même région ou du même type.</p>
-                <div style="margin-top: 1rem;">
-                    <a href="/aide_solitaire/view/Frontoffice/browse_groupes.php?action=list&context=frontoffice&region=<?php echo urlencode($groupe['region']); ?>" class="action-btn action-secondary">
-
-                        📍 Groupes à <?php echo htmlspecialchars($groupe['region']); ?>
-                    </a>
-                    <a href="/aide_solitaire/view/Frontoffice/browse_groupes.php?action=list&context=frontoffice&type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">👥 Tous les groupes <?php echo htmlspecialchars($groupe['type']); ?></a>
-                        
-                    </a>
-                </div>
-            </div>
-            
-        <?php else: ?>
-            <!-- Error State -->
-            <div class="details-card" style="text-align: center; padding: 3rem;">
-                <h2 style="color: #dc3545; margin-bottom: 1rem;">❌ Groupe non trouvé</h2>
-                <p>Le groupe que vous cherchez n'existe pas ou n'est plus disponible.</p>
-                <div style="margin-top: 2rem;">
-                    <a href="/aide_solitaire/controller/groupeC.php?action=list&context=frontoffice" class="action-btn action-primary"></a>
-                        🔍 Parcourir les groupes
-                    </a>
-                    <a href="/aide_solitaire/view/frontoffice/index.php" class="action-btn action-secondary">
-
-                        🏠 Retour à l'accueil
-                    </a>
-                </div>
-            </div>
-        <?php endif; ?>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>© 2025 Aide Solidaire - Ensemble, créons des communautés fortes ! ❤️</p>
-    </footer>
+        </div>
+    </div>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        // Auto-close sidebar on mobile when clicking a link
+        document.querySelectorAll('.menu-item, .link').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.add('collapsed');
+                }
+            });
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(event.target) && 
+                !toggle.contains(event.target) &&
+                !sidebar.classList.contains('collapsed')) {
+                sidebar.classList.add('collapsed');
+            }
+        });
+
         // Join form submission
         document.getElementById('joinForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -549,8 +1196,26 @@ try {
             this.reset();
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show mobile toggle on small screens
+            if (window.innerWidth <= 768) {
+                document.querySelector('.mobile-toggle').style.display = 'block';
+            }
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', function() {
+            const toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768) {
+                toggle.style.display = 'block';
+            } else {
+                toggle.style.display = 'none';
+                document.getElementById('sidebar').classList.remove('collapsed');
+            }
+        });
+
         <?php if (isset($error)): ?>
-        alert('Erreur: <?php echo $error; ?>');
+            alert('Erreur: <?php echo $error; ?>');
         <?php endif; ?>
     </script>
 </body>

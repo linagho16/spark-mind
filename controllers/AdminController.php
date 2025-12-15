@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/HelpRequest.php';
 require_once __DIR__ . '/../services/MailService.php';
@@ -11,7 +12,7 @@ class AdminController
             session_start();
         }
 
-        $userId   = $_SESSION['user_id']  ?? null;
+        $userId   = $_SESSION['user_id'] ?? null;
         $userRole = $_SESSION['user_role'] ?? null;
 
         if (empty($userId) || $userRole !== 'admin') {
@@ -38,11 +39,11 @@ class AdminController
             $action = $_POST['action'] ?? '';
 
             if ($action === 'create_user') {
-                $nom      = isset($_POST['nom'])     ? trim($_POST['nom'])     : '';
-                $prenom   = isset($_POST['prenom'])  ? trim($_POST['prenom'])  : '';
-                $email    = isset($_POST['email'])   ? trim($_POST['email'])   : '';
-                $password = $_POST['password']       ?? '';
-                $roleRaw  = $_POST['role']           ?? 'user';
+                $nom      = isset($_POST['nom']) ? trim($_POST['nom']) : '';
+                $prenom   = isset($_POST['prenom']) ? trim($_POST['prenom']) : '';
+                $email    = isset($_POST['email']) ? trim($_POST['email']) : '';
+                $password = $_POST['password'] ?? '';
+                $roleRaw  = $_POST['role'] ?? 'user';
                 $siteRoleRawForm = $_POST['site_role'] ?? 'seeker';
 
                 $allowedRolesTech = ['user', 'admin'];
@@ -169,10 +170,8 @@ class AdminController
             $user      = $userModel->findById($id);
 
             if ($user) {
-                // statut => blocked
                 $userModel->updateStatus($id, 'blocked');
 
-                // mail d'info
                 $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
                 MailService::sendAccountBlocked($user['email'], $fullName);
             }
@@ -203,10 +202,8 @@ class AdminController
             $user      = $userModel->findById($id);
 
             if ($user) {
-                // statut => active
                 $userModel->updateStatus($id, 'active');
 
-                // mail de réactivation
                 $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
                 MailService::sendAccountUnblocked($user['email'], $fullName);
             }
@@ -254,7 +251,7 @@ class AdminController
             exit;
         }
 
-        $idRaw     = $_POST['id']     ?? null;
+        $idRaw     = $_POST['id'] ?? null;
         $actionRaw = $_POST['action'] ?? '';
 
         $id     = is_numeric($idRaw) ? (int)$idRaw : 0;

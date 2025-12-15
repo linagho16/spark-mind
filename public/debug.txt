@@ -1,0 +1,6 @@
+Array
+(
+    [donation_type_id] => 5
+    [titre] => 
+    [contenu] => c triste
+)

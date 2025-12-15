@@ -1,0 +1,20 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers temporaires
+*.tmp
+*.log
+debug.txt
+
+# Images uploadées par les utilisateurs
+public/assets/img/posts/*
+!public/assets/img/posts/.gitkeep
+
+# Fichiers IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Configuration locale sensible
+config/database.php

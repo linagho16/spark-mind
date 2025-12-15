@@ -5,7 +5,6 @@ $db   = 'sparkmind';   // nom de ta base
 $user = 'root';        // XAMPP : root
 $pass = '';            // souvent vide en local
 $charset = 'utf8mb4';
-
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
 $options = [

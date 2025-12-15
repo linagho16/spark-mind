@@ -8,12 +8,15 @@ require_once __DIR__ . '/controllers/HomeController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/ProfileController.php';
 require_once __DIR__ . '/controllers/AdminController.php';
+require_once __DIR__ . '/controllers/ForumAdminController.php';
+
 
 /* ==== INSTANCES ==== */
 $homeController    = new HomeController();
 $authController    = new AuthController();
 $profileController = new ProfileController();
 $adminController   = new AdminController();
+
 
 /* ==== ROUTEUR ==== */
 switch ($page) {
@@ -117,10 +120,33 @@ switch ($page) {
     case 'backoffice':
         require_once __DIR__ . '/views/backoffice/back.html';
         break;  
-        
+
     case 'reponse':
         require_once __DIR__ . '/views/reponse/reponse.html';
         break;
+
+    case 'admin_forum':
+        require_once __DIR__ . '/controllers/ForumAdminController.php';
+        (new ForumAdminController())->dashboard();
+        break;
+
+    case 'admin_forum_posts':
+        (new ForumAdminController())->listPosts();
+        break;
+
+    case 'admin_forum_comments':
+        (new ForumAdminController())->listComments();
+        break;
+
+    case 'admin_forum_types':
+        (new ForumAdminController())->listDonationTypes();
+        break;
+
+    case 'admin_forum_ai':
+        (new ForumAdminController())->aiDashboard();
+        break;
+
+
   
 
 

@@ -247,7 +247,7 @@
       <a class="menu-item active" href="index.php?page=admin_users">👥 Utilisateurs</a>
       <a href="index.php?page=backoffice" class="menu-item">👩‍🦰 Demandeurs</a>
       <a class="menu-item" >🎁 Donneurs</a>
-      <a class="menu-item" >🗣 Expressions</a>
+      <a href="index.php?page=admin_forum" class="menu-item">🗣 Expressions</a>
       <a class="menu-item" >📅 Événements</a>
       <a class="menu-item" >👥 Groupes</a>
 

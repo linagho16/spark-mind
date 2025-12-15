@@ -4,6 +4,7 @@ session_start();
 require_once __DIR__ . '/../../model/groupemodel.php';
 require_once __DIR__ . '/../../model/validation.php';
 
+
 $error = '';
 $success = '';
 
@@ -702,38 +703,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <a href="index.php" class="brand">
-                <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
 
             <div class="menu-title">MENU PRINCIPAL</div>
             <nav class="menu">
-                <a href="index.php" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="menu-item">
                     <span class="icon">🏠</span>
                     <span>Accueil</span>
                 </a>
-                <a href="browse_dons.php" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="menu-item">
                     <span class="icon">🎁</span>
                     <span>Parcourir les Dons</span>
                 </a>
-                <a href="browse_groupes.php" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="menu-item">
                     <span class="icon">👥</span>
                     <span>Parcourir les Groupes</span>
                 </a>
-                <a href="create_don.php" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="menu-item">
                     <span class="icon">➕</span>
                     <span>Faire un Don</span>
                 </a>
-                <a href="create_groupe.php" class="menu-item active">
+                <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="menu-item active">
                     <span class="icon">✨</span>
                     <span>Créer un Groupe</span>
                 </a>
             </nav>
 
             <div class="sidebar-foot">
-                <a href="../Backoffice/dashboard.php" class="link">
-                    <span class="icon">🔒</span>
-                    <span>Espace Admin</span>
+                <a href="/sparkmind_mvc_100percent/index.php?page=offer_support" class="link">
+                    <span class="icon"></span>
+                    <span>Retour</span>
                 </a>
             </div>
         </aside>
@@ -744,7 +745,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="top-nav">
                 <div class="top-nav-left">
                     <div class="brand-block">
-                        <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                        <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                         <div class="brand-text">
                             <div class="brand-name">SPARKMIND</div>
                             <div class="brand-tagline">Plateforme de solidarité</div>

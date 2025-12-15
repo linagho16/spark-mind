@@ -9,7 +9,8 @@ class config
             $servername = "localhost";
             $username = "root";
             $password = "";
-            $dbname = "aide-solitaire3";
+            $dbname = "sparkmind";
+;
             
             try {
                 self::$pdo = new PDO(

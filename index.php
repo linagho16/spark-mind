@@ -114,6 +114,11 @@ switch ($page) {
     case 'admin_delete_user':
         $adminController->deleteUser();
         break;
+    case 'offer_support':
+        include __DIR__ . '/views/front/offer_support.php';
+        break;
+    
+    
     case 'demande':
         require_once __DIR__ . '/views/frontoffice/formulaire.html';
         break;
@@ -145,6 +150,32 @@ switch ($page) {
     case 'admin_forum_ai':
         (new ForumAdminController())->aiDashboard();
         break;
+
+    case 'frontoffice':
+        require_once __DIR__ . '/view/Frontoffice/index.php';
+        break;
+    case 'browse_dons':
+        require_once __DIR__ . '/view/Frontoffice/browse_dons.php';
+        break;
+
+    case 'browse_groupes':
+        require_once __DIR__ . '/view/Frontoffice/browse_groupes.php';
+        break;
+    case 'create_don':
+        require_once __DIR__ . '/view/Frontoffice/create_don.php';
+        break;
+    case 'create_groupe':
+        require_once __DIR__ . '/view/Frontoffice/create_groupe.php';
+        break;
+    case 'view_don':
+        require_once __DIR__ . '/view/Frontoffice/view_don.php';                
+        break;
+    case 'view_groupe':
+        require_once __DIR__ . '/view/Frontoffice/view_groupe.php';
+        break;
+
+
+    
 
 
   

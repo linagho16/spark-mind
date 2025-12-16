@@ -18,3 +18,18 @@ public/assets/img/posts/*
 
 # Configuration locale sensible
 config/database.php
+# secrets
+config/config.php
+.env
+
+# uploads & media
+uploads/
+video/
+
+# accidental browser exports
+images/Fichier.html
+images/Fichier_files/
+
+# OS junk
+.DS_Store
+Thumbs.db

@@ -592,14 +592,14 @@
     <div class="layout">
         <!-- ✅ Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="brand">
-                <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo">
+            <a href="/sparkmind_mvc_100percent/controller/donC.php?action=dashboard" class="brand">
+                <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo">
                 <div class="brand-name">SPARKMIND</div>
             </a>
 
             <div class="menu-title">MENU PRINCIPAL</div>
             <nav class="menu">
-                <a href="/aide_solitaire/controller/donC.php?action=dashboard" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/index.php?page=backoffice_aide" class="menu-item">
                     <span class="icon">📊</span>
                     <span>Tableau de bord</span>
                 </a>
@@ -607,17 +607,17 @@
 
             <div class="menu-title">GESTION DES DONS</div>
             <nav class="menu">
-                <a href="/aide_solitaire/controller/donC.php?action=dons" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/controller/donC.php?action=dons" class="menu-item">
                     <span class="icon">🎁</span>
                     <span>Tous les dons</span>
                 </a>
-                
-                <a href="/aide_solitaire/controller/donC.php?action=create_don" class="menu-item">
+
+                <a href="/sparkmind_mvc_100percent/controller/donC.php?action=create_don" class="menu-item">
                     <span class="icon">➕</span>
                     <span>Ajouter un don</span>
                 </a>
-                
-                <a href="/aide_solitaire/controller/donC.php?action=statistics" class="menu-item">
+
+                <a href="/sparkmind_mvc_100percent/controller/donC.php?action=statistics" class="menu-item">
                     <span class="icon">📈</span>
                     <span>Statistiques dons</span>
                 </a>
@@ -625,19 +625,19 @@
 
             <div class="menu-title">GESTION DES GROUPES</div>
             <nav class="menu">
-                <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="menu-item">
+                <a href="/sparkmind_mvc_100percent/controller/groupeC.php?action=groupes" class="menu-item">
                     <span class="icon">👥</span>
                     <span>Tous les groupes</span>
                 </a>
-                
-                <a href="/aide_solitaire/controller/groupeC.php?action=create_groupe" class="menu-item">
+
+                <a href="/sparkmind_mvc_100percent/sparkmind_mvc_100percent/controller/donC.php?action=dons/controller/groupeC.php?action=create_groupe" class="menu-item">
                     <span class="icon">➕</span>
                     <span>Ajouter un groupe</span>
                 </a>
             </nav>
 
             <div class="sidebar-foot">
-                <a href="/aide_solitaire/view/frontoffice/index.php" class="link">
+                <a href="/sparkmind_mvc_100percent/view/frontoffice/index.php" class="link">
                     <span class="icon">🌐</span>
                     <span>Voir le site public</span>
                 </a>
@@ -650,7 +650,7 @@
             <div class="top-nav">
                 <div class="top-nav-left">
                     <div class="brand-block">
-                        <img src="/aide_solitaire/view/frontoffice/pigeon.png" alt="Logo" class="logo-img">
+                        <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                         <div class="brand-text">
                             <div class="brand-name">SPARKMIND</div>
                             <div class="brand-tagline">Administration</div>
@@ -680,7 +680,7 @@
                         <p>Confirmez la suppression du groupe #<?php echo htmlspecialchars($groupe['id'] ?? ''); ?></p>
                     </div>
                     <div class="header-right">
-                        <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn btn-secondary">← Retour à la liste</a>
+                        <a href="/sparkmind_mvc_100percent/controller/groupeC.php?action=groupes" class="btn btn-secondary">← Retour à la liste</a>
                     </div>
                 </header>
 
@@ -774,10 +774,10 @@
                     </div>
 
                     <!-- Confirmation Actions -->
-                    <form method="POST" action="/aide_solitaire/controller/groupeC.php?action=delete_groupe&id=<?php echo $groupe['id'] ?? ''; ?>">
+                    <form method="POST" action="/sparkmind_mvc_100percent/controller/groupeC.php?action=delete_groupe&id=<?php echo $groupe['id'] ?? ''; ?>">
                         <div class="confirmation-actions">
                             <button type="submit" class="btn btn-danger">🗑️ Oui, supprimer définitivement</button>
-                            <a href="/aide_solitaire/controller/groupeC.php?action=groupes" class="btn btn-secondary">Non, annuler</a>
+                            <a href="/sparkmind_mvc_100percent/controller/groupeC.php?action=groupes" class="btn btn-secondary">Non, annuler</a>
                         </div>
                     </form>
                 </div>

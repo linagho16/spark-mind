@@ -79,7 +79,8 @@ class GroupeController {
             ];
             
             if ($this->model->createGroupe($data)) {
-                header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=created');
+                header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=created');
+
                 exit;
             } else {
                 $error = "Erreur lors de la création du groupe";
@@ -100,14 +101,14 @@ class GroupeController {
     }
     
     if (empty($id) || !is_numeric($id)) {
-        header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=invalid_id');
+        header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=invalid_id');
         exit;
     }
 
     $groupe = $this->model->getGroupeById($id);
     
     if (!$groupe) {
-        header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=not_found');
+        header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=not_found');
         exit;
     }
 
@@ -164,7 +165,7 @@ class GroupeController {
             ];
             
             if ($this->model->updateGroupe($id, $data)) {
-                header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=updated');
+                header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=updated');
                 exit;
             } else {
                 $error = "Erreur lors de la modification du groupe";
@@ -186,23 +187,23 @@ class GroupeController {
         }
         
         if (empty($id) || !is_numeric($id)) {
-            header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=invalid_id');
+            header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=invalid_id');
             exit;
         }
 
         $groupe = $this->model->getGroupeById($id);
         
         if (!$groupe) {
-            header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=not_found');
+            header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=not_found');
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($this->model->deleteGroupe($id)) {
-                header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=deleted');
+                header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=deleted');
                 exit;
             } else {
-                header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=error');
+                header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=error');
                 exit;
             }
         } else {
@@ -217,7 +218,7 @@ class GroupeController {
         }
         
         if (empty($id) || !is_numeric($id)) {
-            header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=invalid_id');
+            header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=invalid_id');
             exit;
         }
 
@@ -225,7 +226,7 @@ class GroupeController {
         if ($groupe) {
             $this->loadView('viewgroupe', ['groupe' => $groupe]);
         } else {
-            header('Location: /aide_solitaire/controller/groupeC.php?action=groupes&message=not_found');
+            header('Location: /sparkmind_mvc_100percent/controller/groupeC.php?action=groupes&message=not_found');
             exit;
         }
     }

@@ -246,10 +246,9 @@
      <div class="menu-title">📊 Dashboard admin</div>
       <a class="menu-item active" href="index.php?page=admin_users">👥 Utilisateurs</a>
       <a href="index.php?page=backoffice" class="menu-item">👩‍🦰 Demandeurs</a>
-      <a class="menu-item" >🎁 Donneurs</a>
       <a href="index.php?page=admin_forum" class="menu-item">🗣 Expressions</a>
       <a class="menu-item" >📅 Événements</a>
-      <a class="menu-item" >👥 Groupes</a>
+      <a class="menu-item" href="/sparkmind_mvc_100percent/index.php?page=backoffice_aide">👥 Groupes / 🎁dons </a>
 
     </nav>
 

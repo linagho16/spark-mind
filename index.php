@@ -173,6 +173,96 @@ switch ($page) {
     case 'view_groupe':
         require_once __DIR__ . '/view/Frontoffice/view_groupe.php';
         break;
+    case 'backoffice_aide':
+        require_once __DIR__ . '/view/Backoffice/dashboard.php';
+        break;
+
+    // ===== BACKOFFICE AIDE =====
+    case 'aide_dons':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'dons';
+        (new DonController())->handleRequest();
+        break;
+
+
+    case 'aide_don_create':
+        require_once __DIR__ . '/controller/donC.php';
+        (new DonC())->create_don();
+        break;
+
+    case 'aide_don_stats':
+        require_once __DIR__ . '/controller/donC.php';
+        (new DonC())->statistics();
+        break;
+
+    case 'aide_groupes':
+        require_once __DIR__ . '/controller/groupeC.php';
+        $_GET['action'] = 'groupes';
+        (new GroupeController())->handleRequest();
+        break;
+
+    case 'aide_create_groupe':
+        require_once __DIR__ . '/controller/groupeC.php';
+        $_GET['action'] = 'create_groupe';
+        (new GroupeController())->handleRequest();
+        break;
+    
+
+    case 'admin_groupes':
+        require_once __DIR__ . '/controller/groupeC.php';
+        $_GET['action'] = 'groupes';
+        (new GroupeController())->handleRequest();
+        break;
+
+    case 'admin_create_groupe':
+        require_once __DIR__ . '/controller/groupeC.php';
+        $_GET['action'] = 'create_groupe';
+        (new GroupeController())->handleRequest();
+        break;
+
+    case 'admin_dons':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'dons';
+        (new DonController())->handleRequest();
+        break;
+
+    case 'admin_add_don':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'create_don';
+        (new DonController())->handleRequest();
+        break;
+
+    case 'admin_stats_dons':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'statistics';
+        (new DonController())->handleRequest();
+        break;
+
+    case 'admin_edit_don':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'edit_don';
+        (new DonController())->handleRequest();
+        break;
+
+    case 'admin_delete_don':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'delete_don';
+        (new DonController())->handleRequest();
+        break;
+
+    case 'admin_view_don':
+        require_once __DIR__ . '/controller/donC.php';
+        $_GET['action'] = 'view_don';
+        (new DonController())->handleRequest();
+        break;
+
+
+
+
+
+    
+    
+
 
 
     

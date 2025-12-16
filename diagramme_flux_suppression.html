@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flux de Suppression - Diagramme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+        }
+
+        .flow-step {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateX(10px);
+        }
+
+        .flow-step.user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .flow-step.check {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .flow-step.success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+        }
+
+        .flow-step.error {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+            color: white;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            margin-left: 55px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .code-snippet {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #667eea;
+            margin: -10px 0;
+        }
+
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .branch {
+            padding: 20px;
+            border-radius: 12px;
+            border: 3px solid;
+        }
+
+        .branch.left {
+            border-color: #2ed573;
+            background: rgba(46, 213, 115, 0.1);
+        }
+
+        .branch.right {
+            border-color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .branch-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔄 Flux de Suppression d'une Catégorie</h1>
+
+        <div class="flow-container">
+            <!-- Étape 1 -->
+            <div class="flow-step user">
+                <div class="step-title">
+                    <span class="step-number">1</span>
+                    Action Utilisateur
+                </div>
+                <div class="step-description">
+                    L'utilisateur clique sur le bouton "Supprimer" 🗑️ dans la liste des catégories
+                    <div class="code-snippet">
+                        onclick="deleteCategorie(
+                        <?php echo $cat['idc']; ?>)"
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <!-- Étape 2 -->
+            <div class="flow-step user">
+                <div class="step-title">
+                    <span class="step-number">2</span>
+                    Confirmation JavaScript
+                </div>
+                <div class="step-description">
+                    Boîte de dialogue de confirmation
+                    <div class="code-snippet">
+                        confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <!-- Étape 3 -->
+            <div class="flow-step">
+                <div class="step-title">
+                    <span class="step-number">3</span>
+                    Redirection HTTP
+                </div>
+                <div class="step-description">
+                    Redirection vers le script de suppression
+                    <div class="code-snippet">
+                        window.location.href = 'supprimerCategorie.php?id=' + id
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <!-- Étape 4 -->
+            <div class="flow-step check">
+                <div class="step-title">
+                    <span class="step-number">4</span>
+                    Appel de la Méthode deleteCategorie()
+                </div>
+                <div class="step-description">
+                    Le contrôleur CategorieC traite la demande
+                    <div class="code-snippet">
+                        $categorieC->deleteCategorie($_GET['id'])
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <!-- Étape 5 -->
+            <div class="flow-step check">
+                <div class="step-title">
+                    <span class="step-number">5</span>
+                    🔍 VÉRIFICATION CRITIQUE
+                </div>
+                <div class="step-description">
+                    Comptage des produits liés à cette catégorie
+                    <div class="code-snippet">
+                        SELECT COUNT(*) as count FROM produit WHERE category = :idc
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">⤵️</div>
+
+            <!-- Branches -->
+            <div class="split-container">
+                <!-- Branche Succès -->
+                <div class="branch left">
+                    <div class="branch-title">
+                        ✅ count = 0 (Aucun produit)
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        <strong>Suppression autorisée</strong>
+                        <div class="code-snippet" style="background: rgba(46, 213, 115, 0.2);">
+                            DELETE FROM categorie WHERE idc = :idc
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        ↓
+                    </div>
+
+                    <div class="flow-step success" style="margin: 0;">
+                        <div class="step-title">Message de Succès</div>
+                        <div class="step-description">
+                            $_SESSION['success'] = "Catégorie supprimée avec succès !"
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0; text-align: center;">
+                        ↓
+                    </div>
+
+                    <div style="background: rgba(46, 213, 115, 0.2); padding: 15px; border-radius: 8px;">
+                        <strong>Affichage :</strong><br>
+                        Notification verte avec animation<br>
+                        Auto-disparition après 5s
+                    </div>
+                </div>
+
+                <!-- Branche Erreur -->
+                <div class="branch right">
+                    <div class="branch-title">
+                        ❌ count > 0 (Produits existants)
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        <strong>Suppression bloquée</strong>
+                        <div class="code-snippet" style="background: rgba(255, 71, 87, 0.2);">
+                            throw new Exception("Impossible de supprimer...")
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0;">
+                        ↓
+                    </div>
+
+                    <div class="flow-step error" style="margin: 0;">
+                        <div class="step-title">Message d'Erreur</div>
+                        <div class="step-description">
+                            $_SESSION['error'] = "Impossible de supprimer cette catégorie. Elle contient encore X
+                            produit(s)."
+                        </div>
+                    </div>
+
+                    <div style="margin: 15px 0; text-align: center;">
+                        ↓
+                    </div>
+
+                    <div style="background: rgba(255, 71, 87, 0.2); padding: 15px; border-radius: 8px;">
+                        <strong>Affichage :</strong><br>
+                        Notification rouge avec animation<br>
+                        Auto-disparition après 5s
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <!-- Étape Finale -->
+            <div class="flow-step">
+                <div class="step-title">
+                    <span class="step-number">6</span>
+                    Redirection Finale
+                </div>
+                <div class="step-description">
+                    Retour à la liste des catégories avec le message approprié
+                    <div class="code-snippet">
+                        header('Location: listeCategories.php')
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Légende -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+                <span>Action Utilisateur</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #f093fb, #f5576c);"></div>
+                <span>Vérification Système</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #11998e, #38ef7d);"></div>
+                <span>Succès</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #eb3349, #f45c43);"></div>
+                <span>Erreur</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

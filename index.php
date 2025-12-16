@@ -257,6 +257,12 @@ switch ($page) {
         break;
 
 
+    case 'frontoffice':
+        echo "FRONTOFFICE OK";
+        exit;
+
+
+
 
 
 

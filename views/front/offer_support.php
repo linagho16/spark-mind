@@ -311,6 +311,12 @@
               <span class="bubble">👥</span>
             </a>
 
+            <a class="space-card groups" href="/sparkmind_mvc_100percent/index.php?page=frontoffice" id="groupsLink">
+              <span>Produits</span>
+              <span class="badge">Produit </span>
+              <span class="bubble"></span>
+            </a>
+
  
           </div>
 

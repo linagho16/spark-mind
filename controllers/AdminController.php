@@ -3,10 +3,46 @@
 require_once __DIR__ . '/../models/Post.php';
 require_once __DIR__ . '/../models/Comment.php';
 require_once __DIR__ . '/../models/DonationType.php';
+require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/HelpRequest.php';
+require_once __DIR__ . '/../models/Notification.php';
+require_once __DIR__ . '/../services/MailService.php';
 
 class AdminController {
     
+    /**
+     * Vérifier que l'utilisateur est admin
+     */
+    private function ensureAdmin(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $userId   = $_SESSION['user_id']  ?? null;
+        $userRole = $_SESSION['user_role'] ?? null;
+
+        if (empty($userId) || $userRole !== 'admin') {
+            header("Location: index.php?page=login");
+            exit;
+        }
+    }
+
+    /**
+     * Page d'accueil admin
+     */
+    public function home(): void
+    {
+        $this->ensureAdmin();
+        include __DIR__ . '/../views/admin/home.php';
+    }
+
+    /**
+     * Dashboard principal avec statistiques
+     */
     public function dashboard() {
+        $this->ensureAdmin();
+        
         $postModel = new Post();
         $commentModel = new Comment();
         $donationTypeModel = new DonationType();
@@ -22,30 +58,10 @@ class AdminController {
     }
     
     /**
-     * Obtenir les statistiques de publication par jour
-     */
-    public function getDailyPublicationStats($days = 30) {
-        require_once __DIR__ . '/../config/database.php';
-        $db = (new Database())->pdo;
-        
-        $sql = "SELECT DATE(created_at) as date, COUNT(*) as count 
-                FROM posts 
-                WHERE created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
-                GROUP BY DATE(created_at)
-                ORDER BY date DESC";
-        
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(':days', $days, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    /**
      * Dashboard IA avec statistiques avancées
      */
     public function aiDashboard() {
-        require_once __DIR__ . '/../models/AIHelper.php';
+        $this->ensureAdmin();
         
         $postModel = new Post();
         $commentModel = new Comment();
@@ -70,6 +86,26 @@ class AdminController {
         ];
         
         include __DIR__ . '/../views/admin/trends.php';
+    }
+    
+    /**
+     * Obtenir les statistiques de publication par jour
+     */
+    public function getDailyPublicationStats($days = 30) {
+        require_once __DIR__ . '/../config/database.php';
+        $db = (new Database())->pdo;
+        
+        $sql = "SELECT DATE(created_at) as date, COUNT(*) as count 
+                FROM posts 
+                WHERE created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
+                GROUP BY DATE(created_at)
+                ORDER BY date DESC";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':days', $days, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     /**
@@ -208,15 +244,23 @@ class AdminController {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    // ========== MÉTHODES EXISTANTES ==========
-    
+    /**
+     * Liste des posts
+     */
     public function listPosts() {
+        $this->ensureAdmin();
+        
         $postModel = new Post();
         $posts = $postModel->getAll();
         include __DIR__ . '/../views/admin/post_list.php';
     }
     
+    /**
+     * Supprimer un post
+     */
     public function deletePost() {
+        $this->ensureAdmin();
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? null;
             if ($id) {
@@ -228,13 +272,23 @@ class AdminController {
         exit;
     }
     
+    /**
+     * Liste des commentaires
+     */
     public function listComments() {
+        $this->ensureAdmin();
+        
         $commentModel = new Comment();
         $comments = $commentModel->getAll();
         include __DIR__ . '/../views/admin/comments_list.php';
     }
     
+    /**
+     * Supprimer un commentaire
+     */
     public function deleteCommentAdmin() {
+        $this->ensureAdmin();
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? null;
             if ($id) {
@@ -246,48 +300,25 @@ class AdminController {
         exit;
     }
     
+    /**
+     * Liste des types de dons
+     */
     public function listDonationTypes() {
+        $this->ensureAdmin();
+        
         $donationTypeModel = new DonationType();
         $types = $donationTypeModel->getAll();
         include __DIR__ . '/../views/admin/types_list.php';
     }
-}
-=======
-require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../models/HelpRequest.php';
-require_once __DIR__ . '/../services/MailService.php';
-
-class AdminController
-{
-    private function ensureAdmin(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        $userId   = $_SESSION['user_id']  ?? null;
-        $userRole = $_SESSION['user_role'] ?? null;
-
-        if (empty($userId) || $userRole !== 'admin') {
-            header("Location: index.php?page=login");
-            exit;
-        }
-    }
-
-    public function home(): void
-    {
-        $this->ensureAdmin();
-        include __DIR__ . '/../views/admin/home.php';
-    }
 
     /**
-     * Liste des utilisateurs avec filtrage site_role + filtre date.
+     * Liste des utilisateurs avec filtrage
      */
     public function users(): void
     {
         $this->ensureAdmin();
 
-        // 1) Ajout d'utilisateur (formulaire)
+        // Ajout d'utilisateur (formulaire)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['action'] ?? '';
 
@@ -323,7 +354,7 @@ class AdminController
 
         $userModel = new User();
 
-        // 2) Filtre rôle SPARKMIND
+        // Filtre rôle SPARKMIND
         $siteRoleRaw = $_GET['site_role'] ?? 'all';
         $siteRole    = is_string($siteRoleRaw) ? trim($siteRoleRaw) : 'all';
 
@@ -332,7 +363,7 @@ class AdminController
             $siteRole = 'all';
         }
 
-        // 3) Filtre date (today / yesterday / week / last_month / last_year / all)
+        // Filtre date
         $dateFilterRaw = $_GET['date'] ?? 'all';
         $dateFilter    = is_string($dateFilterRaw) ? trim($dateFilterRaw) : 'all';
 
@@ -341,7 +372,7 @@ class AdminController
             $dateFilter = 'all';
         }
 
-        // 4) Récupération filtrée
+        // Récupération filtrée
         $users = $userModel->findAllBySiteRoleAndDate($siteRole, $dateFilter);
 
         $currentSiteRole   = $siteRole;
@@ -351,8 +382,7 @@ class AdminController
     }
 
     /**
-     * Voir le profil complet d'un utilisateur (mode admin).
-     * Route : index.php?page=admin_user_profile&id=123
+     * Profil d'un utilisateur
      */
     public function userProfile(): void
     {
@@ -378,8 +408,7 @@ class AdminController
     }
 
     /**
-     * Supprimer un utilisateur (définitivement).
-     * Route : index.php?page=admin_delete_user
+     * Supprimer un utilisateur
      */
     public function deleteUser(): void
     {
@@ -403,8 +432,7 @@ class AdminController
     }
 
     /**
-     * Bloquer un utilisateur + envoyer mail.
-     * Route : index.php?page=admin_block_user
+     * Bloquer un utilisateur
      */
     public function blockUser(): void
     {
@@ -423,10 +451,8 @@ class AdminController
             $user      = $userModel->findById($id);
 
             if ($user) {
-                // statut => blocked
                 $userModel->updateStatus($id, 'blocked');
 
-                // mail d'info
                 $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
                 MailService::sendAccountBlocked($user['email'], $fullName);
             }
@@ -437,8 +463,7 @@ class AdminController
     }
 
     /**
-     * Réactiver un utilisateur + envoyer mail.
-     * Route : index.php?page=admin_unblock_user
+     * Débloquer un utilisateur
      */
     public function unblockUser(): void
     {
@@ -457,10 +482,8 @@ class AdminController
             $user      = $userModel->findById($id);
 
             if ($user) {
-                // statut => active
                 $userModel->updateStatus($id, 'active');
 
-                // mail de réactivation
                 $fullName = trim(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? ''));
                 MailService::sendAccountUnblocked($user['email'], $fullName);
             }
@@ -470,6 +493,9 @@ class AdminController
         exit;
     }
 
+    /**
+     * Notifications
+     */
     public function notifications(): void
     {
         $this->ensureAdmin();
@@ -480,6 +506,9 @@ class AdminController
         include __DIR__ . '/../views/admin/notifications.php';
     }
 
+    /**
+     * Demandes d'aide
+     */
     public function helpRequests(): void
     {
         $this->ensureAdmin();
@@ -499,6 +528,9 @@ class AdminController
         include __DIR__ . '/../views/admin/help_requests.php';
     }
 
+    /**
+     * Action sur une demande d'aide
+     */
     public function helpRequestAction(): void
     {
         $this->ensureAdmin();

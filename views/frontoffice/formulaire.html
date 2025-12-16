@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARKMIND - Demande d'Aide</title>
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="formulaire.css">
+</head>
+<body>
+    <!-- Navigation Top Bar -->
+    <nav class="top-nav">
+        <div class="brand-block">
+            <img src="logo.png" alt="Logo SPARKMIND" class="logo-img">
+            <div class="brand-text">
+                <span class="brand-name">SPARKMIND</span>
+                <span class="brand-tagline">Quand la pensée devient espoir</span>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-orange" onclick="window.location.href='index.php?page=profile'">
+                <span class="icon">⭐</span>
+                <span>Mon profil</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Faites le Premier Pas</h1>
+            <p class="hero-subtitle">Votre demande d'aide commence ici. Nous sommes là pour vous accompagner avec bienveillance et confidentialité.</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">2,500+</span>
+                    <span class="stat-label">Personnes aidées</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">150+</span>
+                    <span class="stat-label">Associations partenaires</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24h</span>
+                    <span class="stat-label">Délai de réponse moyen</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zone de notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Main Content -->
+    <div class="page-container">
+        <!-- Sidebar Progress -->
+        <aside class="sidebar-progress">
+            <div class="progress-sticky">
+                <h3>Votre Progression</h3>
+                <div class="circular-progress">
+                    <svg width="120" height="120">
+                        <defs>
+                            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#7d5aa6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ec7546;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                        <circle cx="60" cy="60" r="54" class="progress-bar-circle" id="progressCircle"></circle>
+                    </svg>
+                    <div class="progress-text">
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+                <ul class="steps-list">
+                    <li class="step-item active" data-step="1">
+                        <span class="step-icon">👤</span>
+                        <span>Informations</span>
+                    </li>
+                    <li class="step-item" data-step="2">
+                        <span class="step-icon">🤝</span>
+                        <span>Type d'aide</span>
+                    </li>
+                    <li class="step-item" data-step="3">
+                        <span class="step-icon">📄</span>
+                        <span>Description</span>
+                    </li>
+                    <li class="step-item" data-step="4">
+                        <span class="step-icon">📞</span>
+                        <span>Contact</span>
+                    </li>
+                    <li class="step-item" data-step="5">
+                        <span class="step-icon">🔒</span>
+                        <span>Confidentialité</span>
+                    </li>
+                </ul>
+                <div class="help-card">
+                    <span class="help-icon">💡</span>
+                    <p>Besoin d'aide pour remplir le formulaire ?</p>
+                    <button onclick="toggleChatbot()" class="btn-help-small">Parler à l'assistant</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Form Content -->
+        <main class="form-content">
+            <form id="helpForm" class="modern-form" novalidate>
+                <!-- Section 1: Informations Personnelles -->
+                <div class="form-card" data-section="1">
+                    <div class="card-header">
+                        <span class="card-number">1</span>
+                        <div>
+                            <h2>Qui êtes-vous ?</h2>
+                            <p>Commençons par quelques informations de base</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label>Nom complet <span class="required">*</span></label>
+                            <input type="text" name="nom" placeholder="Ex: Ahmed Ben Ali">
+                            <span class="input-icon">👤</span>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Âge <span class="required">*</span></label>
+                                <input type="number" name="age" placeholder="Ex: 35">
+                                <span class="input-icon">🎂</span>
+                            </div>
+                            <div class="input-group">
+                                <label>Gouvernorat <span class="required">*</span></label>
+                                <select name="gouvernorat">
+                                    <option value="">Choisissez...</option>
+                                    <option value="Tunis">Tunis</option>
+                                    <option value="Ariana">Ariana</option>
+                                    <option value="Ben Arous">Ben Arous</option>
+                                    <option value="Manouba">Manouba</option>
+                                    <option value="Nabeul">Nabeul</option>
+                                    <option value="Zaghouan">Zaghouan</option>
+                                    <option value="Bizerte">Bizerte</option>
+                                    <option value="Béja">Béja</option>
+                                    <option value="Jendouba">Jendouba</option>
+                                    <option value="Kef">Kef</option>
+                                    <option value="Siliana">Siliana</option>
+                                    <option value="Sousse">Sousse</option>
+                                    <option value="Monastir">Monastir</option>
+                                    <option value="Mahdia">Mahdia</option>
+                                    <option value="Sfax">Sfax</option>
+                                    <option value="Kairouan">Kairouan</option>
+                                    <option value="Kasserine">Kasserine</option>
+                                    <option value="Sidi Bouzid">Sidi Bouzid</option>
+                                    <option value="Gabès">Gabès</option>
+                                    <option value="Médenine">Médenine</option>
+                                    <option value="Tataouine">Tataouine</option>
+                                    <option value="Gafsa">Gafsa</option>
+                                    <option value="Tozeur">Tozeur</option>
+                                    <option value="Kébili">Kébili</option>
+                                </select>
+                                <span class="input-icon">📍</span>
+                            </div>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Ville/Délégation <span class="required">*</span></label>
+                                <input type="text" name="ville" placeholder="Ex: La Marsa">
+                                <span class="input-icon">🏘️</span>
+                            </div>
+                            <div class="input-group">
+                                <label>Situation familiale</label>
+                                <select name="situation">
+                                    <option value="">Choisissez...</option>
+                                    <option value="seul">Seul(e)</option>
+                                    <option value="famille">En famille</option>
+                                    <option value="enfants">Avec enfants</option>
+                                    <option value="parents">Avec parents âgés</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                                <span class="input-icon">👨‍👩‍👧‍👦</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Type d'Aide -->
+                <div class="form-card" data-section="2">
+                    <div class="card-header">
+                        <span class="card-number">2</span>
+                        <div>
+                            <h2>De quoi avez-vous besoin ?</h2>
+                            <p>Sélectionnez une ou plusieurs catégories</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="help-categories">
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="alimentaire">
+                                <div class="category-content">
+                                    <span class="category-icon">🍽️</span>
+                                    <h4>Aide alimentaire</h4>
+                                    <p>Colis, repas</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="scolaire">
+                                <div class="category-content">
+                                    <span class="category-icon">📚</span>
+                                    <h4>Aide scolaire</h4>
+                                    <p>Fournitures, frais</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="vestimentaire">
+                                <div class="category-content">
+                                    <span class="category-icon">👕</span>
+                                    <h4>Vêtements</h4>
+                                    <p>Habits, chaussures</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="medicale">
+                                <div class="category-content">
+                                    <span class="category-icon">🏥</span>
+                                    <h4>Aide médicale</h4>
+                                    <p>Soins, médicaments</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="financiere">
+                                <div class="category-content">
+                                    <span class="category-icon">💰</span>
+                                    <h4>Aide financière</h4>
+                                    <p>Soutien ponctuel</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="logement">
+                                <div class="category-content">
+                                    <span class="category-icon">🏠</span>
+                                    <h4>Logement</h4>
+                                    <p>Loyer, hébergement</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="professionnelle">
+                                <div class="category-content">
+                                    <span class="category-icon">💼</span>
+                                    <h4>Emploi</h4>
+                                    <p>Formation, travail</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                            <label class="category-card">
+                                <input type="checkbox" name="aide" value="psychologique">
+                                <div class="category-content">
+                                    <span class="category-icon">💬</span>
+                                    <h4>Soutien psy</h4>
+                                    <p>Écoute, conseils</p>
+                                </div>
+                                <span class="check-mark">✓</span>
+                            </label>
+                        </div>
+
+                        <div class="urgency-section">
+                            <label class="section-label">Degré d'urgence <span class="required">*</span></label>
+                            <div class="urgency-options">
+                                <label class="urgency-card urgent-critical">
+                                    <input type="radio" name="urgence" value="tres-urgent">
+                                    <div class="urgency-content">
+                                        <span class="urgency-dot"></span>
+                                        <div>
+                                            <h4>Très urgent</h4>
+                                            <p>24-48 heures</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="urgency-card urgent-high">
+                                    <input type="radio" name="urgence" value="urgent">
+                                    <div class="urgency-content">
+                                        <span class="urgency-dot"></span>
+                                        <div>
+                                            <h4>Urgent</h4>
+                                            <p>Cette semaine</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="urgency-card urgent-medium">
+                                    <input type="radio" name="urgence" value="important">
+                                    <div class="urgency-content">
+                                        <span class="urgency-dot"></span>
+                                        <div>
+                                            <h4>Important</h4>
+                                            <p>Ce mois-ci</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="urgency-card urgent-low">
+                                    <input type="radio" name="urgence" value="peut-attendre">
+                                    <div class="urgency-content">
+                                        <span class="urgency-dot"></span>
+                                        <div>
+                                            <h4>Flexible</h4>
+                                            <p>Peut attendre</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Description -->
+                <div class="form-card" data-section="3">
+                    <div class="card-header">
+                        <span class="card-number">3</span>
+                        <div>
+                            <h2>Parlez-nous de votre situation</h2>
+                            <p>Plus vous êtes précis, mieux nous pouvons vous aider</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group">
+                            <label>Décrivez votre situation <span class="required">*</span></label>
+                            <textarea name="description_situation" rows="6" placeholder="Expliquez votre situation actuelle, vos difficultés et ce qui vous a amené à faire cette demande..."></textarea>
+                            <span class="char-counter"><span id="descCounter">0</span>/1000</span>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Que demandez-vous exactement ? <span class="required">*</span></label>
+                            <textarea name="demande_exacte" rows="4" placeholder="Ex: 2 cartables pour mes enfants, une consultation chez le dentiste, 3 mois de loyer..."></textarea>
+                            <span class="helper-text">💡 Soyez aussi précis que possible</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Contact -->
+                <div class="form-card" data-section="4">
+                    <div class="card-header">
+                        <span class="card-number">4</span>
+                        <div>
+                            <h2>Comment vous contacter ?</h2>
+                            <p>Vos coordonnées restent confidentielles</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Téléphone <span class="required">*</span></label>
+                                <input type="tel" name="telephone" placeholder="+216 XX XXX XXX">
+                                <span class="input-icon">📱</span>
+                            </div>
+                            <div class="input-group">
+                                <label>Email (optionnel)</label>
+                                <input type="email" name="email" placeholder="votre@email.com">
+                                <span class="input-icon">📧</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Comment préférez-vous être contacté ? <span class="required">*</span></label>
+                            <select name="preference_contact">
+                                <option value="">Choisissez...</option>
+                                <option value="appel">📞 Appel téléphonique</option>
+                                <option value="sms">💬 SMS/WhatsApp</option>
+                                <option value="email">📧 Email</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Quand êtes-vous disponible ?</label>
+                            <div class="time-chips">
+                                <label class="chip">
+                                    <input type="checkbox" name="horaires_disponibles" value="matin">
+                                    <span>🌅 Matin (8h-12h)</span>
+                                </label>
+                                <label class="chip">
+                                    <input type="checkbox" name="horaires_disponibles" value="apres-midi">
+                                    <span>☀️ Après-midi (12h-18h)</span>
+                                </label>
+                                <label class="chip">
+                                    <input type="checkbox" name="horaires_disponibles" value="soir">
+                                    <span>🌙 Soir (18h-21h)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Confidentialité -->
+                <div class="form-card" data-section="5">
+                    <div class="card-header">
+                        <span class="card-number">5</span>
+                        <div>
+                            <h2>Confidentialité et visibilité</h2>
+                            <p>Contrôlez qui peut voir votre demande</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="privacy-info">
+                            <span class="info-icon">🔒</span>
+                            <p>Votre vie privée est notre priorité. Choisissez le niveau de visibilité qui vous convient.</p>
+                        </div>
+
+                        <div class="visibility-options">
+                            <label class="visibility-card">
+                                <input type="radio" name="visibilite" value="publique">
+                                <div class="visibility-content">
+                                    <span class="visibility-icon">🌍</span>
+                                    <h4>Publique</h4>
+                                    <p>Visible par tous les donateurs et associations</p>
+                                </div>
+                                <span class="radio-check"></span>
+                            </label>
+                            <label class="visibility-card">
+                                <input type="radio" name="visibilite" value="semi_privee">
+                                <div class="visibility-content">
+                                    <span class="visibility-icon">👥</span>
+                                    <h4>Semi-privée</h4>
+                                    <p>Visible uniquement par les associations vérifiées</p>
+                                </div>
+                                <span class="radio-check"></span>
+                            </label>
+                            <label class="visibility-card">
+                                <input type="radio" name="visibilite" value="privee">
+                                <div class="visibility-content">
+                                    <span class="visibility-icon">🔒</span>
+                                    <h4>Privée</h4>
+                                    <p>Visible uniquement par les administrateurs</p>
+                                </div>
+                                <span class="radio-check"></span>
+                            </label>
+                        </div>
+
+                        <label class="anonymous-toggle">
+                            <input type="checkbox" name="anonyme" value="1">
+                            <div class="toggle-content">
+                                <span class="toggle-icon"></span>
+                                <div>
+                                    <h4>Rester anonyme</h4>
+                                    <p>Votre identité ne sera pas affichée publiquement</p>
+                                </div>
+                            </div>
+                            <span class="toggle-switch"></span>
+                        </label>
+
+                        <div class="attestation-card">
+                            <label class="attestation-checkbox">
+                                <input type="checkbox" name="attestation">
+                                <span class="checkbox-custom"></span>
+                                <div class="attestation-text">
+                                    <strong>J'atteste sur l'honneur</strong>
+                                    <p>Les informations fournies sont exactes et ma demande est réelle. Je comprends que toute fausse déclaration peut entraîner la suspension de mon compte.</p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="reset" class="btn-reset">
+                                <span>🔄</span> Recommencer
+                            </button>
+                            <button type="submit" class="btn-submit">
+                                <span>🚀</span> Envoyer ma demande
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbotWidget" class="chatbot-widget">
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">🤖</div>
+            <div class="chatbot-title">
+                <strong>Assistant SparkMind</strong>
+                <small>En ligne maintenant</small>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">✖</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>Bonjour ! 👋 Je suis là pour vous aider à remplir votre demande. N'hésitez pas à me poser vos questions !</p>
+                    <div class="quick-replies">
+                        <button onclick="askBot('Comment remplir le formulaire ?')">📝 Aide formulaire</button>
+                        <button onclick="askBot('Quels types d\'aide proposez-vous ?')">🤝 Types d'aide</button>
+                        <button onclick="askBot('Combien de temps pour une réponse ?')">⏰ Délai de réponse</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Tapez votre message..." onkeypress="handleChatKeypress(event)">
+            <button onclick="sendChatMessage()">📤</button>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Button -->
+    <button class="floating-chat-btn" onclick="toggleChatbot()">
+        <span class="chat-icon">💬</span>
+        <span class="chat-pulse"></span>
+    </button>
+
+    <script src="formulaire.js"></script>
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARKMIND - Back Office | Gestion des Demandes</title>
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="back.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a class="brand" href="index.php?page=main">
+            <img src="logo.png" alt="Logo SPARKMIND" class="logo" />
+            <div class="brand-text">
+                <span class="brand-name">SPARKMIND</span>
+                <span class="brand-tagline">Quand la pensée devient espoir</span>
+            </div>
+        </a>
+        
+        <div class="sidebar-subtitle">Gestion des demandes</div>
+
+        <nav class="menu">
+            <div class="menu-title">📊 Dashboard admin</div>
+            <a class="menu-item active" href="#demandes" onclick="showSection(event, 'demandes')">
+                <span class="nav-icon">📊</span>
+                <span>Demandes d'aide</span>
+                <span class="badge" id="badgeEnAttente">0</span>
+            </a>
+            <a class="menu-item" href="#categories" onclick="showSection(event, 'categories')">
+                <span class="nav-icon">📁</span>
+                <span>Catégories</span>
+            </a>
+            <a class="menu-item" href="#gouvernorats" onclick="showSection(event, 'gouvernorats')">
+                <span class="nav-icon">🗺️</span>
+                <span>Gouvernorats</span>
+            </a>
+            <a class="menu-item" href="#carte" onclick="showSection(event, 'carte')">
+                <span class="nav-icon">🌍</span>
+                <span>Carte Tunisie</span>
+            </a>
+            <a class="menu-item" href="#export" onclick="showSection(event, 'export')">
+                <span class="nav-icon">📥</span>
+                <span>Export</span>
+            </a>
+            <a class="menu-item" href="index.php?page=admin_users">
+                <span class="nav-icon">👥</span>
+                <span>Utilisateurs</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-foot">
+            <a class="link" href="index.php?page=main">← Retour au site</a>
+            <a class="link logout" href="index.php?page=logout">🚪 Déconnexion</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        <header class="top-nav">
+            <div class="brand-block">
+                <img src="logo.png" alt="Logo SPARKMIND" class="logo-img">
+                <div class="brand-text-header">
+                    <span class="brand-name-header">SPARKMIND</span>
+                    <span class="brand-tagline-header">Back Office</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-nav secondary" onclick="window.location.href='index.php?page=main'">🏠 Site</button>
+                <button class="btn-nav" onclick="window.location.href='index.php?page=logout'">🚪 Déconnexion</button>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <!-- SECTION 1: DEMANDES D'AIDE -->
+            <section id="section-demandes" class="content-section active">
+                <div class="admin-card">
+                    <h1>Gestion des Demandes d'Aide</h1>
+                    <p class="admin-subtitle">Gérez et suivez toutes les demandes d'assistance de la communauté SPARKMIND</p>
+
+                    <!-- STATS -->
+                    <div class="stats-container">
+                        <div class="stat-card urgent">
+                            <div class="stat-icon">🔴</div>
+                            <div class="stat-info">
+                                <h3 id="statUrgentes">0</h3>
+                                <p>Demandes urgentes</p>
+                            </div>
+                        </div>
+                        <div class="stat-card pending">
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-info">
+                                <h3 id="statEnAttente">0</h3>
+                                <p>En attente</p>
+                            </div>
+                        </div>
+                        <div class="stat-card processed">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <h3 id="statTraitees">0</h3>
+                                <p>Traitées</p>
+                            </div>
+                        </div>
+                        <div class="stat-card total">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-info">
+                                <h3 id="statTotal">0</h3>
+                                <p>Total</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FILTERS -->
+                    <div class="filters-section">
+                        <div class="search-wrapper">
+                            <span>🔍</span>
+                            <input type="text" id="searchDemandes" class="search-input" placeholder="Rechercher...">
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Statut:</label>
+                            <select class="filter-select" id="filterStatut">
+                                <option value="">Tous</option>
+                                <option value="nouveau">Nouveau</option>
+                                <option value="en-cours">En cours</option>
+                                <option value="traite">Traité</option>
+                                <option value="refuse">Refusé</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Urgence:</label>
+                            <select class="filter-select" id="filterUrgence">
+                                <option value="">Toutes</option>
+                                <option value="tres-urgent">Très urgent</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="important">Important</option>
+                                <option value="peut-attendre">Peut attendre</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Gouvernorat:</label>
+                            <select class="filter-select" id="filterGouvernorat">
+                                <option value="">Tous</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-filter" onclick="applyFilters()">Filtrer</button>
+                        <button class="btn-reset" onclick="resetFilters()">Réinitialiser</button>
+                    </div>
+
+                    <!-- TABLE -->
+                    <div class="table-container">
+                        <table class="demandes-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Nom</th>
+                                    <th>Gouvernorat</th>
+                                    <th>Type d'aide</th>
+                                    <th>Urgence</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="demandesTableBody">
+                                <!-- Les données seront chargées ici -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="paginationDemandes"></div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: CATEGORIES -->
+            <section id="section-categories" class="content-section">
+                <div class="admin-card">
+                    <h1>📁 Demandes par Catégorie</h1>
+                    <p class="admin-subtitle">Analyse des demandes par type d'aide</p>
+
+                    <div class="stats-container" id="categoriesStats"></div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Catégorie</th>
+                                    <th>Nombre</th>
+                                    <th>Urgentes</th>
+                                    <th>En attente</th>
+                                    <th>Traitées</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: GOUVERNORATS -->
+            <section id="section-gouvernorats" class="content-section">
+                <div class="admin-card">
+                    <h1>🗺️ Demandes par Gouvernorat</h1>
+                    <p class="admin-subtitle">Répartition géographique des demandes</p>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Gouvernorat</th>
+                                    <th>Nombre</th>
+                                    <th>Urgentes</th>
+                                    <th>En attente</th>
+                                    <th>Traitées</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gouvernoratsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: CARTE TUNISIE -->
+            <section id="section-carte" class="content-section">
+                <div class="admin-card">
+                    <h1>🌍 Carte de la Tunisie</h1>
+                    <p class="admin-subtitle">Distribution géographique des demandes</p>
+
+                    <div class="carte-container">
+                        <div class="carte-header">
+                            <h3>📍 Répartition par région</h3>
+                            <div class="carte-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color hot"></span>
+                                    <span>Plus de 20 demandes</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color warm"></span>
+                                    <span>10 à 20 demandes</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color cool"></span>
+                                    <span>5 à 10 demandes</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color cold"></span>
+                                    <span>Moins de 5 demandes</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carte-wrapper">
+                            <div class="carte-image-container">
+                                <img src="carte.jpg" alt="Carte de la Tunisie" id="carteImage">
+                                <div id="carteMarkers"></div>
+                            </div>
+                            <div class="carte-stats">
+                                <h4>📊 Top 5 Gouvernorats</h4>
+                                <div id="topGouvernorats"></div>
+                            </div>
+                        </div>
+
+                        <div class="carte-details">
+                            <h4>🔍 Détails par Gouvernorat</h4>
+                            <div class="gouvernorat-grid" id="gouvernoratGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: EXPORT -->
+            <section id="section-export" class="content-section">
+                <div class="admin-card">
+                    <h1>📥 Export des Données</h1>
+                    <p class="admin-subtitle">Exportez les données dans différents formats</p>
+
+                    <div class="export-container">
+                        <div class="export-options">
+                            <div class="export-card">
+                                <div class="export-icon">📊</div>
+                                <h3>Export Excel</h3>
+                                <p>Format .xlsx pour analyse</p>
+                                <div class="export-actions">
+                                    <button class="btn-export" onclick="exportToExcel('all')">📥 Tout exporter</button>
+                                    <button class="btn-export secondary" onclick="exportToExcel('filtered')">🔍 Données filtrées</button>
+                                </div>
+                            </div>
+
+                            <div class="export-card">
+                                <div class="export-icon">📄</div>
+                                <h3>Export CSV</h3>
+                                <p>Format .csv universel</p>
+                                <div class="export-actions">
+                                    <button class="btn-export" onclick="exportToCSV('all')">📥 Tout exporter</button>
+                                    <button class="btn-export secondary" onclick="exportToCSV('filtered')">🔍 Données filtrées</button>
+                                </div>
+                            </div>
+
+                            <div class="export-card">
+                                <div class="export-icon">📑</div>
+                                <h3>Rapport PDF</h3>
+                                <p>Rapport statistique complet</p>
+                                <div class="export-actions">
+                                    <button class="btn-export" onclick="exportToPDF()">📥 Générer PDF</button>
+                                </div>
+                            </div>
+
+                            <div class="export-card">
+                                <div class="export-icon">📈</div>
+                                <h3>Statistiques JSON</h3>
+                                <p>Stats au format JSON</p>
+                                <div class="export-actions">
+                                    <button class="btn-export" onclick="exportStatistics()">📥 Exporter Stats</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="export-filters">
+                            <h3>⚙️ Options d'Export</h3>
+                            <div class="filter-grid">
+                                <div class="filter-item">
+                                    <label>Période:</label>
+                                    <select id="exportPeriode">
+                                        <option value="all">Toutes</option>
+                                        <option value="today">Aujourd'hui</option>
+                                        <option value="week">Cette semaine</option>
+                                        <option value="month">Ce mois</option>
+                                        <option value="year">Cette année</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <label>Statut:</label>
+                                    <select id="exportStatut">
+                                        <option value="all">Tous</option>
+                                        <option value="nouveau">Nouveau</option>
+                                        <option value="en-cours">En cours</option>
+                                        <option value="traite">Traité</option>
+                                        <option value="refuse">Refusé</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <label>Urgence:</label>
+                                    <select id="exportUrgence">
+                                        <option value="all">Toutes</option>
+                                        <option value="tres-urgent">Très urgent</option>
+                                        <option value="urgent">Urgent</option>
+                                        <option value="important">Important</option>
+                                        <option value="peut-attendre">Peut attendre</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <label>Gouvernorat:</label>
+                                    <select id="exportGouvernorat">
+                                        <option value="all">Tous</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn-export-custom" onclick="exportCustom()">🎯 Lancer l'Export</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Modification Statut -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content status-modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifier le Statut</h2>
+                <button class="modal-close" onclick="closeModal('statusModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:20px;color:#666">
+                    Demande <strong>#<span id="currentDemandeId">-</span></strong>
+                </p>
+                <div class="status-options">
+                    <div class="status-option nouveau" onclick="selectStatus(this,'nouveau')">
+                        <div class="status-option-icon">🆕</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Nouveau</div>
+                            <div class="status-option-description">Demande reçue récemment</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option en-cours" onclick="selectStatus(this,'en-cours')">
+                        <div class="status-option-icon">⏳</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">En cours</div>
+                            <div class="status-option-description">En cours de traitement</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option traite" onclick="selectStatus(this,'traite')">
+                        <div class="status-option-icon">✅</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Traité</div>
+                            <div class="status-option-description">Demande terminée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option refuse" onclick="selectStatus(this,'refuse')">
+                        <div class="status-option-icon">❌</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Refusé</div>
+                            <div class="status-option-description">Demande non acceptée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" onclick="closeModal('statusModal')">Annuler</button>
+                <button class="btn-modal confirm" id="confirmStatusBtn" onclick="confirmStatusChange()" disabled>Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Détails Demande -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Détails de la Demande</h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="back.js"></script>
+</body>
+</html>
+<style>
+      body {
+          margin: 0;
+          min-height: 100vh;
+          background:
+              radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+              #FBEDD7;
+          font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+          color: #1A464F;
+      }
+
+      /* ✅ Layout avec sidebar */
+      .layout{
+          min-height:100vh;
+          display:flex;
+      }
+
+      /* ✅ Sidebar (identique à ton modèle) */
+      .sidebar{
+        width:260px;
+        background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+        border-right:1px solid rgba(0,0,0,.06);
+        padding:18px 14px;
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        position:sticky;
+        top:0;
+        height:100vh;
+      }
+
+      .sidebar .brand{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        text-decoration:none;
+        padding:10px 10px;
+        border-radius:14px;
+        color:#1A464F;
+      }
+
+      .sidebar .logo{
+        width:42px;
+        height:42px;
+        border-radius:50%;
+        object-fit:cover;
+      }
+
+      .sidebar .brand-name{
+        font-family:'Playfair Display', serif;
+        font-weight:800;
+        font-size:18px;
+        color:#1A464F;
+      }
+
+      .menu{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        margin-top:6px;
+      }
+
+      .menu-item{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 12px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#1A464F;
+        font-weight:600;
+      }
+
+      .menu-item:hover{
+        background:#f5e2c4ff;
+      }
+
+      .menu-item.active{
+        background: #f5e2c4ff; !important;
+        color: #0b3936ff;
+      }
+
+      .sidebar-foot{
+        margin-top:auto;
+        padding-top:10px;
+        border-top:1px solid rgba(0,0,0,.06);
+      }
+
+      .sidebar-foot .link{
+        display:block;
+        padding:10px 12px;
+        border-radius:12px;
+        text-decoration:none;
+        color:#1A464F;
+        font-weight:600;
+      }
+
+      .sidebar-foot .link:hover{
+        background:#f5e2c4ff;
+      }
+
+      /* ✅ Main (ton contenu reste pareil) */
+      .main{
+        flex:1;
+        min-width:0;
+      }
+
+      /* (tout le reste de ton CSS existant : inchangé) */
+      .site { min-height: 100vh; display: flex; flex-direction: column; }
+
+      .top-nav {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          backdrop-filter: blur(14px);
+          background: rgba(251, 237, 215, 0.96);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 24px;
+      }
+
+
+      .menu-title {
+        font-size: 10px;      /* ← taille du texte + emoji */
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: #1A464F;
+        padding: 8px 12px 6px;
+        text-transform: uppercase;
+        }
+
+
+      .brand-block { display: flex; align-items: center; gap: 12px; }
+      .logo-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+      .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+      .brand-name { font-family: 'Playfair Display', serif; font-size: 20px; color: #1A464F; }
+      .brand-tagline { font-size: 11px; color: #1A464F; opacity: 0.8; }
+
+      .header-actions { display: flex; gap: 10px; align-items: center; }
+      .btn-nav { border: none; cursor: pointer; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; background: #1A464F; color: #fff; }
+      .btn-nav.secondary { background: transparent; color: #1A464F; border: 1px solid rgba(26, 70, 79, 0.35); }
+
+      .admin-main { flex: 1; max-width: 1100px; margin: 32px auto 40px; padding: 0 18px 30px; }
+      .admin-card { background: rgba(255, 247, 239, 0.95); border-radius: 24px; padding: 24px 22px 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.18); }
+      .admin-card h1 { margin: 0 0 6px; font-family: 'Playfair Display', serif; font-size: 26px; }
+      .admin-subtitle { font-size: 13px; margin-bottom: 18px; color: #444; }
+
+      .filters-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 14px; border-radius: 16px; background: rgba(255,255,255,0.9); box-shadow: 0 8px 18px rgba(0,0,0,0.06); margin-bottom: 18px; }
+      .filters-bar .search-wrapper { flex: 1 1 220px; display: flex; align-items: center; gap: 6px; }
+      .search-input { flex: 1; padding: 8px 12px; border-radius: 999px; border: 1px solid #ccc; font-size: 13px; outline: none; background: #fff; }
+      .search-input:focus { border-color: #1A464F; box-shadow: 0 0 0 2px rgba(26,70,79,0.15); }
+
+      .filters-bar select { padding: 7px 10px; border-radius: 999px; border: 1px solid #ddd; font-size: 13px; background: #fff; min-width: 170px; }
+      .filters-bar label { font-size: 12px; color: #444; display: flex; flex-direction: column; gap: 4px; }
+
+      .stats-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 5px 0 14px; }
+      .stat-card { flex: 1 1 120px; background: rgba(255,255,255,0.9); padding: 10px 12px; border-radius: 14px; box-shadow: 0 8px 18px rgba(0,0,0,0.08); font-size: 13px; }
+      .stat-card strong { font-size: 15px; }
+
+      .admin-form-card { background: #fff7ef; border-radius: 18px; padding: 14px 14px 16px; box-shadow: 0 8px 18px rgba(0,0,0,0.08); margin-bottom: 18px; }
+      .admin-form-title { margin: 0 0 6px; font-size: 18px; font-weight: 600; }
+      .admin-form-sub { font-size: 12px; margin-bottom: 10px; color: #555; }
+
+      .admin-form-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+      .admin-form-field { flex: 1 1 150px; font-size: 13px; }
+      .admin-form-field label { display: block; margin-bottom: 3px; font-size: 12px; color: #444; }
+
+      .admin-form-field input, .admin-form-field select {
+          width: 100%;
+          padding: 6px 8px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 13px;
+          outline: none;
+          background: #fff;
+      }
+              /* Titres comme "Menu principal", "Actions rapides" */
+    .sidebar .menu-title {
+        color: #1A464F !important;
+    }
+
+      .users-table-wrapper { overflow-x: auto; background: #fff; border-radius: 18px; box-shadow: 0 8px 18px rgba(0,0,0,0.06); }
+      table { border-collapse: collapse; width: 100%; border-radius: 18px; overflow: hidden; }
+      table td, table th { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: middle; }
+      table th { background-color: #f7f1eb; }
+
+      .tag { padding: 2px 8px; border-radius: 999px; font-size: 11px; }
+      .tag-admin   { background:#ffe0b3; color:#8a4b00; }
+      .tag-user    { background:#e0f5ff; color:#005f8a; }
+      .tag-active  { background:#e0f9e5; color:#1b6b2a; }
+      .tag-blocked { background:#ffe0e0; color:#b02222; }
+
+      .btn-table { display:inline-block; padding:4px 10px; border-radius:999px; font-size:11px; border:none; cursor:pointer; text-decoration:none; margin:2px 0; }
+      .btn-table.view { background:#1A464F; color:#fff; }
+      .btn-table.delete { background:#E23B3B; color:#fff; }
+      .btn-table.block { background:#ffb3b3; color:#7a1010; }
+      .btn-table.unblock { background:#b9f4c4; color:#145321; }
+
+      @media (max-width: 900px) {
+        .sidebar{ width:220px; }
+      }
+      @media (max-width: 800px) {
+        .filters-bar { flex-direction: column; align-items: stretch; }
+        .sidebar{ position:relative; height:auto; }
+        .layout{ flex-direction:column; }
+      }
+    </style>

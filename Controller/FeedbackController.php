@@ -1,6 +1,6 @@
 <?php 
-require_once __DIR__ . "/../Model/config.php";
-require_once __DIR__ . "/../Model/Feedback.php";
+require_once __DIR__ . "/../models/config.php";
+require_once __DIR__ . "/../models/Feedback.php";
 
 
 class FeedbackController {
@@ -117,5 +117,6 @@ class FeedbackController {
         }
     }
 }
+
 
 ?>

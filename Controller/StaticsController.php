@@ -1,8 +1,8 @@
 <?php 
-require_once __DIR__ . "/../Model/config.php";
-require_once __DIR__ . "/../Controller/FeedbackController.php";
-require_once __DIR__ . "/../Controller/ReactionController.php";
-require_once __DIR__ . "/../Controller/commentcontroller.php";
+require_once __DIR__ . "/../models/config.php";
+require_once __DIR__ . "/../controllers/FeedbackController.php";
+require_once __DIR__ . "/../controllers/ReactionController.php";
+require_once __DIR__ . "/../controllers/commentcontroller.php";
 
 class StatisticsController {
     
@@ -319,4 +319,5 @@ Please provide a comprehensive summary and analysis of the main themes, patterns
 }
 
 ?>
+
 

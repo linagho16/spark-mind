@@ -1,0 +1,62 @@
+═══════════════════════════════════════════════════════════
+   GUIDE SIMPLE POUR EXÉCUTER LE PROJET ÉVÉNEMENTS
+═══════════════════════════════════════════════════════════
+
+ÉTAPE 1 : DÉMARRER XAMPP
+─────────────────────────
+1. Ouvrez le Panneau de Contrôle XAMPP
+2. Cliquez sur "Start" pour APACHE (doit devenir vert)
+3. Cliquez sur "Start" pour MYSQL (doit devenir vert)
+
+ÉTAPE 2 : INSTALLER LA BASE DE DONNÉES
+───────────────────────────────────────
+1. Ouvrez Google Chrome (ou votre navigateur)
+2. Dans la barre d'adresse, tapez exactement :
+   
+   http://localhost/evenement/install.php
+   
+3. Appuyez sur ENTRÉE
+4. Vous devriez voir des messages de succès (✅)
+5. Attendez que l'installation soit terminée
+
+ÉTAPE 3 : ACCÉDER À L'APPLICATION
+──────────────────────────────────
+1. Dans Chrome, tapez dans la barre d'adresse :
+   
+   http://localhost/evenement/
+   
+2. Appuyez sur ENTRÉE
+3. L'application devrait s'afficher !
+
+═══════════════════════════════════════════════════════════
+   URLS IMPORTANTES
+═══════════════════════════════════════════════════════════
+
+Installation de la base de données :
+  → http://localhost/evenement/install.php
+
+Application principale :
+  → http://localhost/evenement/
+
+Créer un événement :
+  → http://localhost/evenement/?route=events.create
+
+═══════════════════════════════════════════════════════════
+   EN CAS DE PROBLÈME
+═══════════════════════════════════════════════════════════
+
+❌ Erreur 404 Not Found ?
+   → Vérifiez que le dossier est dans : C:\xampp\htdocs\evenement
+   → Vérifiez que Apache est démarré dans XAMPP
+   → Essayez : http://localhost/ (doit afficher la page XAMPP)
+
+❌ Erreur de connexion à la base de données ?
+   → Vérifiez que MySQL est démarré dans XAMPP
+   → Exécutez d'abord install.php
+
+❌ Page blanche ?
+   → Vérifiez les logs d'erreur dans XAMPP (bouton "Logs")
+   → Vérifiez que PHP est activé
+
+═══════════════════════════════════════════════════════════
+

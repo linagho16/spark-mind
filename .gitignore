@@ -1,6 +1,7 @@
 # Fichiers système
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
 
 # Fichiers temporaires
 *.tmp
@@ -18,3 +19,19 @@ public/assets/img/posts/*
 
 # Configuration locale sensible
 config/database.php
+=======
+*.swp
+*.swo
+*~
+
+# Fichiers de configuration sensibles
+config/database.local.php
+
+# Logs
+*.log
+
+# Fichiers temporaires
+tmp/
+temp/
+
+>>>>>>> origin/evennement

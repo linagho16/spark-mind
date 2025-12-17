@@ -247,7 +247,8 @@
       <a class="menu-item active" href="index.php?page=admin_users">👥 Utilisateurs</a>
       <a href="index.php?page=backoffice" class="menu-item">👩‍🦰 Demandeurs</a>
       <a href="index.php?page=admin_forum" class="menu-item">🗣 Expressions</a>
-      <a class="menu-item" >📅 Événements</a>
+      <a class="menu-item" href="/sparkmind_mvc_100percent/index.php?page=events_dashboard">📅 Événements</a>
+
       <a class="menu-item" href="/sparkmind_mvc_100percent/index.php?page=backoffice_aide">👥 Groupes / 🎁dons </a>
 
     </nav>

@@ -1,10 +1,15 @@
 <?php
 
+// ===============================
+// Configuration base de données
+// ===============================
+
 $host = 'localhost';
-$db   = 'sparkmind';   // nom de ta base
-$user = 'root';        // XAMPP : root
-$pass = '';            // souvent vide en local
+$db   = 'sparkmind';   // ✅ base principale SparkMind
+$user = 'root';
+$pass = '';
 $charset = 'utf8mb4';
+
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
 $options = [
@@ -17,3 +22,25 @@ try {
 } catch (PDOException $e) {
     die('Erreur de connexion à la base : ' . $e->getMessage());
 }
+
+// ===============================
+// Constantes globales
+// ===============================
+
+if (!defined('BASE_URL')) {
+    define('BASE_URL', '/sparkmind_mvc_100percent/');
+}
+
+if (!defined('APP_NAME')) {
+    define('APP_NAME', 'SparkMind');
+}
+
+
+// Fonction utilitaire de redirection
+if (!function_exists('redirect')) {
+    function redirect($url) {
+        header('Location: ' . $url);
+        exit();
+    }
+}
+

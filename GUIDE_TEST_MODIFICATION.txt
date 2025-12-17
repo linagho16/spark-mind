@@ -1,0 +1,96 @@
+# 🔧 Guide de test de la modification de réservation
+
+## 🧪 Outils de diagnostic créés
+
+### 1. **test_modification.php**
+Test complet avec formulaire intégré
+```
+http://localhost/evennement/evennement/test_modification.php
+```
+
+### 2. **debug_reservation.php**
+Debug simple pour voir les données POST
+```
+http://localhost/evennement/evennement/debug_reservation.php
+```
+
+## 📋 Checklist de test
+
+### Étape 1 : Vérifier que les modifications sont enregistrées
+
+1. Ouvrir : `http://localhost/evennement/evennement/test_modification.php`
+2. Cliquer sur "🧪 Tester la modification"
+3. Vérifier le message de succès
+
+### Étape 2 : Tester via l'interface normale
+
+1. Aller sur : `http://localhost/evennement/evennement/index.php?action=reservations`
+2. Cliquer sur le bouton ✏️ "Modifier" d'une réservation
+3. Modifier le nom du client (ajouter " - MODIFIÉ")
+4. Cliquer sur "Enregistrer les modifications"
+5. Vérifier que vous êtes redirigé vers la liste
+6. Vérifier que le nom a changé
+
+### Étape 3 : Debug si ça ne marche pas
+
+1. Ouvrir : `http://localhost/evennement/evennement/debug_reservation.php`
+2. Modifier quelque chose dans le formulaire
+3. Soumettre
+4. Vérifier que TOUTES les données sont bien reçues (✅)
+
+## ❓ Si ça ne fonctionne toujours pas
+
+### Vérifier 1 : La base de données
+```sql
+SELECT * FROM reservations;
+```
+Vérifier que la table existe et contient des données
+
+### Vérifier 2 : Les erreurs PHP
+Activer l'affichage des erreurs dans `index.php` (ligne 3-4) :
+```php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+```
+
+### Vérifier 3 : Le fichier process_reservation.php
+Ligne 99, vérifier que l'action 'update' existe
+
+### Vérifier 4 : Les permissions
+- Le serveur doit avoir les droits d'écriture sur la base
+- Vérifier les identifiants MySQL dans config/config.php
+
+## 🔍 Ce qui a été corrigé
+
+✅ Ajout de `event_id` dans la méthode `update()` du modèle
+✅ Ajout de `event_id` dans les données envoyées par `process_reservation.php`
+✅ Ajout d'un try/catch pour capturer les erreurs
+✅ Création d'outils de diagnostic
+
+## 📝 Structure de la modification
+
+1. **Formulaire** (`views/reservations/edit.php`)
+   → Envoie POST vers `process_reservation.php?action=update&id=X`
+
+2. **Traitement** (`process_reservation.php` case 'update')
+   → Valide et prépare les données
+   → Appelle `$reservation->update($id, $data)`
+
+3. **Modèle** (`models/Reservation.php` méthode `update()`)
+   → Exécute UPDATE SQL
+   → Retourne true/false
+
+4. **Redirection**
+   → Succès : Liste des réservations avec message ✅
+   → Échec : Formulaire avec message d'erreur ❌
+
+## 🎯 Test final
+
+Pour vérifier que tout fonctionne :
+
+1. Créer une réservation
+2. La modifier (changer le nom)
+3. Vérifier dans la base avec phpMyAdmin
+4. Vérifier dans l'interface
+
+Si tout est OK, vous devriez voir le changement partout !

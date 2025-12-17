@@ -299,8 +299,8 @@
           </p>
 
           <div class="card-row">
-            <a class="space-card events" href="index.php?page=events_list" id="eventsLink">
-              <span>Événements</span>
+            <a class="space-card events" href="/sparkmind_mvc_100percent/index.php?page=events_home" id="eventsLink">
+              <span>Événemens</span>
               <span class="badge">Voir / proposer un événement</span>
               <span class="bubble">📅</span>
             </a>

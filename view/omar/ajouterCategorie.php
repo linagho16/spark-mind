@@ -1,15 +1,8 @@
 <?php
+require_once 'controller/CategorieC.php';
+require_once 'model/categorie.php';
 
-require_once __DIR__ . '/../../controller/produitC.php';
-require_once __DIR__ . '/../../controller/CategorieC.php';
-require_once __DIR__ . '/../../model/produit.php';
-
-
-$produitC = new ProduitC();
 $categorieC = new CategorieC();
-
-// Récupérer toutes les catégories pour le dropdown
-$categories = $categorieC->listCategories();
 
 $error = null;
 $success = null;
@@ -18,51 +11,21 @@ $success = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Validation des données
-        if (empty($_POST['title']) || empty($_POST['description']) || empty($_POST['category']) || 
-            empty($_POST['condition']) || empty($_POST['statut'])) {
+        if (empty($_POST['nomC']) || empty($_POST['descriptionC']) || 
+            empty($_POST['dateC']) || empty($_POST['nom_Createur'])) {
             $error = "Tous les champs obligatoires doivent être remplis !";
         } else {
-            // Gestion de l'upload de photo
-            // Gestion de l'upload de photo
-            $photoPath = '';
-
-            if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-
-                // Dossier réel sur le serveur
-                $uploadDir = __DIR__ . '/../../uploads/';
-
-                // Créer le dossier s'il n'existe pas
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-
-                // Nom du fichier
-                $fileName = basename($_FILES['photo']['name']);
-
-                // Chemin stocké en base (chemin web)
-                $photoPath = 'uploads/' . $fileName;
-
-                // Déplacement du fichier
-                move_uploaded_file(
-                    $_FILES['photo']['tmp_name'],
-                    $uploadDir . $fileName
-                );
-            }
-
-
-            // Créer l'objet produit
-            $produit = new Produit(
+            // Créer l'objet catégorie
+            $categorie = new Categorie(
                 null,
-                $_POST['title'],
-                $_POST['description'],
-                (int)$_POST['category'],
-                $_POST['condition'],
-                $_POST['statut'],
-                $photoPath
+                $_POST['nomC'],
+                $_POST['descriptionC'],
+                $_POST['dateC'],
+                $_POST['nom_Createur']
             );
 
-            // Ajouter le produit
-            $success = $produitC->addProduit($produit);
+            // Ajouter la catégorie
+            $success = $categorieC->addCategorie($categorie);
         }
     } catch (Exception $e) {
         $error = "Erreur : " . $e->getMessage();
@@ -75,11 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SparkMind - Ajouter un Produit</title>
-   
+    <title>SparkMind - Ajouter une Catégorie</title>
+    <link rel="stylesheet" href="view/front office/formlaire.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 </head>
 <style>
@@ -104,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     color:var(--text);
   }
 
-  /* ===== Layout global ===== */
+  /* Layout global */
   .sidebar{
     position:fixed;
     left:0; top:0;
@@ -125,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding: 18px 22px 60px;
   }
 
-  /* ===== Sidebar ===== */
+  /* Sidebar */
   .sidebar .logo h2{
     margin:0;
     font-family:'Playfair Display', serif;
@@ -175,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .info-box h4{ margin:0 0 6px 0; font-size:14px; }
   .info-box p{ margin:0; color:var(--muted); font-size:12px; }
 
-  /* ===== Header sticky ===== */
+  /* Header sticky */
   .header{
     position: sticky;
     top: 0;
@@ -243,9 +206,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     filter: brightness(1.05);
     box-shadow: 0 10px 24px rgba(236, 117, 70, 0.55);
   }
+
   @keyframes navFade { from {opacity:0; transform:translateY(-16px);} to {opacity:1; transform:translateY(0);} }
 
-  /* ===== Notifications ===== */
+  /* Notifications */
   .notification{
     border-radius:18px;
     padding: 12px 14px;
@@ -254,14 +218,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     border: 1px solid rgba(0,0,0,.05);
     background: var(--card);
   }
-  .notification.error{
-    border-left: 6px solid var(--danger);
-  }
-  .notification.success{
-    border-left: 6px solid var(--success);
-  }
+  .notification.error{ border-left: 6px solid var(--danger); }
+  .notification.success{ border-left: 6px solid var(--success); }
 
-  /* ===== Form container ===== */
+  /* Form container (hero look) */
   .form-container{
     margin-top: 14px;
     border-radius:24px;
@@ -296,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   form{ padding: 18px 18px 6px; }
 
-  /* ===== Sections ===== */
+  /* Sections */
   .form-section{
     background: var(--card);
     border-radius: 18px;
@@ -307,15 +267,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     position:relative;
     overflow:hidden;
   }
-  .form-section::before{
-    content:"";
-    position:absolute;
-    inset:-40%;
-    background:radial-gradient(circle at top left,rgba(255,255,255,.4),transparent 60%);
-    opacity:0.35;
-    pointer-events:none;
-  }
-
   .section-header{
     display:flex;
     align-items:flex-start;
@@ -345,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     font-size:13px;
   }
 
-  /* ===== Grid champs ===== */
+  /* Grid */
   .form-grid{
     display:grid;
     grid-template-columns: 1fr 1fr;
@@ -363,9 +314,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   .required{ color: var(--orange); }
 
   input[type="text"],
+  input[type="date"],
   select,
-  textarea,
-  input[type="file"]{
+  textarea{
     width:100%;
     border-radius:14px;
     border:1px solid rgba(0,0,0,.08);
@@ -373,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding: 11px 12px;
     font-size:14px;
     outline:none;
-    transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+    transition: box-shadow .18s ease, border-color .18s ease;
   }
   textarea{ min-height: 120px; resize: vertical; }
 
@@ -382,87 +333,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     box-shadow: 0 0 0 4px rgba(31,140,135,.16);
   }
 
-  .helper-text{
-    margin:0;
-    font-size:12px;
-    color:var(--muted);
-  }
-
-  /* ===== Radio cards (condition) ===== */
-  .radio-grid{
-    display:grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 10px;
-    margin-top: 6px;
-  }
-  .radio-card{
-    border-radius:18px;
-    background: rgba(255,255,255,.55);
-    border:1px solid rgba(0,0,0,.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,.10);
-    cursor:pointer;
-    overflow:hidden;
-    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-    position:relative;
-  }
-  .radio-card:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 14px 28px rgba(0,0,0,.16);
-    filter: brightness(1.02);
-  }
-  .radio-card input{ display:none; }
-
-  .radio-content{
-    padding: 14px 14px;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    color:#02282f;
-  }
-  .radio-content small{ color:var(--muted); }
-
-  .radio-card:has(input:checked){
-    background: linear-gradient(135deg, rgba(125,90,166,.22), rgba(236,117,70,.18), rgba(31,140,135,.18));
-    border-color: rgba(0,0,0,.06);
-  }
-
-  .urgency-badge{
-    width:36px; height:36px;
-    display:grid; place-items:center;
-    border-radius:14px;
-    border:1px solid rgba(0,0,0,.04);
-  }
-
-  /* ===== Statut radios (compact) ===== */
-  .checkbox-grid-compact{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:6px;
-  }
-  .checkbox-compact{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding: 12px 12px;
-    border-radius:16px;
-    background: rgba(255,255,255,.55);
-    border:1px solid rgba(0,0,0,.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,.10);
-    cursor:pointer;
-    transition: transform .18s ease, box-shadow .18s ease;
-  }
-  .checkbox-compact:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 14px 28px rgba(0,0,0,.16);
-  }
-  .checkbox-compact input{ accent-color: var(--turquoise); }
-
-  .checkbox-compact:has(input:checked){
-    background: linear-gradient(135deg, rgba(31,140,135,.18), rgba(236,117,70,.14));
-  }
-
-  /* ===== Attestation ===== */
+  /* Attestation */
   .attestation-box{
     margin-top: 10px;
     border-radius:18px;
@@ -482,14 +353,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   .checkbox-special input{ margin-top:3px; accent-color: var(--orange); }
 
-  /* ===== Errors ===== */
   .error-message{
     color: var(--danger);
     font-size:12px;
     min-height: 14px;
   }
 
-  /* ===== Buttons ===== */
+  /* Buttons */
   .form-actions{
     display:flex;
     justify-content:flex-end;
@@ -549,7 +419,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   @media (max-width: 860px){
     .form-grid{ grid-template-columns: 1fr; }
-    .radio-grid{ grid-template-columns: 1fr; }
     .header h1{ font-size:22px; }
   }
 </style>
@@ -571,12 +440,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>📦</span>
                 <span>Produits</span>
             </a>
-            <a href="/sparkmind_mvc_100percent/index.php?page=ajouter_produit" class="nav-item active">
+            <a href="/sparkmind_mvc_100percent/index.php?page=ajouter_produit" class="nav-item">
                 <span>➕</span>
-                <span>Ajouter un Produit</span>
+                <span>Ajouter un don</span>
             </a>
-            <a href="/sparkmind_mvc_100percent/index.php?page=produits" class="nav-item">
-                <span></span>
+            <a href="/sparkmind_mvc_100percent/index.php?page=ajouter_categorie" class="nav-item active">
+                <span>🏷️</span>
+                <span>Nouvelle Catégorie</span>
+            </a>
+            <a href="/sparkmind_mvc_100percent/index.php?page=ajouter_produit" class="nav-item">
+                <span>👤</span>
                 <span>Retour</span>
             </a>
         </nav>
@@ -594,8 +467,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Header -->
         <header class="header">
             <div>
-                <h1>Ajouter un Produit</h1>
-                <p class="subtitle">Partagez vos objets avec la communauté</p>
+                <h1>Ajouter une Catégorie</h1>
+                <p class="subtitle">Organisez vos produits efficacement</p>
             </div>
             <button class="btn-help" onclick="window.location.href='index.php?page=offer_support'">
                 <span>❓</span>
@@ -617,113 +490,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Form Container -->
         <div class="form-container">
-            <form id="productForm" method="POST" enctype="multipart/form-data" novalidate>
+            <form id="categoryForm" method="POST" novalidate>
                 
-                <!-- Section 1: Informations du Produit -->
+                <!-- Section 1: Informations de la Catégorie -->
                 <section class="form-section">
                     <div class="section-header">
                         <div class="section-icon">📝</div>
                         <div>
-                            <h2 class="section-title">Informations du Produit</h2>
-                            <p class="section-description">Décrivez votre produit en détail</p>
+                            <h2 class="section-title">Informations de la Catégorie</h2>
+                            <p class="section-description">Définissez les détails de la catégorie</p>
                         </div>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-group full-width">
-                            <label>Titre du produit <span class="required">*</span></label>
-                            <input type="text" id="title" name="title" placeholder="Ex: iPhone 13 Pro, Laptop Dell...">
-                            <span class="error-message" id="title-error"></span>
+                            <label>Nom de la catégorie <span class="required">*</span></label>
+                            <input type="text" id="nomC" name="nomC" placeholder="Ex: Électronique, Vêtements, Livres...">
+                            <span class="error-message" id="nomC-error"></span>
                         </div>
 
                         <div class="form-group full-width">
                             <label>Description <span class="required">*</span></label>
-                            <textarea id="description" name="description" placeholder="Décrivez votre produit en détail..."></textarea>
-                            <span class="error-message" id="description-error"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Catégorie <span class="required">*</span></label>
-                            <select id="category" name="category">
-                                <option value="">Sélectionnez une catégorie</option>
-                                <?php foreach ($categories as $cat): ?>
-                                    <option value="<?= $cat['idc'] ?>">
-                                        <?= htmlspecialchars($cat['nomC']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <p class="helper-text">
-                                <a href="/sparkmind_mvc_100percent/index.php?page=ajouter_categorie" style="color: #166e6a; text-decoration: none; font-weight: 600;">
-                                    + Ajouter une nouvelle catégorie
-                                </a>
-                            </p>
-                            <span class="error-message" id="category-error"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Photo du produit <span class="required">*</span></label>
-                            <input type="file" id="photo" name="photo" accept="image/*">
-                            <p class="helper-text">📸 Ajoutez une photo claire de votre produit</p>
-                            <span class="error-message" id="photo-error"></span>
+                            <textarea id="descriptionC" name="descriptionC" placeholder="Décrivez brièvement cette catégorie..."></textarea>
+                            <span class="error-message" id="descriptionC-error"></span>
                         </div>
                     </div>
                 </section>
 
-                <!-- Section 2: État et Disponibilité -->
+                <!-- Section 2: Informations Complémentaires -->
                 <section class="form-section">
                     <div class="section-header">
-                        <div class="section-icon">⚙️</div>
+                        <div class="section-icon">ℹ️</div>
                         <div>
-                            <h2 class="section-title">État et Disponibilité</h2>
-                            <p class="section-description">Précisez l'état de votre produit</p>
+                            <h2 class="section-title">Informations Complémentaires</h2>
+                            <p class="section-description">Détails administratifs</p>
                         </div>
                     </div>
 
                     <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label>Condition <span class="required">*</span></label>
-                            <div class="radio-grid">
-                                <label class="radio-card">
-                                    <input type="radio" name="condition" value="neuf">
-                                    <div class="radio-content">
-                                        <div class="urgency-badge" style="background: #e8f5e9;">✨</div>
-                                        <strong>Neuf</strong>
-                                        <small>Jamais utilisé</small>
-                                    </div>
-                                </label>
-                                <label class="radio-card">
-                                    <input type="radio" name="condition" value="bon etat">
-                                    <div class="radio-content">
-                                        <div class="urgency-badge" style="background: #fff3e0;">👍</div>
-                                        <strong>Bon état</strong>
-                                        <small>Légèrement utilisé</small>
-                                    </div>
-                                </label>
-                                <label class="radio-card">
-                                    <input type="radio" name="condition" value="usage">
-                                    <div class="radio-content">
-                                        <div class="urgency-badge" style="background: #fce4ec;">🔧</div>
-                                        <strong>Usagé</strong>
-                                        <small>Utilisé régulièrement</small>
-                                    </div>
-                                </label>
-                            </div>
-                            <span class="error-message" id="condition-error"></span>
+                        <div class="form-group">
+                            <label>Date de création <span class="required">*</span></label>
+                            <input type="date" id="dateC" name="dateC" value="<?= date('Y-m-d') ?>">
+                            <span class="error-message" id="dateC-error"></span>
                         </div>
 
-                        <div class="form-group full-width">
-                            <label>Statut <span class="required">*</span></label>
-                            <div class="checkbox-grid-compact">
-                                <label class="checkbox-compact">
-                                    <input type="radio" name="statut" value="disponible">
-                                    <span>✅ Disponible - Prêt à être donné</span>
-                                </label>
-                                <label class="checkbox-compact">
-                                    <input type="radio" name="statut" value="reserve">
-                                    <span>⏳ Réservé - En attente</span>
-                                </label>
-                            </div>
-                            <span class="error-message" id="statut-error"></span>
+                        <div class="form-group">
+                            <label>Nom du créateur <span class="required">*</span></label>
+                            <input type="text" id="nom_Createur" name="nom_Createur" placeholder="Ex: Admin, Votre nom...">
+                            <span class="error-message" id="nom_Createur-error"></span>
                         </div>
                     </div>
                 </section>
@@ -734,31 +548,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="section-icon">✓</div>
                         <div>
                             <h2 class="section-title">Validation</h2>
-                            <p class="section-description">Confirmez les informations</p>
+                            <p class="section-description">Confirmez la création</p>
                         </div>
                     </div>
 
                     <div class="attestation-box">
                         <label class="checkbox-special">
                             <input type="checkbox" id="attestation" name="attestation">
-                            <span>J'atteste que les informations fournies sont exactes et que ce produit m'appartient.</span>
+                            <span>J'atteste que les informations fournies sont exactes.</span>
                         </label>
                         <span class="error-message" id="attestation-error"></span>
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn-secondary"
-                                onclick="window.location.href='/sparkmind_mvc_100percent/index.php?page=produits'">
-                            Annuler
-                        </button>
-
-                        <button type="submit" class="btn-primary">🚀 Ajouter le produit</button>
+                        <button type="button" class="btn-secondary" onclick="window.location.href='view/front office/ajouterProduit.php'">Annuler</button>
+                        <button type="submit" class="btn-primary">🚀 Ajouter la catégorie</button>
                     </div>
                 </section>
             </form>
         </div>
     </main>
     
-    <script src="validation.js"></script>
+    <script src="controle_saisie.js"></script>
 </body>
 </html>

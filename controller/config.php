@@ -8,7 +8,7 @@ class config
         if (!isset(self::$pdo)) {
             try {
                 self::$pdo = new PDO(
-                    'mysql:host=localhost;dbname=web',
+                    'mysql:host=localhost;dbname=sparkmind;charset=utf8',
                     'root',
                     '',
                     [
@@ -16,13 +16,10 @@ class config
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                     ]
                 );
-                //echo "connected successfully";
             } catch (Exception $e) {
-                die('Erreur: ' . $e->getMessage());
+                die('Erreur DB: ' . $e->getMessage());
             }
         }
         return self::$pdo;
     }
 }
-
-config::getConnexion();

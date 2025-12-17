@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $dbname = "SparkMind"; 
+    private $dbname = "sparkMind"; 
     private $user = "root";
     private $pass = "";
     public $pdo;

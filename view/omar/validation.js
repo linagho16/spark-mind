@@ -116,29 +116,31 @@ function validateStatut() {
 // Fonction pour valider la photo
 function validatePhoto() {
     const photoInput = document.getElementById('photo');
-    
+
+    // ✅ Photo optionnelle : si aucune image, c'est OK
     if (!photoInput.files || photoInput.files.length === 0) {
-        showError('photo', 'Veuillez sélectionner une photo.');
-        return false;
+        clearError('photo');
+        return true;
     }
-    
+
     const file = photoInput.files[0];
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp' , 'image/gif'];
     const maxSize = 5 * 1024 * 1024; // 5 MB
-    
+
     if (!allowedTypes.includes(file.type)) {
         showError('photo', 'Format de fichier non autorisé. Utilisez JPG, PNG ou WebP.');
         return false;
     }
-    
+
     if (file.size > maxSize) {
         showError('photo', 'La taille du fichier ne doit pas dépasser 5 MB.');
         return false;
     }
-    
+
     clearError('photo');
     return true;
 }
+
 
 // Fonction pour valider l'attestation
 function validateAttestation() {

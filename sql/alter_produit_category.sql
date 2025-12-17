@@ -1,16 +1,16 @@
--- Script pour modifier la colonne category en INT et ajouter une clé étrangère
+-- 1) Vérifier que la table produit existe avant d'alter
+-- (MySQL ne supporte pas ALTER TABLE IF EXISTS partout, donc on fait simple)
+SHOW TABLES;
 
--- Étape 1: Modifier le type de la colonne category
+-- Si ta table s'appelle "produits" ou autre, remplace ici
+-- Exemple si ta table = produits :
+-- ALTER TABLE produits ...
+
 ALTER TABLE produit 
 MODIFY COLUMN category INT NOT NULL;
 
--- Étape 2: Ajouter une clé étrangère (optionnel mais recommandé)
 ALTER TABLE produit 
 ADD CONSTRAINT fk_produit_categorie 
 FOREIGN KEY (category) REFERENCES categorie(idc)
 ON DELETE RESTRICT 
 ON UPDATE CASCADE;
-
--- Note: Si vous avez déjà des données dans la table produit,
--- vous devrez d'abord mettre à jour les valeurs de category
--- pour qu'elles correspondent aux idc de la table categorie

@@ -311,9 +311,9 @@
               <span class="bubble">👥</span>
             </a>
 
-            <a class="space-card groups" href="/sparkmind_mvc_100percent/index.php?page=frontoffice" id="groupsLink">
-              <span>Produits</span>
-              <span class="badge">Produit </span>
+            <a class="space-card chat" href="/sparkmind_mvc_100percent/index.php?page=produits" id="groupsLink">
+              <span>Marketplace</span>
+              <span class="badge">Proposer des produits</span>
               <span class="bubble"></span>
             </a>
 

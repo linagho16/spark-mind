@@ -257,9 +257,38 @@ switch ($page) {
         break;
 
 
+    case 'produits':
+        require_once __DIR__ . '/view/omar/index.php';
+        break;
+    case 'liste_produits':
+        require_once __DIR__ . '/view/omar/liste_produits.php';
+        break;
+    case 'ajouter_produit':
+        require_once __DIR__ . '/view/omar/ajouterProduit.php';
+        break;
+    case 'modifier_produit':
+        require_once __DIR__ . '/view/omar/modifierProduit.php';
+        break;
+
+    case 'details_produit':
+        require_once __DIR__ . '/view/omar/detailsfront.php';
+        break;
+
+    case 'ajouter_categorie':
+        require_once __DIR__ . '/view/omar/ajouterCategorie.php';
+        break;
+    
+
+
+
+
+
     case 'frontoffice':
-        echo "FRONTOFFICE OK";
-        exit;
+        require_once __DIR__ . '/view/omar/index.php';
+        break;
+
+
+
 
 
 

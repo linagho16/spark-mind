@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../Model/config.php";
+require_once __DIR__ . "/../models/config.php";
 
 class CommentController {
     // Generate unique ID for varchar(100) IDs
@@ -167,4 +167,5 @@ class CommentController {
 }
 
 ?>
+
 

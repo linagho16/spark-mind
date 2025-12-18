@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SparkMind - Back Office | Gestion Complète</title>
+    <base href="/sparkmind_mvc_100percent/views/backoffice/">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="back.js" defer></script>
+<style>
+/* ==========================================
+   SPARKMIND — BACK OFFICE (FULL INLINE CSS)
+   -> Remplace back.css (tu peux le supprimer)
+   -> Style identique au modèle admin_users
+   -> Compatible avec TON HTML actuel
+   ========================================== */
+
+/* Reset */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* Base */
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(125,90,166,0.25), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(236,117,70,0.20), transparent 55%),
+    #FBEDD7;
+  font-family:'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color:#1A464F;
+  display:flex;
+}
+
+.logo-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.brand-tagline {
+    font-size: 11px;
+    color: #1A464F;
+    opacity: 0.8;
+}
+
+
+/* ==========================================
+   SIDEBAR
+   ========================================== */
+.sidebar{
+  width:260px;
+  background:linear-gradient(#ede8deff 50%, #f7f1eb 100%);
+  border-right:1px solid rgba(0,0,0,.06);
+  padding:18px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  position:fixed;
+  top:0;
+  height:100vh;
+}
+
+.sidebar-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  padding:10px 10px;
+  border-radius:14px;
+  color:#1A464F;
+  background:transparent;
+  cursor:pointer;
+}
+
+.sidebar-header:hover{ background:#f5e2c4ff; }
+
+.sidebar-logo{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+  flex:0 0 auto;
+}
+
+.brand-text{
+  display:flex;
+  flex-direction:column;
+  line-height:1.1;
+}
+
+.brand-name{
+  font-family:'Playfair Display', serif;
+  font-weight:800;
+  font-size:18px;
+  color:#1A464F;
+}
+
+.admin-role{
+  font-size:12px;
+  opacity:.75;
+  color:#1A464F;
+}
+
+.menu-subtitle{
+  margin:-6px 12px 6px;
+  color:#6B5F55;
+  font-size:12px;
+}
+
+/* Menu */
+.sidebar-nav{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:6px;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  text-decoration:none;
+  color:#1A464F;
+  font-weight:600;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.nav-item:hover{
+  background:#f5e2c4ff;
+  transform: translateY(-1px);
+}
+
+.nav-item.active{
+  background:#f5e2c4ff !important;
+  color:#0b3936ff;
+}
+
+.nav-icon{font-size:1.2em;}
+
+/* Badge compteur */
+.badge{
+  margin-left:auto;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  background:#ec7546;
+  color:#fff;
+}
+
+/* Logout en bas */
+.nav-item.logout{
+  margin-top:auto;
+  padding-top:10px;
+  border-top:1px solid rgba(0,0,0,.06);
+}
+.nav-item.logout:hover{ background:#f5e2c4ff; }
+
+/* ==========================================
+   MAIN CONTENT
+   ========================================== */
+.main-content{
+  margin-left:260px;
+  flex:1;
+  min-width:0;
+  padding:0 18px 30px;
+}
+
+/* Sections */
+.content-section{display:none;}
+.content-section.active{display:block;}
+
+/* ==========================================
+   TOP BAR (sticky + blur, modèle)
+   ========================================== */
+.top-bar{
+  position: sticky;
+  top: 0;
+  z-index: 90;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(251, 237, 215, 0.96);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+
+  padding: 10px 24px;
+  margin: 0 -18px 18px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.top-bar h1{
+  margin:0;
+  font-family:'Playfair Display', serif;
+  font-size:22px;
+  color:#1A464F;
+}
+
+/* actions */
+.top-bar-actions{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+/* search */
+.search-box{ position:relative; }
+.search-box input{
+  width: 300px;
+  padding: 8px 34px 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  outline:none;
+  background:#fff;
+}
+.search-box input:focus{
+  border-color:#1A464F;
+  box-shadow:0 0 0 2px rgba(26,70,79,0.15);
+}
+.search-icon{
+  position:absolute;
+  right: 12px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size: 14px;
+  opacity:.8;
+  pointer-events:none;
+}
+
+/* user */
+.user-profile{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+.user-name{
+  font-weight:600;
+  color:#1A464F;
+  opacity:.85;
+}
+.user-avatar{
+  width: 36px;
+  height: 36px;
+  border-radius:50%;
+  background:#1A464F;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+
+/* ==========================================
+   STATS / CARDS
+   ========================================== */
+.stats-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin: 5px 0 14px;
+}
+
+.stat-card{
+  flex: 1 1 170px;
+  background: rgba(255,255,255,0.9);
+  padding: 12px 14px;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.stat-icon{
+  width:44px;height:44px;
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f7f1eb;
+  font-size: 22px;
+}
+
+.stat-info h3{
+  margin:0;
+  font-size: 18px;
+  color:#1A464F;
+}
+.stat-info p{
+  margin:0;
+  color:#444;
+  font-size: 12px;
+  opacity:.85;
+}
+
+/* ==========================================
+   FILTERS
+   ========================================== */
+.filters-section{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:end;
+
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  margin-bottom: 18px;
+}
+
+.filter-group{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.filter-group label{
+  font-size:12px;
+  color:#444;
+  font-weight:600;
+}
+
+.filter-select{
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  background:#fff;
+  min-width: 170px;
+  outline:none;
+}
+.filter-select:focus{
+  border-color:#1A464F;
+  box-shadow:0 0 0 2px rgba(26,70,79,0.12);
+}
+
+/* Buttons (filtrer/reset/actualiser) */
+.btn-filter,
+.btn-reset,
+.btn-add{
+  border:none;
+  cursor:pointer;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.btn-filter,
+.btn-add{
+  background:#1A464F;
+  color:#fff;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+.btn-filter:hover,
+.btn-add:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+.btn-filter:active,
+.btn-add:active{ transform: translateY(0); }
+
+.btn-reset{
+  background: transparent;
+  color:#1A464F;
+  border: 1px solid rgba(26,70,79,0.35);
+}
+.btn-reset:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+}
+
+/* ==========================================
+   TABLES
+   ========================================== */
+.table-container{
+  overflow-x:auto;
+  background:#fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  padding: 0;
+  margin-bottom: 18px;
+}
+
+table{
+  width:100%;
+  border-collapse: collapse;
+  border-radius: 18px;
+  overflow:hidden;
+}
+
+table th, table td{
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+table th{
+  background-color:#f7f1eb;
+  text-align:left;
+}
+
+tbody tr:hover{
+  background: rgba(245,226,196,.35);
+}
+
+/* Badges générés par JS (si tu les utilises) */
+.type-badge,
+.urgence-badge,
+.status-badge{
+  display:inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* status */
+.status-badge.nouveau{ background:#e0f5ff; color:#005f8a; }
+.status-badge.en-cours{ background:#ffe0b3; color:#8a4b00; }
+.status-badge.traite{ background:#e0f9e5; color:#1b6b2a; }
+.status-badge.refuse{ background:#ffe0e0; color:#b02222; }
+
+/* urgence */
+.urgence-badge.tres-urgent{ background:#ffe0e0; color:#b02222; }
+.urgence-badge.urgent{ background:#ffe0b3; color:#8a4b00; }
+.urgence-badge.important{ background:#fff2cc; color:#7a5a00; }
+.urgence-badge.peut-attendre{ background:#e0f9e5; color:#1b6b2a; }
+
+/* types */
+.type-badge.alimentaire{ background:#ffe0b3; color:#8a4b00; }
+.type-badge.scolaire{ background:#e0f5ff; color:#005f8a; }
+.type-badge.vestimentaire{ background:#f1e3ff; color:#5b2a8a; }
+.type-badge.medicale{ background:#ffe0e0; color:#b02222; }
+.type-badge.financiere{ background:#e0f9e5; color:#1b6b2a; }
+.type-badge.logement{ background:#fff2cc; color:#7a5a00; }
+.type-badge.professionnelle{ background:#e0f5ff; color:#005f8a; }
+.type-badge.psychologique{ background:#fce4ec; color:#8a204a; }
+
+/* actions */
+.action-buttons{ display:flex; gap:6px; flex-wrap:wrap; }
+.btn-action{
+  padding:4px 10px;
+  border-radius:999px;
+  font-size: 11px;
+  border:none;
+  cursor:pointer;
+  text-decoration:none;
+  margin:2px 0;
+}
+.btn-action.view{ background:#1A464F; color:#fff; }
+.btn-action.delete{ background:#E23B3B; color:#fff; }
+.btn-action.edit{ background:#ffe0b3; color:#7a3b00; }
+
+/* Pagination */
+.pagination{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top: 12px;
+  flex-wrap:wrap;
+}
+.page-btn{
+  padding: 8px 14px;
+  border-radius:999px;
+  border:1px solid rgba(26,70,79,0.35);
+  background: transparent;
+  cursor:pointer;
+  font-weight:600;
+  color:#1A464F;
+}
+.page-btn.active{
+  background:#1A464F;
+  color:#fff;
+  border-color: transparent;
+}
+.page-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ==========================================
+   MODALS
+   ========================================== */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background: rgba(0,0,0,0.6);
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+  padding: 20px;
+}
+
+.modal-content{
+  background: rgba(255, 247, 239, 0.95);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow:auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
+.modal-header{
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background: rgba(251, 237, 215, 0.96);
+  position: sticky;
+  top: 0;
+}
+
+.modal-header h2{
+  margin:0;
+  font-family:'Playfair Display', serif;
+  font-size: 18px;
+  color:#1A464F;
+}
+
+.modal-close{
+  border:none;
+  cursor:pointer;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#1A464F;
+  color:#fff;
+  font-size:18px;
+}
+
+.modal-body{ padding: 16px; }
+
+/* Status modal */
+.status-modal-content{ max-width: 550px; }
+.status-options{ display:grid; gap: 12px; padding: 10px 0; }
+
+.status-option{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  padding: 12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.status-option:hover{
+  transform: translateX(4px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  background: #fff7ef;
+}
+.status-option.selected{
+  border-color:#1A464F;
+  background:#fff7ef;
+}
+
+.status-option-icon{
+  width:44px;height:44px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f7f1eb;
+  font-size: 22px;
+}
+.status-option-title{ font-weight:800; color:#1A464F; }
+.status-option-description{ font-size: 12px; color:#555; }
+.status-option-check{ margin-left:auto; font-weight:900; opacity:0; }
+.status-option.selected .status-option-check{ opacity:1; }
+
+.modal-footer{
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0,0,0,.06);
+  display:flex;
+  justify-content:flex-end;
+  gap: 10px;
+  background: rgba(251, 237, 215, 0.96);
+}
+
+.btn-modal{
+  border:none;
+  cursor:pointer;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight:600;
+}
+.btn-modal.cancel{
+  background: transparent;
+  color:#1A464F;
+  border:1px solid rgba(26,70,79,0.35);
+}
+.btn-modal.confirm{
+  background:#1A464F;
+  color:#fff;
+}
+.btn-modal.confirm:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+/* ==========================================
+   CARTE / EXPORT / CHART (cards)
+   ========================================== */
+.carte-container,
+.export-filters,
+.export-history,
+.chart-container{
+  background: rgba(255, 247, 239, 0.95);
+  border-radius: 24px;
+  padding: 18px 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+  margin-bottom: 18px;
+}
+
+.carte-header{
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.carte-header h3,
+.export-filters h3,
+.export-history h3,
+.chart-container h3{
+  margin:0 0 8px;
+  font-family:'Playfair Display', serif;
+  color:#1A464F;
+}
+
+.carte-legend{ display:flex; flex-wrap:wrap; gap:12px; }
+.legend-item{ display:flex; align-items:center; gap:8px; font-size:12px; color:#444; }
+.legend-color{ width:18px; height:18px; border-radius:6px; border:1px solid rgba(0,0,0,.10); }
+.legend-color.hot{ background:#ffe0e0; }
+.legend-color.warm{ background:#ffe0b3; }
+.legend-color.cool{ background:#e0f5ff; }
+.legend-color.cold{ background:#e0f9e5; }
+
+/* Carte layout */
+.carte-wrapper{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.carte-image-container,
+.carte-stats,
+.carte-details,
+.export-card,
+.export-history-item{
+  background:#fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.carte-image-container{ position:relative; padding: 12px; }
+.carte-image-container img{ width:100%; height:auto; display:block; border-radius: 14px; }
+#carteMarkers{ position:absolute; inset:12px; pointer-events:none; }
+
+/* Marker */
+.carte-marker{
+  position:absolute;
+  width:28px;height:28px;
+  border-radius:50%;
+  background:#1A464F;
+  border:2px solid #fff;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size: 12px;
+  pointer-events:auto;
+  transform: translate(-50%,-50%);
+}
+.marker-tooltip{
+  position:absolute;
+  bottom: calc(100% + 10px);
+  left:50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.9);
+  color:#fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space:nowrap;
+  opacity:0;
+  transition: opacity .2s ease;
+}
+.carte-marker:hover .marker-tooltip{ opacity:1; }
+
+/* Right stats */
+.carte-stats{ padding: 12px; }
+.carte-stats h4,
+.carte-details h4{
+  margin:0 0 10px;
+  font-family:'Playfair Display', serif;
+  color:#1A464F;
+}
+#topGouvernorats{ display:flex; flex-direction:column; gap:10px; }
+
+.top-gouvernorat-item{
+  background:#fff7ef;
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.gouvernorat-name{ font-weight:800; color:#1A464F; }
+.gouvernorat-count{
+  padding: 2px 8px;
+  border-radius: 999px;
+  background:#1A464F;
+  color:#fff;
+  font-weight:700;
+  font-size: 12px;
+}
+.gouvernorat-bar{ height:8px; background:#eee; border-radius:999px; overflow:hidden; margin-top: 8px; }
+.gouvernorat-bar-fill{ height:100%; background:#1A464F; }
+
+/* Details grid */
+.carte-details{ padding: 12px; }
+.gouvernorat-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 10px;
+}
+.gouvernorat-card{
+  padding: 12px;
+  border-radius: 16px;
+  background:#fff;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.gouvernorat-card-header{ font-weight:800; margin-bottom: 6px; }
+.gouvernorat-card-count{ font-size: 22px; font-weight:900; color:#1A464F; }
+.gouvernorat-card-label{ font-size: 12px; color:#555; }
+
+/* Export */
+.export-container{ display:grid; gap: 14px; }
+.export-options{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.export-card{
+  padding: 16px;
+  text-align:center;
+}
+.export-icon{ font-size: 44px; margin-bottom: 10px; }
+.export-card h3{
+  margin:0 0 6px;
+  font-family:'Playfair Display', serif;
+  color:#1A464F;
+}
+.export-card p{ margin:0 0 12px; color:#555; font-size: 12px; }
+.export-actions{ display:flex; flex-direction:column; gap: 8px; }
+
+.btn-export,
+.btn-export-custom{
+  border:none;
+  cursor:pointer;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background:#1A464F;
+  color:#fff;
+  font-weight:700;
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+.btn-export:hover,
+.btn-export-custom:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+.btn-export.secondary{
+  background: transparent;
+  color:#1A464F;
+  border:1px solid rgba(26,70,79,0.35);
+  box-shadow:none;
+}
+
+/* Export history item */
+.export-history-item{
+  padding: 12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  background:#fff7ef;
+}
+
+/* Chart */
+.evolution-chart{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-around;
+  height: 240px;
+  gap: 10px;
+  padding-top: 10px;
+}
+.chart-bar{
+  flex:1;
+  min-width: 60px;
+  background:#1A464F;
+  border-radius: 10px 10px 0 0;
+  position:relative;
+}
+.bar-value{
+  position:absolute;
+  top:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:700;
+  font-size: 12px;
+  color:#1A464F;
+}
+.bar-label{
+  position:absolute;
+  bottom:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size: 12px;
+  color:#555;
+  white-space:nowrap;
+}
+
+/* GRID des filtres (Export personnalisée) */
+.filter-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  align-items:end;
+  margin-top: 10px;
+}
+
+.filter-item{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.filter-item label{
+  font-size:12px;
+  color:#444;
+  font-weight:600;
+}
+
+.filter-item select,
+.filter-item input[type="date"]{
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  background:#fff;
+  outline:none;
+}
+
+.filter-item select:focus,
+.filter-item input[type="date"]:focus{
+  border-color:#1A464F;
+  box-shadow:0 0 0 2px rgba(26,70,79,0.12);
+}
+
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 1024px){
+  .sidebar{ width:220px; }
+  .main-content{ margin-left:220px; }
+  .carte-wrapper{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 800px){
+  body{ flex-direction:column; }
+
+  .sidebar{
+    position:relative;
+    height:auto;
+    width:100%;
+  }
+  .main-content{
+    margin-left:0;
+    padding:0 14px 30px;
+  }
+  .top-bar{
+    margin: 0 -14px 18px;
+  }
+  .filters-section{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .search-box input{ width:100%; }
+}
+</style>
+
+
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+    <a class="sidebar-header">
+        <img src="logo.jpg" alt="Logo SPARKMIND" class="sidebar-logo" />
+        <span class="brand-name">SPARKMIND</span>
+    </a>
+                <div style="margin: -6px 12px 6px; color:#6B5F55; font-size:12px;">
+      Gestion des Demandeurs
+    </div>
+        
+
+
+
+        <nav class="sidebar-nav">
+            <a href="#demandes" class="nav-item active" onclick="showSection(event, 'demandes')">
+                <span class="nav-icon">📊</span>
+                <span>Demandes d'aide</span>
+                <span class="badge" id="badgeEnAttente">0</span>
+            </a>
+            <a href="#categories" class="nav-item" onclick="showSection(event, 'categories')">
+                <span class="nav-icon">📁</span>
+                <span>Catégories d'aide</span>
+            </a>
+            <a href="#gouvernorats" class="nav-item" onclick="showSection(event, 'gouvernorats')">
+                <span class="nav-icon">🗺️</span>
+                <span>Par Gouvernorat</span>
+            </a>
+            <a href="#carte" class="nav-item" onclick="showSection(event, 'carte')">
+                <span class="nav-icon">🌍</span>
+                <span>Carte Tunisie</span>
+            </a>
+
+            <a href="#export" class="nav-item" onclick="showSection(event, 'export')">
+                <span class="nav-icon">📥</span>
+                <span>Export Données</span>
+            </a>
+
+            <a href="/sparkmind_mvc_100percent/index.php?page=reponse" class="nav-item logout">
+                <span class="nav-icon">💬</span>
+                <span>Réponse</span>
+            </a>
+                       <a href="../../index.php?page=admin_users" class="nav-item logout">
+
+                <span class="nav-icon">↩️</span>
+                <span>Retour</span>
+            </a>
+
+
+
+
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- SECTION 1: DEMANDES D'AIDE -->
+        <section id="section-demandes" class="content-section active">
+            <div class="top-bar">
+                        <div class="brand-block">
+                    <div class="brand-text">
+                        <span class="brand-name">SPARKMIND</span>
+                        <span class="brand-tagline">Quand la pensée devient espoir</span>
+                    </div>
+                    </div>
+                            <div class="top-bar-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchDemandes" placeholder="Rechercher...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card urgent">
+                    <div class="stat-icon">🔴</div>
+                    <div class="stat-info">
+                        <h3 id="statUrgentes">0</h3>
+                        <p>Demandes urgentes</p>
+                    </div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <h3 id="statEnAttente">0</h3>
+                        <p>En attente</p>
+                    </div>
+                </div>
+                <div class="stat-card processed">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="statTraitees">0</h3>
+                        <p>Traitées</p>
+                    </div>
+                </div>
+                <div class="stat-card total">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <h3 id="statTotal">0</h3>
+                        <p>Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Statut:</label>
+                    <select class="filter-select" id="filterStatut">
+                        <option value="">Tous</option>
+                        <option value="nouveau">Nouveau</option>
+                        <option value="en-cours">En cours</option>
+                        <option value="traite">Traité</option>
+                        <option value="refuse">Refusé</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Urgence:</label>
+                    <select class="filter-select" id="filterUrgence">
+                        <option value="">Toutes</option>
+                        <option value="tres-urgent">Très urgent</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="important">Important</option>
+                        <option value="peut-attendre">Peut attendre</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Gouvernorat:</label>
+                    <select class="filter-select" id="filterGouvernorat">
+                        <option value="">Tous</option>
+                    </select>
+                </div>
+                <button class="btn-filter" onclick="applyFilters()">Filtrer</button>
+                <button class="btn-reset" onclick="resetFilters()">Réinitialiser</button>
+            </div>
+
+            <div class="table-container">
+                <table class="demandes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Nom</th>
+                            <th>Gouvernorat</th>
+                            <th>Type d'aide</th>
+                            <th>Urgence</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="demandesTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="paginationDemandes"></div>
+        </section>
+
+        <!-- SECTION 2: CATEGORIES -->
+        <section id="section-categories" class="content-section">
+            <div class="top-bar">
+                <h1>📁 Demandes par Catégorie</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="stats-container" id="categoriesStats"></div>
+            <div class="table-container">
+                <table class="categories-table">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Nombre</th>
+                            <th>Urgentes</th>
+                            <th>En attente</th>
+                            <th>Traitées</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 3: GOUVERNORATS -->
+        <section id="section-gouvernorats" class="content-section">
+            <div class="top-bar">
+                <h1>🗺️ Par Gouvernorat</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="table-container">
+                <table class="gouvernorats-table">
+                    <thead>
+                        <tr>
+                            <th>Gouvernorat</th>
+                            <th>Nombre</th>
+                            <th>Urgentes</th>
+                            <th>En attente</th>
+                            <th>Traitées</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gouvernoratsTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CARTE TUNISIE -->
+        <section id="section-carte" class="content-section">
+            <div class="top-bar">
+                <h1>🌍 Carte de la Tunisie</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="carte-container">
+                <div class="carte-header">
+                    <h3>📍 Distribution géographique des demandes</h3>
+                    <div class="carte-legend">
+                        <div class="legend-item">
+                            <span class="legend-color hot"></span>
+                            <span>Plus de 20 demandes</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color warm"></span>
+                            <span>10 à 20 demandes</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color cool"></span>
+                            <span>5 à 10 demandes</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color cold"></span>
+                            <span>Moins de 5 demandes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="carte-wrapper">
+                    <div class="carte-image-container">
+                        <img src="carte.jpg" alt="Carte de la Tunisie" id="carteImage">
+                        <div id="carteMarkers"></div>
+                    </div>
+                    <div class="carte-stats">
+                        <h4>📊 Top 5 Gouvernorats</h4>
+                        <div id="topGouvernorats"></div>
+                    </div>
+                </div>
+                <div class="carte-details">
+                    <h4>🔍 Détails par Gouvernorat</h4>
+                    <div class="gouvernorat-grid" id="gouvernoratGrid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: EVOLUTION -->
+        <section id="section-evolution" class="content-section">
+            <div class="top-bar">
+                <h1>📈 Évolution des Demandes</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <h3 id="statAujourdhui">0</h3>
+                        <p>Aujourd'hui</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📆</div>
+                    <div class="stat-info">
+                        <h3 id="statSemaine">0</h3>
+                        <p>Cette semaine</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="statMois">0</h3>
+                        <p>Ce mois</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="statMoyenne">0</h3>
+                        <p>Moyenne/jour</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>Demandes par mois (6 derniers mois)</h3>
+                <div id="evolutionChart" class="evolution-chart"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: EXPORT DONNÉES -->
+        <section id="section-export" class="content-section">
+            <div class="top-bar">
+                <h1>📥 Export des Données</h1>
+                <button class="btn-add" onclick="loadDemandes()">🔄 Actualiser</button>
+            </div>
+            <div class="export-container">
+                <div class="export-options">
+                    <div class="export-card">
+                        <div class="export-icon">📊</div>
+                        <h3>Export Excel</h3>
+                        <p>Format .xlsx pour analyse</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportToExcel('all')">📥 Tout exporter</button>
+                            <button class="btn-export secondary" onclick="exportToExcel('filtered')">🔍 Données filtrées</button>
+                        </div>
+                    </div>
+                    <div class="export-card">
+                        <div class="export-icon">📄</div>
+                        <h3>Export CSV</h3>
+                        <p>Format .csv universel</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportToCSV('all')">📥 Tout exporter</button>
+                            <button class="btn-export secondary" onclick="exportToCSV('filtered')">🔍 Données filtrées</button>
+                        </div>
+                    </div>
+                    <div class="export-card">
+                        <div class="export-icon">📑</div>
+                        <h3>Rapport PDF</h3>
+                        <p>Rapport statistique complet</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportToPDF()">📥 Générer PDF</button>
+                        </div>
+                    </div>
+                    <div class="export-card">
+                        <div class="export-icon">📈</div>
+                        <h3>Statistiques JSON</h3>
+                        <p>Stats détaillées au format JSON</p>
+                        <div class="export-actions">
+                            <button class="btn-export" onclick="exportStatistics()">📥 Exporter Stats</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-filters">
+                    <h3>⚙️ Options d'Export Personnalisées</h3>
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label>Période:</label>
+                            <select id="exportPeriode">
+                                <option value="all">Toutes les périodes</option>
+                                <option value="today">Aujourd'hui</option>
+                                <option value="week">Cette semaine</option>
+                                <option value="month">Ce mois</option>
+                                <option value="year">Cette année</option>
+                                <option value="custom">Personnalisée</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Statut:</label>
+                            <select id="exportStatut">
+                                <option value="all">Tous les statuts</option>
+                                <option value="nouveau">Nouveau</option>
+                                <option value="en-cours">En cours</option>
+                                <option value="traite">Traité</option>
+                                <option value="refuse">Refusé</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Urgence:</label>
+                            <select id="exportUrgence">
+                                <option value="all">Toutes les urgences</option>
+                                <option value="tres-urgent">Très urgent</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="important">Important</option>
+                                <option value="peut-attendre">Peut attendre</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Gouvernorat:</label>
+                            <select id="exportGouvernorat">
+                                <option value="all">Tous les gouvernorats</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="custom-date-range" id="customDateRange" style="display:none">
+                        <div class="filter-item">
+                            <label>Date de début:</label>
+                            <input type="date" id="exportDateDebut">
+                        </div>
+                        <div class="filter-item">
+                            <label>Date de fin:</label>
+                            <input type="date" id="exportDateFin">
+                        </div>
+                    </div>
+                    <button class="btn-export-custom" onclick="exportCustom()">🎯 Lancer l'Export Personnalisé</button>
+                </div>
+
+                <div class="export-history">
+                    <h3>📋 Historique des Exports</h3>
+                    <div id="exportHistoryList">
+                        <p style="text-align:center;color:#999;padding:20px">Aucun export récent</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Modification Statut -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content status-modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifier le Statut</h2>
+                <button class="modal-close" onclick="closeModal('statusModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom:20px;color:#666">
+                    Demande <strong>#<span id="currentDemandeId">-</span></strong>
+                </p>
+                <div class="status-options">
+                    <div class="status-option nouveau" onclick="selectStatus(this,'nouveau')">
+                        <div class="status-option-icon">🆕</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Nouveau</div>
+                            <div class="status-option-description">Demande reçue récemment</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option en-cours" onclick="selectStatus(this,'en-cours')">
+                        <div class="status-option-icon">⏳</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">En cours</div>
+                            <div class="status-option-description">En cours de traitement</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option traite" onclick="selectStatus(this,'traite')">
+                        <div class="status-option-icon">✅</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Traité</div>
+                            <div class="status-option-description">Demande terminée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                    <div class="status-option refuse" onclick="selectStatus(this,'refuse')">
+                        <div class="status-option-icon">❌</div>
+                        <div class="status-option-content">
+                            <div class="status-option-title">Refusé</div>
+                            <div class="status-option-description">Demande non acceptée</div>
+                        </div>
+                        <div class="status-option-check">✓</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" onclick="closeModal('statusModal')">Annuler</button>
+                <button class="btn-modal confirm" id="confirmStatusBtn" onclick="confirmStatusChange()" disabled>Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Détails Demande -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Détails de la Demande</h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+</body>
+</html>

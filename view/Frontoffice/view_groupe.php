@@ -6,7 +6,8 @@ require_once __DIR__ . '/../../model/groupemodel.php';
 
 // Check if ID is provided
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header('Location: /aide_solitaire/controller/groupeC.php?action=list&context=frontoffice');
+    header('Location: /sparkmind_mvc_100percent/index.php?page=browse_groupes');
+
     exit;
 }
 
@@ -18,7 +19,8 @@ try {
     
     // Check if group exists (NO STATUS CHECK - show all)
     if (!$groupe) {
-        header('Location: /aide_solitaire/controller/groupeC.php?action=list&context=frontoffice');
+        header('Location: /sparkmind_mvc_100percent/index.php?page=browse_groupes');
+
         exit;
     }
     
@@ -902,7 +904,8 @@ try {
     <div class="layout">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="index.php" class="brand">
+            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="brand">
+
                 <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
@@ -953,7 +956,8 @@ try {
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="create_groupe.php" class="btn-orange">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="btn-orange">
+
                         <span>✨</span>
                         <span>Créer un groupe</span>
                     </a>
@@ -969,7 +973,8 @@ try {
             <div class="space-main">
                 <?php if ($groupe): ?>
                     <!-- Back Button -->
-                    <a href="/aide_solitaire/view/frontoffice/browse_groupes.php" class="back-link">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="back-link">
+
                         <span>←</span>
                         <span>Retour aux groupes</span>
                     </a>
@@ -1087,7 +1092,8 @@ try {
                                 <span>📧</span>
                                 <span>Contacter le responsable</span>
                             </a>
-                            <a href="browse_groupes.php?type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes&type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
+
                                 <span>🔍</span>
                                 <span>Voir d'autres groupes similaires</span>
                             </a>
@@ -1124,11 +1130,13 @@ try {
                         <h3><span>💡</span> Groupes similaires</h3>
                         <p>Découvrez d'autres groupes dans la même région ou du même type.</p>
                         <div class="action-buttons" style="margin-top: 20px; padding-top: 0; border-top: none;">
-                            <a href="/aide_solitaire/view/frontoffice/browse_groupes.php?region=<?php echo urlencode($groupe['region']); ?>" class="action-btn action-tertiary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes&region=<?php echo urlencode($groupe['region']); ?>" class="action-btn action-tertiary">
+
                                 <span>📍</span>
                                 <span>Groupes à <?php echo htmlspecialchars($groupe['region']); ?></span>
                             </a>
-                            <a href="/aide_solitaire/view/frontoffice/browse_groupes.php?type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes&type=<?php echo urlencode($groupe['type']); ?>" class="action-btn action-secondary">
+
                                 <span>👥</span>
                                 <span>Tous les groupes <?php echo htmlspecialchars($groupe['type']); ?></span>
                             </a>
@@ -1141,11 +1149,13 @@ try {
                         <h2><span>❌</span> Groupe non trouvé</h2>
                         <p>Le groupe que vous cherchez n'existe pas ou n'est plus disponible.</p>
                         <div class="action-buttons">
-                            <a href="browse_groupes.php" class="action-btn action-primary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="action-btn action-primary">
+
                                 <span>🔍</span>
                                 <span>Parcourir les groupes</span>
                             </a>
-                            <a href="index.php" class="action-btn action-tertiary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="action-btn action-tertiary">
+
                                 <span>🏠</span>
                                 <span>Retour à l'accueil</span>
                             </a>

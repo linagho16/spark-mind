@@ -155,7 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     error_log("Données à enregistrer: " . print_r($data, true));
                     
                     if ($model->createDon($data)) {
-                        header('Location: /aide_solitaire/view/frontoffice/browse_dons.php?message=don_created');
+                        header('Location: /sparkmind_mvc_100percent/index.php?page=browse_dons&message=don_created');
+
                         exit;
                     } else {
                         $error = "❌ Erreur lors de l'enregistrement du don";
@@ -320,7 +321,8 @@ if ($showStripeForm && !empty($tempDonData)) {
     </head>
     <body>
         <div class="stripe-container">
-            <a href="create_don.php" class="back-link">
+            <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="back-link">
+
                 <span>←</span>
                 <span>Retour au formulaire</span>
             </a>
@@ -449,7 +451,7 @@ if ($showStripeForm && !empty($tempDonData)) {
                 
                 try {
                     // 1. Créer le paiement Stripe
-                    const paymentResponse = await fetch("/aide_solitaire/controller/donC.php?action=create_payment_intent", {
+                    const paymentResponse = await fetch("/sparkmind_mvc_100percent/controller/donC.php?action=create_payment_intent", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -491,7 +493,7 @@ if ($showStripeForm && !empty($tempDonData)) {
                     
                     if (result.paymentIntent.status === "succeeded") {
                         // 3. Enregistrer le don dans la base de données
-                        const donResponse = await fetch("/aide_solitaire/controller/donC.php?action=save_don_after_payment", {
+                        const donResponse = await fetch("/sparkmind_mvc_100percent/controller/donC.php?action=save_don_after_payment", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
@@ -517,7 +519,8 @@ if ($showStripeForm && !empty($tempDonData)) {
                         
                         if (donResult.success) {
                             // Rediriger directement vers browse_dons
-                            window.location.href = "/aide_solitaire/view/frontoffice/browse_dons.php?message=paiement_success&paiement_id=" + result.paymentIntent.id;
+                            window.location.href = "/sparkmind_mvc_100percent/index.php?page=browse_dons&message=paiement_success&paiement_id=" + result.paymentIntent.id;
+
                         } else {
                             throw new Error("Erreur lors de l'enregistrement du don: " + (donResult.error || ""));
                         }
@@ -1200,7 +1203,8 @@ if ($showStripeForm && !empty($tempDonData)) {
     <div class="layout">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="index.php" class="brand">
+            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="brand">
+
                 <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
@@ -1251,7 +1255,8 @@ if ($showStripeForm && !empty($tempDonData)) {
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="create_don.php" class="btn-orange">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="btn-orange">
+
                         <span>➕</span>
                         <span>Créer un don</span>
                     </a>
@@ -1405,7 +1410,7 @@ if ($showStripeForm && !empty($tempDonData)) {
                                 <p>• Meilleure coordination pour la distribution</p>
                             </div>
                             <div style="margin-top: 15px; text-align: center;">
-                                <a href="create_groupe.php" class="btn-orange" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.2rem; background: linear-gradient(135deg, var(--violet), #b58ce0);">
+                                <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="btn-orange" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.2rem; background: linear-gradient(135deg, var(--violet), #b58ce0);">
                                     <span>👥</span>
                                     <span>Créer un nouveau groupe</span>
                                 </a>

@@ -612,6 +612,7 @@
                 <span class="face">😊</span>
               </button>
             </div>
+            
           </div>
 
           <!-- Colonne droite -->

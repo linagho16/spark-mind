@@ -833,7 +833,8 @@ try {
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-orange" onclick="window.location.href='create_don.php'">
+                    <button class="btn-orange" onclick="window.location.href='/sparkmind_mvc_100percent/index.php?page=create_don'">
+
                         <span>➕</span>
                         <span>Créer un don</span>
                     </button>
@@ -858,13 +859,14 @@ try {
                         
                         <!-- Stats Cards -->
                         <div class="card-row">
-                            <a href="browse_dons.php" class="space-card dons" style="animation-delay: 0.2s">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="space-card dons" style="animation-delay: 0.2s">
                                 <strong><?php echo count($activeDons ?? []); ?></strong>
                                 <span>Dons actifs</span>
                                 <div class="bubble">🎁</div>
                             </a>
+
                             
-                            <a href="browse_groupes.php" class="space-card groupes" style="animation-delay: 0.4s">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="space-card groupes" style="animation-delay: 0.4s">
                                 <strong><?php echo count($activeGroupes ?? []); ?></strong>
                                 <span>Groupes actifs</span>
                                 <div class="bubble">👥</div>
@@ -877,7 +879,8 @@ try {
                 <section class="recent-section">
                     <div class="section-header">
                         <h2>🎁 Dons récents</h2>
-                        <a href="browse_dons.php" class="view-all">Voir tous →</a>
+                        <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="view-all">Voir tous →</a>
+
                     </div>
                     
                     <?php if (!empty($recentDons)): ?>
@@ -908,7 +911,8 @@ try {
                                     </div>
                                     <p class="card-description"><?php echo substr(htmlspecialchars($don['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
                                     <div class="card-actions">
-                                        <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">Voir détails</a>
+                                        <a href="/sparkmind_mvc_100percent/index.php?page=view_don&id=<?php echo $don['id']; ?>" class="btn btn-primary">Voir détails</a>
+
                                     </div>
                                 </div>
                             </div>
@@ -917,7 +921,8 @@ try {
                     <?php else: ?>
                         <div class="empty-state">
                             <p>📭 Aucun don disponible pour le moment.</p>
-                            <a href="create_don.php" class="btn btn-primary">Soyez le premier à donner</a>
+                            <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="btn btn-primary">Soyez le premier à donner</a>
+
                         </div>
                     <?php endif; ?>
                 </section>
@@ -926,7 +931,8 @@ try {
                 <section class="recent-section">
                     <div class="section-header">
                         <h2>👥 Groupes récents</h2>
-                        <a href="browse_groupes.php" class="view-all">Voir tous →</a>
+                        <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="view-all">Voir tous →</a>
+
                     </div>
                     
                     <?php if (!empty($recentGroupes)): ?>
@@ -958,7 +964,8 @@ try {
                                     </div>
                                     <p class="card-description"><?php echo substr(htmlspecialchars($groupe['description'] ?? 'Pas de description'), 0, 100); ?>...</p>
                                     <div class="card-actions">
-                                        <a href="view_groupe.php?id=<?php echo $groupe['id']; ?>" class="btn btn-primary">Voir groupe</a>
+                                        <a href="/sparkmind_mvc_100percent/index.php?page=view_groupe&id=<?php echo $groupe['id']; ?>" class="btn btn-primary">Voir groupe</a>
+
                                         <a href="mailto:<?php echo htmlspecialchars($groupe['email']); ?>" class="btn btn-secondary">Contacter</a>
                                     </div>
                                 </div>
@@ -968,7 +975,8 @@ try {
                     <?php else: ?>
                         <div class="empty-state">
                             <p>👥 Aucun groupe disponible pour le moment.</p>
-                            <a href="create_groupe.php" class="btn btn-primary">Créer le premier groupe</a>
+                            <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="btn btn-primary">Créer le premier groupe</a>
+
                         </div>
                     <?php endif; ?>
                 </section>

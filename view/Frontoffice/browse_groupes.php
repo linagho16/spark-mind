@@ -1086,7 +1086,8 @@ try {
     <div class="layout">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="index.php" class="brand">
+            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="brand">
+
                 <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
@@ -1137,7 +1138,7 @@ try {
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="create_groupe.php" class="btn" style="background: linear-gradient(135deg, var(--violet), #b58bf0); color: white; text-decoration: none; padding: 8px 18px; border-radius: 999px;">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="btn" style="background: linear-gradient(135deg, var(--violet), #b58bf0); color: white; text-decoration: none; padding: 8px 18px; border-radius: 999px;">
                         <span>👥</span>
                         <span>Créer un groupe</span>
                     </a>
@@ -1176,7 +1177,9 @@ try {
                         <span>🔍</span>
                         <span>Filtres de recherche</span>
                     </div>
-                    <form method="GET" action="browse_groupes.php" class="filters-form">
+                    <form method="GET" action="/sparkmind_mvc_100percent/index.php" class="filters-form">
+    <input type="hidden" name="page" value="browse_groupes">
+
                         <div class="filter-group">
                             <label class="filter-label">Type de groupe</label>
                             <select name="type" class="filter-select">
@@ -1208,7 +1211,8 @@ try {
                                 <span>🔍</span>
                                 <span>Appliquer les filtres</span>
                             </button>
-                            <a href="browse_groupes.php" class="btn btn-secondary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="btn btn-secondary">
+
                                 <span>🔄</span>
                                 <span>Réinitialiser</span>
                             </a>
@@ -1271,7 +1275,8 @@ try {
                                     </div>
                                     <p class="card-description"><?php echo nl2br(htmlspecialchars($groupe['description'] ?? 'Pas de description')); ?></p>
                                     <div class="card-actions">
-                                        <a href="view_groupe.php?id=<?php echo $groupe['id']; ?>" class="btn btn-primary">
+                                        <a href="/sparkmind_mvc_100percent/index.php?page=view_groupe&id=<?php echo $groupe['id']; ?>" class="btn btn-primary">
+
                                             <span>🔍</span>
                                             <span>Voir détails</span>
                                         </a>
@@ -1288,11 +1293,11 @@ try {
                         <div class="empty-state">
                             <p>👥 Aucun groupe ne correspond à vos critères.</p>
                             <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
-                                <a href="browse_groupes.php" class="btn btn-primary" style="display: inline-flex; width: auto;">
+                                <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="btn btn-primary" style="display: inline-flex; width: auto;">
                                     <span>🔍</span>
                                     <span>Voir tous les groupes</span>
                                 </a>
-                                <a href="create_groupe.php" class="btn btn-secondary" style="display: inline-flex; width: auto;">
+                                <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="btn btn-secondary" style="display: inline-flex; width: auto;">
                                     <span>➕</span>
                                     <span>Créer un groupe</span>
                                 </a>
@@ -1305,11 +1310,13 @@ try {
                 <section class="quick-actions">
                     <h3>Vous ne trouvez pas le groupe idéal ?</h3>
                     <div class="action-buttons">
-                        <a href="create_groupe.php" class="action-btn">
+                        <a href="/sparkmind_mvc_100percent/index.php?page=create_groupe" class="action-btn">
+
                             <span>👥</span>
                             <span>Créer votre propre groupe</span>
                         </a>
-                        <a href="index.php" class="action-btn">
+                        <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="action-btn">
+
                             <span>🏠</span>
                             <span>Retour à l'accueil</span>
                         </a>
@@ -1320,8 +1327,9 @@ try {
                 <footer class="footer">
                     <p>© 2025 Aide Solidaire - Ensemble, créons des communautés fortes ! ❤️</p>
                     <div class="footer-links">
-                        <a href="index.php">🏠 Accueil</a>
-                        <a href="../Backoffice/dashboard.php">🔒 Espace Admin</a>
+                        <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice">🏠 Accueil</a>
+
+                        
                     </div>
                 </footer>
             </div>

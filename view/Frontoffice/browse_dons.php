@@ -74,6 +74,8 @@ $icons = [
     'Autre' => '🎁'
 ];
 ?>
+<?php $BASE = '/sparkmind_mvc_100percent/index.php?page='; ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -957,7 +959,8 @@ $icons = [
     <div class="layout">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="index.php" class="brand">
+            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="brand">
+
                 <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
@@ -1008,7 +1011,8 @@ $icons = [
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button class="btn-orange" onclick="window.location.href='create_don.php'">
+                    <button class="btn-orange" onclick="window.location.href='/sparkmind_mvc_100percent/index.php?page=create_don'">
+
                         <span>➕</span>
                         <span>Créer un don</span>
                     </button>
@@ -1083,7 +1087,9 @@ $icons = [
                         <span>🔍</span>
                         <span>Filtres de recherche</span>
                     </div>
-                    <form method="GET" action="" class="filters-form">
+                    <form method="GET" action="/sparkmind_mvc_100percent/index.php" class="filters-form">
+    <input type="hidden" name="page" value="browse_dons">
+
                         <div class="filter-group">
                             <label class="filter-label">Type de don</label>
                             <select name="type_don" class="filter-select">
@@ -1131,7 +1137,8 @@ $icons = [
                                 <span>🔍</span>
                                 <span>Appliquer les filtres</span>
                             </button>
-                            <a href="browse_dons.php" class="reset-btn">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="reset-btn">
+
                                 
                                 <span>Réinitialiser</span>
                             </a>
@@ -1207,11 +1214,12 @@ $icons = [
                                     
                                     <?php if (!empty($don['groupe_nom'])): ?>
                                     <div class="card-meta" style="margin-top: 10px; margin-bottom: 10px;">
-                                        <a href="view_groupe.php?id=<?php echo $don['groupe_id']; ?>" 
-                                           style="display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--turquoise); color: white; border-radius: 20px; font-size: 13px; font-weight: 500; text-decoration: none;">
+                                        <a href="/sparkmind_mvc_100percent/index.php?page=view_groupe&id=<?php echo $don['groupe_id']; ?>"
+                                        style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;background:var(--turquoise);color:#fff;border-radius:20px;font-size:13px;font-weight:500;text-decoration:none;">
                                             <span>👥</span>
                                             <span><?php echo htmlspecialchars($don['groupe_nom']); ?></span>
                                         </a>
+
                                         <?php if (!empty($don['groupe_type'])): ?>
                                             <span style="background: rgba(125, 90, 166, 0.2); color: #7d5aa6; padding: 4px 8px; border-radius: 15px; font-size: 12px;">
                                                 <?php echo htmlspecialchars($don['groupe_type']); ?>
@@ -1233,12 +1241,14 @@ $icons = [
                                     <?php endif; ?>
                                     
                                     <div class="card-actions">
-                                        <a href="view_don.php?id=<?php echo $don['id']; ?>" class="btn btn-primary">
+                                        <a href="/sparkmind_mvc_100percent/index.php?page=view_don&id=<?php echo $don['id']; ?>" class="btn btn-primary">
+
                                             <span>🔍</span>
                                             <span>Voir détails</span>
                                         </a>
                                         <?php if (!empty($don['groupe_id'])): ?>
-                                        <a href="view_groupe.php?id=<?php echo $don['groupe_id']; ?>" class="btn btn-secondary">
+                                        <a href="/sparkmind_mvc_100percent/index.php?page=view_groupe&id=<?php echo $don['groupe_id']; ?>" class="btn btn-secondary">
+
                                             <span>👥</span>
                                             <span>Voir le groupe</span>
                                         </a>
@@ -1252,11 +1262,11 @@ $icons = [
                         <div class="empty-state">
                             <p>📭 Aucun don ne correspond à vos critères.</p>
                             <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
-                                <a href="browse_dons.php" class="btn btn-primary" style="display: inline-flex; width: auto;">
+                                <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="btn btn-primary" style="display: inline-flex; width: auto;">
                                     <span>🔍</span>
                                     <span>Voir tous les dons</span>
                                 </a>
-                                <a href="create_don.php" class="btn btn-secondary" style="display: inline-flex; width: auto;">
+                                <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="btn btn-secondary" style="display: inline-flex; width: auto;">
                                     <span>➕</span>
                                     <span>Proposer un don</span>
                                 </a>

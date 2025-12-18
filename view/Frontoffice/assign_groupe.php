@@ -117,7 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['don_id']) && isset($_
         
         <?php if (empty($donsWithoutGroup)): ?>
             <p>Tous les dons sont assignés à des groupes! 🎉</p>
-            <p><a href="browse_dons.php">Voir les dons avec groupes</a></p>
+            <p><a href="/sparkmind_mvc_100percent/index.php?page=browse_dons">Voir les dons avec groupes</a>
+</p>
         <?php else: ?>
             <table>
                 <thead>
@@ -161,7 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['don_id']) && isset($_
             </table>
         <?php endif; ?>
         
-        <p><a href="browse_dons.php">← Retour aux dons</a></p>
+        <p><a href="/sparkmind_mvc_100percent/index.php?page=browse_dons">← Retour aux dons</a>
+</p>
     </div>
 </body>
 </html>

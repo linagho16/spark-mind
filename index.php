@@ -24,6 +24,7 @@ switch ($page) {
     ======================= */
     case 'front':
         $homeController->front();
+        
         break;
 
     case 'front_step':
@@ -490,6 +491,11 @@ switch ($page) {
         $event = $eventModel->getEventById($reservationData['event_id']);
 
         require_once __DIR__ . '/views/public/reservation_detail.php';
+        break;
+
+        case 'front':
+        $controller = new PostController();
+        $controller->indexFront();
         break;
 
 

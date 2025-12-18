@@ -702,7 +702,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="layout">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="index.php" class="brand">
+            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="brand">
+
                 <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
@@ -753,7 +754,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="browse_groupes.php" class="btn" style="background: linear-gradient(135deg, var(--violet), #b58bf0); color: white; text-decoration: none; padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="btn" style="background: linear-gradient(135deg, var(--violet), #b58bf0); color: white; text-decoration: none; padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
                         <span>👥</span>
                         <span>Voir les groupes</span>
                     </a>
@@ -879,8 +880,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <footer class="footer">
                     <p>© 2025 Aide Solidaire - Merci pour votre engagement communautaire ❤️</p>
                     <div class="footer-links">
-                        <a href="index.php">🏠 Accueil</a>
-                        <a href="../Backoffice/dashboard.php">🔒 Espace Admin</a>
+                        <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice">🏠 Accueil</a>
+
+                        
                     </div>
                 </footer>
             </div>

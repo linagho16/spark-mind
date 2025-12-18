@@ -6,7 +6,8 @@ require_once __DIR__ . '/../../model/donmodel.php';
 
 // Check if ID is provided
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header('Location: /aide_solitaire/controller/donC.php?action=list&context=frontoffice');
+    header('Location: /sparkmind_mvc_100percent/index.php?page=browse_dons');
+
     exit;
 }
 
@@ -18,7 +19,8 @@ try {
     
     // Check if donation exists (NO STATUS CHECK - show all)
     if (!$don) {
-    header('Location: browse_dons.php');
+    header('Location: /sparkmind_mvc_100percent/index.php?page=browse_dons');
+
     exit;
 }
     
@@ -842,7 +844,8 @@ try {
     <div class="layout">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
-            <a href="index.php" class="brand">
+            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="brand">
+
                 <img src="/sparkmind_mvc_100percent/images/logo.jpg" alt="Logo" class="logo-img">
                 <div class="brand-name">SPARKMIND</div>
             </a>
@@ -893,7 +896,8 @@ try {
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="create_don.php" class="btn-orange">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="btn-orange">
+
                         <span>➕</span>
                         <span>Créer un don</span>
                     </a>
@@ -909,7 +913,7 @@ try {
             <div class="space-main">
                 <?php if ($don): ?>
                     <!-- Back Button -->
-                    <a href="/aide_solitaire/view/frontoffice/browse_dons.php" class="back-link">
+                    <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="back-link">
                         <span>←</span>
                         <span>Retour aux dons</span>
                     </a>
@@ -1016,11 +1020,12 @@ try {
                         
                         <!-- Action Buttons -->
                         <div class="action-buttons">
-                            <a href="/aide_solitaire/view/frontoffice/browse_dons.php?type_don=<?php echo urlencode($don['type_don']); ?>" class="action-btn action-primary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons&type_don=<?php echo urlencode($don['type_don']); ?>" class="action-btn action-primary">
+
                                 <span>🔍</span>
                                 <span>Voir d'autres dons similaires</span>
                             </a>
-                            <a href="/aide_solitaire/view/frontoffice/create_don.php" class="action-btn action-secondary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="action-btn action-secondary">
                                 <span>🎁</span>
                                 <span>Faire un don similaire</span>
                             </a>
@@ -1032,15 +1037,18 @@ try {
                         <h3><span>🔗</span> Liens utiles</h3>
                         <p>Explorez d'autres dons ou découvrez notre plateforme</p>
                         <div class="related-links">
-                            <a href="browse_dons.php" class="action-btn action-tertiary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="action-btn action-tertiary">
+
                                 <span>🎁</span>
                                 <span>Parcourir tous les dons</span>
                             </a>
-                            <a href="browse_groupes.php" class="action-btn action-secondary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_groupes" class="action-btn action-secondary">
+
                                 <span>👥</span>
                                 <span>Voir les groupes</span>
                             </a>
-                            <a href="create_don.php" class="action-btn action-primary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=create_don" class="action-btn action-primary">
+
                                 <span>➕</span>
                                 <span>Faire un don</span>
                             </a>
@@ -1053,11 +1061,13 @@ try {
                         <h2><span>❌</span> Don non trouvé</h2>
                         <p>Le don que vous recherchez n'existe pas ou a été retiré.</p>
                         <div class="action-buttons">
-                            <a href="browse_dons.php" class="action-btn action-primary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=browse_dons" class="action-btn action-primary">
+
                                 <span>🔍</span>
                                 <span>Parcourir les dons</span>
                             </a>
-                            <a href="index.php" class="action-btn action-tertiary">
+                            <a href="/sparkmind_mvc_100percent/index.php?page=frontoffice" class="action-btn action-tertiary">
+
                                 <span>🏠</span>
                                 <span>Retour à l'accueil</span>
                             </a>

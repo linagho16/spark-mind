@@ -1,5 +1,7 @@
 <?php
 // Détail d'un événement
+$backEmail = $_GET['email'] ?? '';
+
 if (!$eventId) {
     header('Location: ?action=events');
     exit;
@@ -196,6 +198,36 @@ $placesDisponibles = 100 - $placesReservees; // Assuming 100 places per event
       transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
       opacity:0; transform: translateY(12px);
     }
+        .back-links{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom: 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background:#FFF7EF;
+      color:#1A464F;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      
+    }
+            .back-linkks{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom: 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background:#FFF7EF;
+      color:#1A464F;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      
+    }
     .back-link:hover{ transform: translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,0.22); filter: brightness(1.02); }
 
     /* Event detail wrapper (carte principale) */
@@ -379,23 +411,38 @@ $placesDisponibles = 100 - $placesReservees; // Assuming 100 places per event
       </div>
     </div>
 
-    <div class="header-actions">
-      <a class="btn-orange" href="index.php?page=profile">
-        <span class="icon">⭐</span>
-        <span>Mon profil</span>
-      </a>
-    </div>
+
   </header>
 
   <h2 class="page-quote">« Chaque événement est une rencontre avec soi et les autres. »</h2>
 
   <div class="container">
 
-    <a href="?action=events"
-       class="back-link"
-       style="display: inline-block; margin-bottom: 2rem; color: var(--primary); text-decoration: none; font-weight: 600;">
-      ← Retour aux événements
-    </a>
+<?php
+$backEmail = $_GET['email'] ?? ($_SESSION['last_res_email'] ?? '');
+?>
+
+
+<a href="/sparkmind_mvc_100percent/index.php?page=my_reservations<?= $backEmail ? '&email=' . urlencode($backEmail) : '' ?>"
+   class="back-link"
+   style="display:inline-block; margin-bottom:2rem; color: var(--primary); text-decoration:none; font-weight:600;">
+  ← Retour à mes Réservations
+</a>
+<a href="/sparkmind_mvc_100percent/index.php?page=events_list_public"
+   class="back-links"
+   style="display:inline-block; margin-bottom:2rem; color: var(--primary); text-decoration:none; font-weight:600;">
+  ← Retour à la liste des événements
+</a>
+<a href="/sparkmind_mvc_100percent/index.php?page=events_home"
+   class="back-links"
+   style="display:inline-block; margin-bottom:2rem; color: var(--primary); text-decoration:none; font-weight:600;">
+  ← Retour à l'acceuil
+</a>
+
+
+
+
+
 
     <div class="event-detail">
 
@@ -450,9 +497,12 @@ $placesDisponibles = 100 - $placesReservees; // Assuming 100 places per event
           <p style="color: var(--text-medium); margin-bottom: 2rem;">
             Réservez dès maintenant votre place pour cet événement !
           </p>
-          <a href="?action=book&id=<?= $event['id'] ?>" class="btn btn-book" style="font-size: 1.2rem; padding: 1.25rem 3rem;">
+          <a href="/sparkmind_mvc_100percent/index.php?page=booking_form&id=<?= (int)$event['id'] ?><?= !empty($_GET['email']) ? '&email=' . urlencode($_GET['email']) : '' ?>"
+            class="btn btn-book"
+            style="font-size: 1.2rem; padding: 1.25rem 3rem;">
             🎫 Réserver maintenant
           </a>
+
         </div>
       <?php else: ?>
         <div class="full-block" style="margin-top: 3rem; text-align: center; padding: 2rem; background: #FFF3CD; border-radius: var(--radius-lg); color: #856404;">

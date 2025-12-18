@@ -1,20 +1,30 @@
 <?php
 // Mes réservations - Recherche par email
-$searchEmail = isset($_GET['email']) ? trim($_GET['email']) : '';
+$searchEmail = '';
+if (!empty($_GET['email'])) {
+    $searchEmail = trim($_GET['email']);
+} elseif (!empty($_SESSION['last_reservation_email'])) {
+    $searchEmail = $_SESSION['last_reservation_email'];
+}
+
 $myReservations = [];
 
 if ($searchEmail) {
-    // Rechercher les réservations par email
     $stmt = $pdo->prepare("
-        SELECT r.*, e.titre as event_titre, e.date_event, e.lieu, e.prix
+        SELECT r.*, e.titre AS event_titre, e.date_event, e.lieu, e.prix
         FROM reservations r
         JOIN events e ON r.event_id = e.id
         WHERE r.email = :email
-        ORDER BY r.date_reservation DESC
+        ORDER BY r.id DESC
     ");
     $stmt->execute([':email' => $searchEmail]);
     $myReservations = $stmt->fetchAll();
 }
+if ($searchEmail) {
+  $_SESSION['last_res_email'] = $searchEmail;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -442,8 +452,9 @@ if ($searchEmail) {
 
     <!-- Search by Email (contenu inchangé) -->
     <div class="search-bar">
-      <form method="GET" action="" class="search-form">
-        <input type="hidden" name="action" value="my_reservations">
+    <form method="GET" action="/sparkmind_mvc_100percent/index.php" class="search-form">
+      <input type="hidden" name="page" value="my_reservations">
+
         <input type="email"
                name="email"
                class="search-input"
@@ -452,7 +463,7 @@ if ($searchEmail) {
                required>
         <button type="submit" class="search-btn">🔍 Rechercher mes réservations</button>
         <?php if ($searchEmail): ?>
-          <a href="?action=my_reservations" class="btn btn-secondary">✖ Effacer</a>
+          <a href="/sparkmind_mvc_100percent/index.php?page=my_reservations" class="btn btn-secondary">✖ Effacer</a>
         <?php endif; ?>
       </form>
     </div>
@@ -471,7 +482,7 @@ if ($searchEmail) {
         <div class="empty-state-icon">📭</div>
         <h3>Aucune réservation trouvée</h3>
         <p>Aucune réservation n'a été trouvée pour l'email <strong><?= htmlspecialchars($searchEmail) ?></strong></p>
-        <a href="?action=events" class="btn btn-primary">Découvrir nos événements</a>
+        <a href="/sparkmind_mvc_100percent/index.php?page=events_list_public" class="btn btn-primary">Découvrir nos événements</a>
       </div>
 
     <?php else: ?>
@@ -490,12 +501,17 @@ if ($searchEmail) {
                 🎫 <?= htmlspecialchars($res['reference']) ?>
               </div>
               <div style="color: var(--text-medium); font-size: 0.9rem; margin-top: 0.25rem;">
-                Réservé le <?= date('d/m/Y à H:i', strtotime($res['date_reservation'])) ?>
+               <?php
+                $created = $res['issued_at'] ?? null; // d’après ta capture
+                ?>
+                Réservé le <?= $created ? date('d/m/Y à H:i', strtotime($created)) : '—' ?>
+
               </div>
             </div>
+             <?php $status = $res['ticket_status'] ?? 'pending'; ?>
 
-            <span class="badge <?= $res['statut'] === 'confirmée' ? 'badge-success' : ($res['statut'] === 'annulée' ? 'badge-danger' : 'badge-warning') ?>">
-              <?= $res['statut'] === 'confirmée' ? '✅ Confirmée' : ($res['statut'] === 'annulée' ? '❌ Annulée' : '⏳ En attente') ?>
+            <span class="badge <?= $status === 'confirmed' ? 'badge-success' : ($status === 'cancelled' ? 'badge-danger' : 'badge-warning') ?>">
+              <?= $status === 'confirmed' ? '✅ Confirmée' : ($status === 'cancelled' ? '❌ Annulée' : '⏳ En attente') ?>
             </span>
           </div>
 
@@ -546,12 +562,15 @@ if ($searchEmail) {
           <?php endif; ?>
 
           <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--secondary); display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="?action=event_detail&id=<?= $res['event_id'] ?>" class="btn btn-secondary">
+            <a href="/sparkmind_mvc_100percent/index.php?page=event_detail&id=<?= (int)$res['event_id'] ?>" class="btn btn-secondary">
               👁️ Voir l'événement
             </a>
-            <a href="?action=reservation_detail&id=<?= $res['id'] ?>&email=<?= urlencode($searchEmail) ?>" class="btn btn-primary">
+
+            <a href="/sparkmind_mvc_100percent/index.php?page=reservation_detail_public&id=<?= (int)$res['id'] ?>&email=<?= urlencode($searchEmail) ?>"
+              class="btn btn-primary">
               📄 Détails complets
             </a>
+
           </div>
         </div>
       <?php endforeach; ?>

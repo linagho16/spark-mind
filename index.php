@@ -426,18 +426,17 @@ switch ($page) {
         $reservation = new Reservation($pdo);
 
         $eventId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
         if (!$eventId) {
             header('Location: index.php?page=events_home');
             exit;
         }
 
-        $event = $eventModel->getEventById($eventId);
+        // ta vue public "détail événement"
+        require_once __DIR__ . '/views/public/event_detail.php';
+        break;
 
-        if (!$event) {
-            header('Location: index.php?page=events_home');
-            exit;
-        }
+
+        
 
 
     case 'events_list_public':
@@ -449,9 +448,7 @@ switch ($page) {
 
         require_once __DIR__ . '/views/public/events_list.php';
         break;
-
-
-    require_once __DIR__ . '/views/public/event_detail.php';
+        require_once __DIR__ . '/views/public/event_detail.php';
     break;
 
     case 'my_reservations':
@@ -466,6 +463,35 @@ switch ($page) {
 
         require_once __DIR__ . '/views/public/my_reservations.php';
         break;
+
+    case 'reservation_detail_public':
+        require_once __DIR__ . '/config/config.php';
+        require_once __DIR__ . '/models/Reservation.php';
+        require_once __DIR__ . '/models/EventModel.php';
+
+        $reservation = new Reservation($pdo);
+        $eventModel  = new EventModel($pdo);
+
+        $reservationId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $email         = $_GET['email'] ?? '';
+
+        if (!$reservationId || !$email) {
+            header('Location: index.php?page=my_reservations');
+            exit;
+        }
+
+        $reservationData = $reservation->getByIdAndEmail($reservationId, $email);
+
+        if (!$reservationData) {
+            header('Location: index.php?page=my_reservations');
+            exit;
+        }
+
+        $event = $eventModel->getEventById($reservationData['event_id']);
+
+        require_once __DIR__ . '/views/public/reservation_detail.php';
+        break;
+
 
 
 

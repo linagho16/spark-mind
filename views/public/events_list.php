@@ -415,20 +415,30 @@ if ($search) {
     </h1>
 
     <!-- Search Bar (contenu inchangé) -->
-    <div class="search-bar">
-      <form method="GET" action="" class="search-form">
-        <input type="hidden" name="action" value="events">
-        <input type="text"
-               name="search"
-               class="search-input"
-               placeholder="Rechercher un événement par titre, lieu, description..."
-               value="<?= htmlspecialchars($search) ?>">
-        <button type="submit" class="search-btn">🔍 Rechercher</button>
-        <?php if ($search): ?>
-          <a href="?action=events" class="btn btn-secondary">✖ Effacer</a>
-        <?php endif; ?>
-      </form>
-    </div>
+<div class="search-bar">
+  <form method="GET"
+        action="/sparkmind_mvc_100percent/index.php"
+        class="search-form">
+
+    <input type="hidden" name="page" value="events_list_public">
+
+    <input type="text"
+           name="search"
+           class="search-input"
+           placeholder="Rechercher un événement par titre, lieu, description..."
+           value="<?= htmlspecialchars($search ?? '') ?>">
+
+    <button type="submit" class="search-btn">🔍 Rechercher</button>
+
+    <?php if (!empty($search)): ?>
+      <a href="/sparkmind_mvc_100percent/index.php?page=events_list_public"
+         class="btn btn-secondary">
+        ✖ Effacer
+      </a>
+    <?php endif; ?>
+  </form>
+</div>
+
 
     <?php if ($search): ?>
       <div class="search-info" style="background: var(--bg-card); padding: 1rem 1.5rem; border-radius: var(--radius); margin-bottom: 2rem; border-left: 4px solid var(--primary);">
@@ -449,7 +459,9 @@ if ($search) {
     <?php else: ?>
       <div class="events-grid">
         <?php foreach ($events as $event): ?>
-          <div class="event-card" onclick="window.location.href='?action=event_detail&id=<?= $event['id'] ?>'">
+          <div class="event-card"
+     onclick="window.location.href='/sparkmind_mvc_100percent/index.php?page=event_detail&id=<?= (int)$event['id'] ?><?= !empty($_GET['email']) ? '&email=' . urlencode($_GET['email']) : '' ?>'">
+
             <div class="event-image">🎭</div>
             <div class="event-content">
               <h3 class="event-title"><?= htmlspecialchars($event['titre']) ?></h3>
@@ -480,11 +492,12 @@ if ($search) {
                   <small>/place</small>
                 </div>
 
-                <a href="?action=book&id=<?= $event['id'] ?>"
-                   class="btn btn-book"
-                   onclick="event.stopPropagation()">
-                  Réserver
-                </a>
+<a href="/sparkmind_mvc_100percent/index.php?page=booking_form&id=<?= (int)$event['id'] ?><?= !empty($_GET['email']) ? '&email=' . urlencode($_GET['email']) : '' ?>"
+   class="btn btn-book"
+   onclick="event.stopPropagation()">
+  Réserver
+</a>
+
               </div>
             </div>
           </div>

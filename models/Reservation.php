@@ -238,5 +238,26 @@ class Reservation {
         $result = $stmt->fetch();
         return $result['places_disponibles'] ?? 100;
     }
+    // Récupérer une réservation par ID + email (sécurité côté public)
+    public function getByIdAndEmail($id, $email) {
+        $sql = "SELECT r.id, r.event_id, r.nom_client, r.email, r.telephone, 
+                    r.nombre_places, r.montant_total, r.reference, r.statut, 
+                    r.methode_paiement, r.notes, r.date_reservation,
+                    e.titre as event_titre, e.description as event_description, 
+                    e.lieu as event_lieu, e.prix as event_prix, e.date_event
+                FROM reservations r 
+                JOIN events e ON r.event_id = e.id 
+                WHERE r.id = :id AND r.email = :email
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':id' => (int)$id,
+            ':email' => trim($email)
+        ]);
+
+        return $stmt->fetch();
+    }
+
 }
 ?>

@@ -9,9 +9,10 @@ if (!$resId || !$searchEmail) {
 }
 
 // Récupérer la réservation avec vérification de l'email
+// ✅ MODIF: supprimer e.duree (colonne inexistante)
 $stmt = $pdo->prepare("
     SELECT r.*, e.titre as event_titre, e.description as event_description, 
-           e.date_event, e.lieu, e.prix, e.duree
+           e.date_event, e.lieu, e.prix
     FROM reservations r
     JOIN events e ON r.event_id = e.id
     WHERE r.id = :id AND r.email = :email
@@ -331,9 +332,9 @@ if (!$res) {
     </div>
 
     <div class="header-actions">
-      <a class="btn-orange" href="index.php?page=profile">
-        <span class="icon">⭐</span>
-        <span>Mon profil</span>
+      <a class="btn-orange" href="/sparkmind_mvc_100percent/index.php?page=events_home">
+        <span class="icon"></span>
+        <span>Retour</span>
       </a>
     </div>
   </header>
@@ -392,15 +393,9 @@ if (!$res) {
               <div style="font-weight: 600;"><?= htmlspecialchars($res['lieu']) ?></div>
             </div>
           </div>
-          <?php if (!empty($res['duree'])): ?>
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 1.5rem;">⏱️</span>
-            <div>
-              <div style="font-size: 0.85rem; color: var(--text-medium);">Durée</div>
-              <div style="font-weight: 600;"><?= htmlspecialchars($res['duree']) ?></div>
-            </div>
-          </div>
-          <?php endif; ?>
+
+          <!-- ✅ MODIF: on supprime l'affichage de la durée (car champ non sélectionné / inexistant) -->
+
         </div>
       </div>
 
@@ -471,12 +466,13 @@ if (!$res) {
 
       <!-- Actions -->
       <div style="margin-top: 2rem; text-align: center;">
-        <a href="?action=event_detail&id=<?= $res['event_id'] ?>" class="btn btn-primary" style="margin-right: 1rem;">
-          👁️ Voir l'événement
-        </a>
-        <a href="?action=my_reservations&email=<?= urlencode($searchEmail) ?>" class="btn btn-secondary">
-          📋 Mes autres réservations
-        </a>
+
+
+      <a href="/sparkmind_mvc_100percent/index.php?page=my_reservations&email=<?= urlencode($searchEmail) ?>"
+        class="btn btn-secondary">
+        📋 Mes autres réservations
+      </a>
+
       </div>
 
     </div>

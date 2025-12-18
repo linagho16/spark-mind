@@ -1,15 +1,17 @@
 <?php
 // Formulaire de réservation
 if (!$eventId) {
-    header('Location: ?action=events');
+    header('Location: /sparkmind_mvc_100percent/index.php?page=events_list_public');
     exit;
+
 }
 
 $event = $eventModel->getEventById($eventId);
 if (!$event) {
     $_SESSION['message'] = "Événement introuvable.";
     $_SESSION['message_type'] = 'error';
-    header('Location: ?action=events');
+    header('Location: /sparkmind_mvc_100percent/index.php?page=events_list_public');
+
     exit;
 }
 
@@ -369,11 +371,11 @@ $placesDisponibles = 100 - $placesReservees;
 
   <div class="container">
 
-    <a href="/sparkmind_mvc_100percent/index.php?page=events_home&id=<?= $eventId ?>"
-       class="back-link"
-       style="color: var(--primary); text-decoration: none; font-weight: 600;">
-      ← Retour à l'événement
-    </a>
+  <a href="/sparkmind_mvc_100percent/index.php?page=event_detail&id=<?= (int)$eventId ?>"
+    class="back-link">
+    ← Retour à l'événement
+  </a>
+
 
     <div class="booking-grid">
 
@@ -437,7 +439,10 @@ $placesDisponibles = 100 - $placesReservees;
       <div class="booking-form">
         <h2 style="margin-bottom: 1.5rem; color: var(--text-dark);">🎫 Réserver votre place</h2>
 
-        <form action="process_public_reservation.php" method="POST" onsubmit="return validateForm()">
+       <form action="/sparkmind_mvc_100percent/views/public/process_public_reservation.php"
+      method="POST"
+      onsubmit="return validateForm()">
+
           <input type="hidden" name="event_id" value="<?= $eventId ?>">
           <input type="hidden" name="prix_unitaire" value="<?= $event['prix'] ?>">
 

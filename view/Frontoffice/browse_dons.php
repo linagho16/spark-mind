@@ -1145,35 +1145,58 @@ $icons = [
                             <div class="content-card">
                                 <div class="card-image-container">
 
-                                    <!-- ✅✅✅ MODIF ICI : affichage image corrigé -->
-                                    <?php if (!empty($don['photos'])): ?>
-                                        <?php
-                                            // URL web de l'image (ex: /sparkmind_mvc_100percent/uploads/xxx.jpg)
-                                            $photoUrl = '/sparkmind_mvc_100percent/' . ltrim($don['photos'], '/');
+ <?php if (!empty($don['photos'])): ?>
+    <?php
+        // Si plusieurs images sont stockées (ex: "img1.jpg,img2.jpg"), on prend la 1ère
+        $raw = trim($don['photos']);
+        $raw = explode(',', $raw)[0];
+        $raw = str_replace('\\', '/', trim($raw));
 
-                                            // Chemin disque réel pour file_exists
-                                            $filePath = $_SERVER['DOCUMENT_ROOT'] . $photoUrl;
-                                        ?>
+        // 1) Si c'est une URL complète
+        if (preg_match('#^https?://#i', $raw)) {
+            $photoUrl = $raw;
+            $diskPath = $_SERVER['DOCUMENT_ROOT'] . parse_url($raw, PHP_URL_PATH);
+        } else {
+            // 2) Chemin local (relatif)
+            $webPath = ($raw[0] === '/') ? $raw : '/' . $raw;
 
-                                        <?php if (file_exists($filePath)): ?>
-                                            <img
-                                                src="<?= htmlspecialchars($photoUrl) ?>"
-                                                alt="Image de <?= htmlspecialchars($don['type_don']) ?>"
-                                                class="card-image"
-                                                onerror="this.onerror=null; this.style.display='none';"
-                                            >
-                                        <?php else: ?>
-                                            <div class="card-image-placeholder">
-                                                <?php echo $icons[$don['type_don']] ?? '🎁'; ?>
-                                            </div>
-                                        <?php endif; ?>
+            // Si ce n'est pas déjà sous /sparkmind_mvc_100percent/
+            if (!preg_match('#^/sparkmind_mvc_100percent/#', $webPath)) {
 
-                                    <?php else: ?>
-                                        <div class="card-image-placeholder">
-                                            <?php echo $icons[$don['type_don']] ?? '🎁'; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    <!-- ✅✅✅ FIN MODIF -->
+                // Cas: DB stocke "uploads/xxx.jpg" ou "/uploads/xxx.jpg"
+                if (preg_match('#^/uploads/#', $webPath)) {
+                    $webPath = '/sparkmind_mvc_100percent' . $webPath;
+
+                // Cas: DB stocke juste "xxx.jpg"
+                } else {
+                    $webPath = '/sparkmind_mvc_100percent/uploads/' . ltrim($webPath, '/');
+                }
+            }
+
+            $photoUrl = $webPath;
+            $diskPath = $_SERVER['DOCUMENT_ROOT'] . $photoUrl;
+        }
+    ?>
+
+    <?php if (file_exists($diskPath)): ?>
+        <img
+            src="<?= htmlspecialchars($photoUrl) ?>"
+            alt="Image de <?= htmlspecialchars($don['type_don']) ?>"
+            class="card-image"
+            onerror="this.style.display='none';"
+        >
+    <?php else: ?>
+        <div class="card-image-placeholder">
+            <?php echo $icons[$don['type_don']] ?? '🎁'; ?>
+        </div>
+    <?php endif; ?>
+
+<?php else: ?>
+    <div class="card-image-placeholder">
+        <?php echo $icons[$don['type_don']] ?? '🎁'; ?>
+    </div>
+<?php endif; ?>
+
 
                                 </div>
 

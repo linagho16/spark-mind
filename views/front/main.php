@@ -607,10 +607,12 @@
 
 
             <div class="cta-discuss">
-              <button class="btn-discuss" id="discussBtn">
-                <span>Discussions anonymes</span>
-                <span class="face">😊</span>
-              </button>
+                <button class="btn-discuss" id="discussBtn"
+                  onclick="window.location.href='index.php?page=post_list'">
+                  <span>Discussions anonymes</span>
+                  <span class="face">😊</span>
+                </button>
+
             </div>
             
           </div>

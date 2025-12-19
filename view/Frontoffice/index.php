@@ -812,7 +812,7 @@ try {
             </nav>
 
             <div class="sidebar-foot">
-                <a href="/sparkmind_mvc_100percent/index.php?page=offer_support" class="link">
+                <a href="/sparkmind_mvc_100percent/index.php?page=admin_users" class="link">
                     <span class="icon"></span>
                     <span>Retour</span>
                 </a>

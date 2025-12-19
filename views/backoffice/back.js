@@ -118,7 +118,7 @@ function showSection(event, sectionName) {
 function loadDemandes() {
     console.log('📡 Chargement des demandes...');
     
-    const url = '/SparkMind/controllers/DemandeController.php?action=getAll';
+    const url = '/sparkmind_mvc_100percent/controllers/DemandeController.php?action=getAll';
     
     fetch(url)
         .then(response => response.json())

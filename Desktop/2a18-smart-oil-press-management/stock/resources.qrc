@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/assets">
+        <file>resoursers/logo.png</file>
+        <file>resoursers/employee.png</file>
+        <file>resoursers/farmer.png</file>
+        <file>resoursers/stock.png</file>
+        <file>resoursers/extraction.png</file>
+        <file>resoursers/order.png</file>
+    </qresource>
+</RCC>

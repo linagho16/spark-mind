@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1141</width>
+    <height>783</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Smart Oil Press</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">/* Palette */
+QWidget#centralwidget {
+    background-color: #F4EEE4;
+    font-family: &quot;Segoe UI&quot;;
+    font-size: 12px;
+}
+
+QFrame#topBar {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #2A3B4C, stop:1 #1E2B39);
+    border-radius: 10px;
+}
+
+QLabel#appTitle {
+    color: #F5F5F5;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+QLabel#topIcons {
+    color: #FBC02D;
+    font-size: 14px;
+}
+
+QLabel#userLabel {
+    color: #F5F5F5;
+    font-size: 12px;
+}
+
+QFrame#sidebar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2A3B4C, stop:1 #1E2B39);
+    border-right: 1px solid #16202C;
+}
+
+QLabel#sidebarTitle {
+    color: #F5F5F5;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+QPushButton[nav=&quot;true&quot;] {
+    background-color: #314A67;
+    border: 1px solid #24364d;
+    color: #FFFFFF;
+    text-align: left;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+QPushButton[nav=&quot;true&quot;]:hover {
+    background-color: #F2B705;
+    border: 1px solid #C99350;
+    color: #1F2937;
+}
+
+QPushButton[nav=&quot;true&quot;][active=&quot;true&quot;] {
+    background-color: #F2B705;
+    border: 1px solid #C99350;
+    color: #1F2937;
+}
+
+QPushButton[nav=&quot;true&quot;][active=&quot;true&quot;]:hover {
+    background-color: #F2B705;
+    border: 1px solid #C99350;
+    color: #1F2937;
+}
+
+QLabel#sectionTitle {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+QPushButton {
+    background-color: #6B8E23;
+    color: #F5F5F5;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 10px;
+}
+
+QPushButton:hover {
+    background-color: #5A7A1E;
+    color: #F5F5F5;
+}
+
+QPushButton#btnSecondary {
+    background-color: #F2B705;
+    color: #2B5978;
+}
+
+QPushButton#btnSecondary:hover {
+    background-color: #E0A800;
+    color: #2B5978;
+}
+
+QPushButton#btnDelete {
+    background-color: #C62828;
+    color: #FFFFFF;
+}
+
+QPushButton#btnDelete:hover {
+    background-color: #B71C1C;
+    color: #FFFFFF;
+}
+
+QLineEdit {
+    background-color: #FFFBF5;
+    border: 1px solid #E3D8C7;
+    border-radius: 10px;
+    padding: 8px 10px;
+    min-height: 30px;
+}
+
+QFrame#cardAlert,
+QFrame#cardTopUp,
+QFrame#cardLocations,
+QFrame#cardInventory,
+QFrame#cardChart,
+QFrame#cardActions {
+    background-color: #FFFFFF;
+    border: 1px solid #E3D8C7;
+    border-radius: 12px;
+}
+
+QLabel#cardTitleAlert,
+QLabel#cardTitleTopUp,
+QLabel#cardTitleLocations,
+QLabel#cardTitleInventory,
+QLabel#cardTitleChart,
+QLabel#cardTitleActions {
+    color: #2B5978;
+    font-weight: 700;
+}
+
+QTableWidget {
+    background-color: #ffffff;
+    gridline-color: #E3D8C7;
+    selection-background-color: #FFE9B5;
+    selection-color: #2B5978;
+    border: none;
+}
+
+QHeaderView::section {
+    background-color: #2B5978;
+    color: #F5F5F5;
+    padding: 8px 10px;
+    border: none;
+    font-weight: 600;
+}
+
+QTableWidget::item {
+    padding: 6px 8px;
+}
+
+QLabel#alertLow {
+    background-color: #D32F2F;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+QLabel#alertMid {
+    background-color: #F57C00;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+QLabel#alertOk {
+    background-color: #2E7D32;
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 8px;
+}</string>
+   </property>
+   <layout class="QHBoxLayout" name="mainLayout">
+    <item>
+     <widget class="QFrame" name="sidebar">
+      <property name="minimumSize">
+       <size>
+        <width>210</width>
+        <height>0</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="sidebarLayout">
+       <item>
+        <widget class="QLabel" name="logoLabel">
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="resources.qrc">:/assets/resoursers/stock.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navActive">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Employé</string>
+         </property>
+         <property name="nav" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="active" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navButton_2">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Agriculteur</string>
+         </property>
+         <property name="nav" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navButton_3">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Stock</string>
+         </property>
+         <property name="nav" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navButton_4">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Extraction</string>
+         </property>
+         <property name="nav" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navAccent">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Commande</string>
+         </property>
+         <property name="nav" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="sidebarSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>200</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="contentLayout">
+      <item>
+       <widget class="QFrame" name="topBar">
+        <layout class="QHBoxLayout" name="topBarLayout">
+         <item>
+          <widget class="QLabel" name="sectionTitle">
+           <property name="text">
+            <string>Gestion de Stock</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="topSpacer2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="userLabel">
+           <property name="text">
+            <string>Bienvenue, Amir Mansour</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="contentBodyLayout">
+        <item>
+         <widget class="QFrame" name="cardsRow">
+          <layout class="QHBoxLayout" name="cardsLayout">
+           <item>
+            <widget class="QFrame" name="cardAlert">
+             <layout class="QVBoxLayout" name="cardLayout1">
+              <item>
+               <widget class="QLabel" name="cardTitleAlert">
+                <property name="text">
+                 <string>SmartStock Alert™</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelAlertDesc">
+                <property name="text">
+                 <string>Surveillance automatique des seuils critiques</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="alertLow">
+                <property name="text">
+                 <string>Stock faible</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="alertMid">
+                <property name="text">
+                 <string>Seuil moyen</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="alertOk">
+                <property name="text">
+                 <string>Niveau optimal</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="cardTopUp">
+             <layout class="QVBoxLayout" name="cardLayout2">
+              <item>
+               <widget class="QLabel" name="cardTitleTopUp">
+                <property name="text">
+                 <string>SmartTopUp™</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelTopUpDesc">
+                <property name="text">
+                 <string>Recommandations de réapprovisionnement</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelTopUpPoint1">
+                <property name="text">
+                 <string>Suggestion basée sur seuil minimum</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelTopUpPoint2">
+                <property name="text">
+                 <string>Quantité calculée via tendances d’usage</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelTopUpPoint3">
+                <property name="text">
+                 <string>Intégration fournisseurs / achats</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="cardLocations">
+             <layout class="QVBoxLayout" name="cardLayout3">
+              <item>
+               <widget class="QLabel" name="cardTitleLocations">
+                <property name="text">
+                 <string>Gestion des emplacements</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelLocDesc">
+                <property name="text">
+                 <string>Suivi par zone, rack et entrepôt</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelLocPoint1">
+                <property name="text">
+                 <string>Capacité par emplacement</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelLocPoint2">
+                <property name="text">
+                 <string>Historique des mouvements</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="cardInventory">
+          <layout class="QVBoxLayout" name="tableCardLayout">
+           <item>
+            <widget class="QLabel" name="cardTitleInventory">
+             <property name="text">
+              <string>Inventaire</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="inventoryToolbarLayout">
+             <item>
+              <widget class="QLineEdit" name="searchEdit">
+               <property name="placeholderText">
+                <string>Rechercher...</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnAdd">
+               <property name="text">
+                <string>Ajouter</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnEdit">
+               <property name="text">
+                <string>Modifier</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btnDelete">
+               <property name="text">
+                <string>Supprimer</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="tableStock">
+             <property name="rowCount">
+              <number>6</number>
+             </property>
+             <property name="columnCount">
+              <number>7</number>
+             </property>
+             <row/>
+             <row/>
+             <row/>
+             <row/>
+             <row/>
+             <row/>
+             <column>
+              <property name="text">
+               <string>ID Stock</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Type de produit</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Quantité disponible</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Unité</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Date d’entrée</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Emplacement</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Seuil d’alerte</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="analyticsRow">
+          <layout class="QHBoxLayout" name="analyticsLayout">
+           <item>
+            <widget class="QFrame" name="cardChart">
+             <layout class="QVBoxLayout" name="chartCardLayout">
+              <item>
+               <widget class="QLabel" name="cardTitleChart">
+                <property name="text">
+                 <string>Graphique des tendances de stock</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelChartPlaceholder">
+                <property name="minimumSize">
+                 <size>
+                  <width>420</width>
+                  <height>180</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>[Zone graphique]</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="cardActions">
+             <layout class="QVBoxLayout" name="actionsLayout">
+              <item>
+               <widget class="QLabel" name="cardTitleActions">
+                <property name="text">
+                 <string>Actions rapides</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnAlerts">
+                <property name="text">
+                 <string>Alertes stock</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnTopUp">
+                <property name="text">
+                 <string>Top-Up Recommendations</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnExport">
+                <property name="text">
+                 <string>Exporter rapports</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnLocations">
+                <property name="text">
+                 <string>Gestion des emplacements</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="contentSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1141</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

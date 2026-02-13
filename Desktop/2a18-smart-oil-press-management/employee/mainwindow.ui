@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1281</width>
+    <height>894</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion des Employés</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">/* STYLE GLOBAL - THEME NATURE &amp; HUILE */
+QWidget#centralwidget {
+    background-color: #F4EEE4;
+    font-family: &quot;Segoe UI&quot;;
+    font-size: 12px;
+}
+
+/* --- BARRE DU HAUT --- */
+QFrame#topBar,
+QFrame#topBarCommande {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #243C53, stop:1 #2B5978);
+    border-radius: 10px;
+}
+QLabel#appTitle,
+QLabel#commandeTitle {
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 0 6px;
+}
+QLabel#userLabel,
+QLabel#commandeUserLabel { color: #E6EEF4; font-size: 12px; }
+
+/* --- SIDEBAR (Style type capture) --- */
+QFrame#sidebar {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2A3B4C, stop:1 #1E2B39);
+    border-right: 1px solid #16202C;
+}
+QLabel#sidebarTitle {
+    color: #F5F5F5;
+    font-weight: 700;
+    font-size: 13px;
+    margin: 8px 0 10px 0;
+}
+
+QPushButton#navActive,
+QPushButton#navButton_2,
+QPushButton#navButton_3,
+QPushButton#navButton_4,
+QPushButton#navAccent {
+    text-align: left;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    background-color: #456785;
+    color: #FFFFFF;
+    border: 2px solid #2F5A8C;
+}
+
+QPushButton#navActive:hover,
+QPushButton#navButton_2:hover,
+QPushButton#navButton_3:hover,
+QPushButton#navButton_4:hover,
+QPushButton#navAccent:hover {
+    background-color: #F2B705;
+    color: #1F2937;
+    border: 2px solid #C99305;
+}
+
+QPushButton[navState=&quot;normal&quot;] {
+    background-color: #2e4f6d;
+    color: #FFFFFF;
+    border: 2px solid #215189;
+}
+
+QPushButton[navState=&quot;active&quot;] {
+    background-color: #F2B705;
+    color: #1F2937;
+    border: 2px solid #C99305;
+    font-weight: 700;
+}
+
+/* --- CARTE CENTRALE --- */
+QFrame#card {
+    background-color: #FFFFFF;
+    border: 1px solid #E3D8C7;
+    border-radius: 12px;
+}
+QLabel#cardTitle { color: #245B7A; font-weight: 700; font-size: 16px; }
+
+/* --- TABLEAU (En Vert maintenant) --- */
+QTableWidget {
+    background-color: #ffffff; gridline-color: #E3D8C7; selection-background-color: #FFE9B5; selection-color: #000000; border: 1px solid #E3D8C7;
+}
+QHeaderView::section {
+    background-color: #2B5978; color: #FFFFFF; padding: 8px; border: none; font-weight: 600;
+}
+
+/* --- FORMULAIRE --- */
+/* Bordures vertes au lieu de bleues */
+QLineEdit, QComboBox, QDateEdit, QSpinBox {
+    background-color: #FFFBF5; border: 2px solid #2B5978; border-radius: 6px; padding: 6px; color: #333;
+}
+
+/* Bouton Valider */
+QPushButton#btn_valider_emp {
+    background-color: #6B8E23; color: white; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 13px;
+}
+QPushButton#btn_valider_emp:hover { background-color: #5A7A1E; }
+
+QPushButton#btn_modifier_emp {
+    background-color: #6B8E23;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+}
+QPushButton#btn_modifier_emp:hover { background-color: #5A7A1E; }
+QPushButton#btn_supprimer_emp {
+    background-color: #C62828;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+}
+QPushButton#btn_supprimer_emp:hover { background-color: #B71C1C; }
+
+QPushButton#btnSortEmp,
+QPushButton#btnSearchEmp,
+QPushButton#btnStatsEmp {
+    background-color: #6B8E23;
+    color: #FFFFFF;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+QPushButton#btnExportPdfEmp {
+    background-color: #F2B705;
+    color: #2B2B2B;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+QPushButton#btnSortEmp:hover,
+QPushButton#btnSearchEmp:hover,
+QPushButton#btnStatsEmp:hover {
+    background-color: #5A7A1E;
+}
+QPushButton#btnExportPdfEmp:hover { background-color: #E0A800; }
+
+QPushButton:hover {
+    background-color: #F2B705;
+    color: #FFFFFF;
+}
+</string>
+   </property>
+   <layout class="QHBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="sidebar">
+      <property name="minimumSize">
+       <size>
+        <width>210</width>
+        <height>0</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="sidebarLayout">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="topMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>12</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="sidebarTitle">
+         <property name="text">
+          <string>Smart Oil Press</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navActive">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Employé</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navButton_2">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Agriculteur</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navButton_3">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Stock</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navButton_4">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Extraction</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="navAccent">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>220</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Commande</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="sidebarSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>200</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QStackedWidget" name="stackedModules">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="pageEmployee">
+       <layout class="QVBoxLayout" name="contentLayout">
+        <property name="leftMargin">
+         <number>20</number>
+        </property>
+        <property name="topMargin">
+         <number>20</number>
+        </property>
+        <property name="rightMargin">
+         <number>20</number>
+        </property>
+        <property name="bottomMargin">
+         <number>20</number>
+        </property>
+        <item>
+         <widget class="QFrame" name="topBar">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>60</height>
+           </size>
+          </property>
+          <layout class="QHBoxLayout" name="topBarLayout">
+           <item>
+            <widget class="QLabel" name="appTitle">
+             <property name="text">
+              <string>EMPLOYÉ</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="topSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="userLabel">
+             <property name="text">
+              <string>Connecté : Opérateur Production</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacerBetween">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QFrame" name="card">
+          <layout class="QHBoxLayout" name="cardMainLayout">
+           <item>
+            <layout class="QVBoxLayout" name="leftContent">
+             <property name="spacing">
+              <number>8</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="cardTitle">
+               <property name="text">
+                <string>Gestion des Employés</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="empActionsRow">
+               <property name="spacing">
+                <number>8</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="labelSearchEmp">
+                 <property name="text">
+                  <string>Recherche</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="searchEmp">
+                 <property name="placeholderText">
+                  <string>Rechercher...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnSearchEmp">
+                 <property name="text">
+                  <string>OK</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="labelSortEmp">
+                 <property name="text">
+                  <string>Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="sortEmp">
+                 <item>
+                  <property name="text">
+                   <string>CIN</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Nom</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Poste</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="sortOrderEmp">
+                 <item>
+                  <property name="text">
+                   <string>↑ Croissant</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>↓ Décroissant</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnSortEmp">
+                 <property name="text">
+                  <string>Trier</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnExportPdfEmp">
+                 <property name="text">
+                  <string>Exporter PDF</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnStatsEmp">
+                 <property name="text">
+                  <string>Statistiques</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="employeeTable">
+               <property name="rowCount">
+                <number>0</number>
+               </property>
+               <property name="columnCount">
+                <number>8</number>
+               </property>
+               <column>
+                <property name="text">
+                 <string>ID</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>CIN</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Nom</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Prénom</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Poste</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Date emb.</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Salaire</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Actions</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QFrame" name="formFrame">
+             <property name="maximumSize">
+              <size>
+               <width>300</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <layout class="QVBoxLayout" name="formLayout">
+              <property name="spacing">
+               <number>12</number>
+              </property>
+              <property name="leftMargin">
+               <number>15</number>
+              </property>
+              <property name="topMargin">
+               <number>15</number>
+              </property>
+              <property name="rightMargin">
+               <number>15</number>
+              </property>
+              <property name="bottomMargin">
+               <number>15</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="formTitleLabel">
+                <property name="styleSheet">
+                 <string notr="true">font-weight: 700; font-size: 14px; color: #245B7A;</string>
+                </property>
+                <property name="text">
+                 <string>Formulaire Employé</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="cinLabel">
+                <property name="text">
+                 <string>CIN</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="cinLineEdit">
+                <property name="placeholderText">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="nomLabel">
+                <property name="text">
+                 <string>Nom</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="nomLineEdit">
+                <property name="placeholderText">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="prenomLabel">
+                <property name="text">
+                 <string>Prénom</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="prenomLineEdit">
+                <property name="placeholderText">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="posteLabel">
+                <property name="text">
+                 <string>Poste</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="posteComboBox">
+                <item>
+                 <property name="text">
+                  <string>Sélectionner</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Manager</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Technicien</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Assistante</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="dateLabel">
+                <property name="text">
+                 <string>Date d'embauche</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDateEdit" name="embaucheEdit">
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="salaireLabel">
+                <property name="text">
+                 <string>Salaire (DH)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="salaireLineEdit">
+                <property name="placeholderText">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="formSpacerV">
+                <property name="orientation">
+                 <enum>Qt::Orientation::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="buttonLayout">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="btn_valider_emp">
+                  <property name="text">
+                   <string>Ajouter</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_modifier_emp">
+                  <property name="text">
+                   <string>Modifier</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_supprimer_emp">
+                  <property name="text">
+                   <string>Supprimer</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1281</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

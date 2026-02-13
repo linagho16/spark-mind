@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1100</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Smart Oil Press - Gestion des Commandes</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow, QWidget {
+  font-family: &quot;Segoe UI&quot;;
+  font-size: 14px;
+  background: #F4EEE4;
+  color: #1F2937;
+}
+#topBar {
+  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #243C53, stop:1 #2B5978);
+  border-radius: 10px;
+}
+QFrame#sidebar {
+  background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0 #2A3B4C, stop:1 #1E2B39);
+  border-right: 1px solid #16202C;
+}
+QLabel#sidebarTitle {
+  color: #F5F5F5;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+QPushButton#navActive,
+QPushButton#navButton_2,
+QPushButton#navButton_3,
+QPushButton#navButton_4,
+QPushButton#navAccent {
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+QPushButton[navState="normal"] {
+  background-color: #314A67;
+  color: #FFFFFF;
+  border: 2px solid #24364D;
+}
+QPushButton[navState="active"] {
+  background-color: #F2B705;
+  color: #1F2937;
+  border: 2px solid #C99305;
+  font-weight: 700;
+}
+#titleLabel {
+  color: #FBC02D;
+  font-size: 22px;
+  font-weight: 700;
+}
+#subTitleLabel {
+  color: #E8ECF4;
+  font-size: 12px;
+}
+#filterBar, #tableActionBar {
+  background: #FFFFFF;
+  border-radius: 10px;
+  border: 1px solid #E3D8C7;
+}
+#detailsGroup {
+  background: #FFFFFF;
+  border-radius: 10px;
+  border: 1px solid #E3D8C7;
+  margin-top: 6px;
+}
+QLineEdit, QComboBox {
+  background: #FFFBF5;
+  border: 1px solid #D7C9B6;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+QLineEdit:focus, QComboBox:focus {
+  border: 1px solid #2B5978;
+}
+QPushButton {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  background: #6B8E23;
+  color: white;
+}
+QPushButton#filterButton, QPushButton#exportButton {
+  background: #F2B705;
+  color: #2B2B2B;
+}
+QPushButton#resetFilterButton, QPushButton#clearButton {
+  background: #9E9E9E;
+  color: white;
+}
+QPushButton#deleteButton {
+  background: #C62828;
+  color: white;
+}
+QTableWidget {
+  background: #FFFFFF;
+  border: 1px solid #E3D8C7;
+  border-radius: 10px;
+  gridline-color: #E3D8C7;
+  selection-background-color: #FFE9B5;
+  selection-color: #1F2937;
+}
+QHeaderView::section {
+  background: #2B5978;
+  color: white;
+  padding: 8px;
+  border: none;
+  font-weight: 600;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>14</number>
+    </property>
+    <property name="leftMargin">
+     <number>20</number>
+    </property>
+    <property name="topMargin">
+     <number>20</number>
+    </property>
+    <property name="rightMargin">
+     <number>20</number>
+    </property>
+    <property name="bottomMargin">
+     <number>20</number>
+    </property>
+    <item>
+     <widget class="QFrame" name="sidebar">
+      <property name="minimumSize">
+       <size>
+        <width>210</width>
+        <height>0</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="sidebarLayout">
+       <item>
+        <widget class="QLabel" name="sidebarTitle">
+         <property name="text">
+          <string>Smart Oil Press</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+       <widget class="QPushButton" name="navActive">
+        <property name="text">
+         <string>Employé</string>
+        </property>
+       </widget>
+      </item>
+       <item>
+       <widget class="QPushButton" name="navButton_2">
+        <property name="text">
+         <string>Agriculteur</string>
+        </property>
+       </widget>
+      </item>
+       <item>
+       <widget class="QPushButton" name="navButton_3">
+        <property name="text">
+         <string>Stock</string>
+        </property>
+       </widget>
+      </item>
+       <item>
+       <widget class="QPushButton" name="navButton_4">
+        <property name="text">
+         <string>Extraction</string>
+        </property>
+       </widget>
+      </item>
+       <item>
+       <widget class="QPushButton" name="navAccent">
+        <property name="text">
+         <string>Commande</string>
+        </property>
+       </widget>
+      </item>
+       <item>
+        <spacer name="sidebarSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>200</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="contentLayout">
+      <property name="spacing">
+       <number>14</number>
+      </property>
+      <item>
+       <widget class="QFrame" name="topBar">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <layout class="QHBoxLayout" name="topBarLayout">
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>12</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <layout class="QVBoxLayout" name="titleLayout">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="titleLabel">
+             <property name="text">
+              <string>Smart Oil Press</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="subTitleLabel">
+             <property name="text">
+              <string>Gestion des commandes d'huile</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="topSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="addQuickButton">
+           <property name="text">
+            <string>Nouvelle commande</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="filterBar">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <layout class="QHBoxLayout" name="filterLayout">
+         <property name="spacing">
+          <number>12</number>
+         </property>
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>10</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="searchLineEdit">
+           <property name="placeholderText">
+            <string>Recherche (ID, agriculteur, date...)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="filterStatusCombo">
+           <item>
+            <property name="text">
+             <string>Tous statuts</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>en attente</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>validee</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>livree</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="filterButton">
+           <property name="text">
+            <string>Filtrer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="resetFilterButton">
+           <property name="text">
+            <string>Reinitialiser</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="detailsGroup">
+        <property name="title">
+         <string>Details commande</string>
+        </property>
+        <layout class="QGridLayout" name="detailsLayout">
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>12</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>12</number>
+         </property>
+         <property name="horizontalSpacing">
+          <number>12</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>10</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="idLabel">
+           <property name="text">
+            <string>ID Commande</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="idLineEdit"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="farmerLabel">
+           <property name="text">
+            <string>ID Agriculteur</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLineEdit" name="farmerLineEdit"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="dateLabel">
+           <property name="text">
+            <string>Date de commande</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="dateLineEdit">
+           <property name="placeholderText">
+            <string>YYYY-MM-DD</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="qtyLabel">
+           <property name="text">
+            <string>Quantite commandee</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLineEdit" name="qtyLineEdit"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="priceLabel">
+           <property name="text">
+            <string>Prix unitaire</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="priceLineEdit"/>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLabel" name="totalLabel">
+           <property name="text">
+            <string>Montant total</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLineEdit" name="totalLineEdit">
+           <property name="placeholderText">
+            <string>Auto</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="statusLabel">
+           <property name="text">
+            <string>Statut</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="statusCombo">
+           <item>
+            <property name="text">
+             <string>en attente</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>validee</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>livree</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QLabel" name="livreurLabel">
+           <property name="text">
+            <string>ID Livreur</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QLineEdit" name="livreurLineEdit"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="emailLabel">
+           <property name="text">
+            <string>Email</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="emailLineEdit">
+           <property name="placeholderText">
+            <string>ex: client@email.com</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QLabel" name="emailLivreurLabel">
+           <property name="text">
+            <string>Email Livreur</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="3">
+          <widget class="QLineEdit" name="emailLivreurLineEdit">
+           <property name="placeholderText">
+            <string>ex: livreur@email.com</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2" colspan="2">
+          <layout class="QHBoxLayout" name="crudButtonsLayout">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="addButton">
+             <property name="text">
+              <string>Ajouter</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="updateButton">
+             <property name="text">
+              <string>Modifier</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="deleteButton">
+             <property name="text">
+              <string>Supprimer</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="clearButton">
+             <property name="text">
+              <string>Vider</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="tableActionBar">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <layout class="QHBoxLayout" name="tableActionLayout">
+         <property name="spacing">
+          <number>12</number>
+         </property>
+         <property name="leftMargin">
+          <number>16</number>
+         </property>
+         <property name="topMargin">
+          <number>8</number>
+         </property>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>8</number>
+         </property>
+         <item>
+         <widget class="QComboBox" name="sortColumnCombo">
+          <item>
+           <property name="text">
+            <string>ID Commande</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ID Agriculteur</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Date de commande</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Quantite commandee</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Prix unitaire</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Montant total</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ID Livreur</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Email</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Email Livreur</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Statut</string>
+           </property>
+          </item>
+         </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="sortOrderCombo">
+           <item>
+            <property name="text">
+             <string>Ascendant</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Descendant</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sortButton">
+           <property name="text">
+            <string>Trier</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="tableActionSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="exportButton">
+           <property name="text">
+            <string>Ecrire (CSV)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="rowCount">
+         <number>0</number>
+        </property>
+        <property name="columnCount">
+         <number>10</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>ID Commande</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ID Agriculteur</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Date de commande</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Quantite commandee</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Prix unitaire</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Montant total</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ID Livreur</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Email</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Email Livreur</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Statut</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1100</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

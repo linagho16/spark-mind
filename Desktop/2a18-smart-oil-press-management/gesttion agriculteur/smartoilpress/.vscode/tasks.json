@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build with qmake",
+			"type": "shell",
+			"command": "cd build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug && make",
+			"group": "build"
+		}
+	]
+}

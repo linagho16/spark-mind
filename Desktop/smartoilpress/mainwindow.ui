@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1600</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Smart Oil Press - Gestion des Agriculteurs</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QMainWindow { background-color: #F2F6EE; }
+    QWidget#centralwidget { background-color: #F2F6EE; }
+
+    /* ── Sidebar ── */
+    QWidget#sidebar {
+      background-color: #2D5016;
+      min-width: 225px;
+      max-width: 225px;
+    }
+    QLabel#logoTitle {
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    QLabel#logoSub {
+      color: rgba(255,255,255,0.6);
+      font-size: 11px;
+    }
+    QLabel#sectionLabel {
+      color: rgba(255,255,255,0.42);
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+    QPushButton#agriBtn {
+      background-color: rgba(255,255,255,0.13);
+      color: #FFFFFF;
+      border: none;
+      border-left: 3px solid #8BC34A;
+      text-align: left;
+      padding: 9px 18px;
+      font-size: 13px;
+    }
+    QPushButton#statsBtn, QPushButton#settingsBtn {
+      background-color: transparent;
+      color: rgba(255,255,255,0.72);
+      border: none;
+      border-left: 3px solid transparent;
+      text-align: left;
+      padding: 9px 18px;
+      font-size: 13px;
+    }
+    QPushButton#statsBtn:hover, QPushButton#settingsBtn:hover {
+      background-color: rgba(255,255,255,0.08);
+      color: #FFFFFF;
+    }
+    QPushButton#logoutBtn {
+      background-color: transparent;
+      color: rgba(255,200,180,0.75);
+      border: none;
+      border-left: 3px solid transparent;
+      text-align: left;
+      padding: 9px 18px;
+      font-size: 13px;
+    }
+    QPushButton#logoutBtn:hover {
+      background-color: rgba(160,40,40,0.28);
+      color: #FFAAAA;
+    }
+    QLabel#adminName {
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    QLabel#adminRole {
+      color: rgba(255,255,255,0.52);
+      font-size: 11px;
+    }
+
+    /* ── Top bar ── */
+    QWidget#topbar {
+      background-color: #FFFFFF;
+      border-bottom: 1px solid #D6E8C4;
+      min-height: 56px;
+      max-height: 56px;
+    }
+    QLabel#pageTitle {
+      color: #2D5016;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    QLineEdit#searchInput {
+      background-color: #F2F6EE;
+      border: 1px solid #C8DFB0;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #2D5016;
+      min-width: 220px;
+      max-width: 220px;
+    }
+    QLineEdit#searchInput:focus {
+      border: 1px solid #4A7C1F;
+    }
+    QPushButton#btnOutline {
+      background-color: #FFFFFF;
+      color: #4A7C1F;
+      border: 1px solid #B8D89A;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+    }
+    QPushButton#btnOutline:hover { background-color: #EEF7E4; }
+    QPushButton#btnAdd {
+      background-color: #4A7C1F;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    QPushButton#btnAdd:hover { background-color: #2D5016; }
+
+    /* ── KPI Cards ── */
+    QFrame#kpiCard {
+      background-color: #FFFFFF;
+      border: 1px solid #D6E8C4;
+      border-radius: 12px;
+    }
+    QLabel#kpiLabel {
+      color: #6A8F52;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    QLabel#kpiDeltaUp { color: #4A7C1F; font-size: 11px; }
+
+    /* ── Table Card ── */
+    QFrame#tableCard {
+      background-color: #FFFFFF;
+      border: 1px solid #D6E8C4;
+      border-radius: 12px;
+    }
+    QLabel#cardTitle {
+      color: #2D5016;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    QTableWidget {
+      background-color: #FFFFFF;
+      border: none;
+      gridline-color: #F2F6EE;
+      font-size: 13px;
+      color: #243D14;
+    }
+    QTableWidget::item { padding: 10px 12px; border-bottom: 1px solid #EEF5E6; }
+    QTableWidget::item:selected { background-color: #DDEFC8; color: #2D5016; }
+    QHeaderView::section {
+      background-color: #F4F9EF;
+      color: #6A8F52;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 10px 12px;
+      border: none;
+      border-bottom: 1px solid #D6E8C4;
+    }
+
+    /* ── Right Form Panel ── */
+    QFrame#rightCard {
+      background-color: #FFFFFF;
+      border: 1px solid #D6E8C4;
+      border-radius: 12px;
+    }
+    QFrame#rightCard QLabel {
+      color: #4A6A32;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    QFrame#rightCard QLineEdit {
+      background-color: #F5F9F1;
+      border: 1px solid #C8DFB0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #243D14;
+    }
+    QFrame#rightCard QLineEdit:focus {
+      border: 1px solid #4A7C1F;
+      background-color: #FFFFFF;
+    }
+    QFrame#rightCard QLineEdit[readOnly="true"] {
+      background-color: #EDF3E8;
+      color: #88A870;
+    }
+    QPushButton#ajouterBtn {
+      background-color: #4A7C1F;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    QPushButton#ajouterBtn:hover { background-color: #2D5016; }
+    QPushButton#modifierBtn {
+      background-color: #FFFFFF;
+      color: #4A7C1F;
+      border: 1px solid #B8D89A;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    QPushButton#modifierBtn:hover { background-color: #EEF7E4; }
+    QPushButton#effacerBtn {
+      background-color: #FFFFFF;
+      color: #6A8F52;
+      border: 1px solid #C8DFB0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    QPushButton#effacerBtn:hover { background-color: #F2F6EE; }
+    QPushButton#supprimerBtn {
+      background-color: #FCEBEB;
+      color: #A32D2D;
+      border: 1px solid #F0C0C0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    QPushButton#supprimerBtn:hover { background-color: #A32D2D; color: #FFFFFF; }
+    QPushButton#historiqueBtn, QPushButton#statsFormBtn, QPushButton#statsSuperficieBtn, QPushButton#exportBtn {
+      background-color: #FFFFFF;
+      color: #4A7C1F;
+      border: 1px solid #B8D89A;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 12px;
+    }
+    QPushButton#historiqueBtn:hover,
+    QPushButton#statsFormBtn:hover, QPushButton#statsSuperficieBtn:hover, QPushButton#exportBtn:hover {
+      background-color: #EEF7E4;
+    }
+
+    /* ── Attachment buttons ── */
+    QPushButton#pieceJointeBtn {
+      background-color: #EEF7E4;
+      color: #2D5016;
+      border: 1px solid #B8D89A;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    QPushButton#pieceJointeBtn:hover { background-color: #C8DFB0; }
+    QPushButton#ouvrirFichierBtn {
+      background-color: #FFFFFF;
+      color: #4A7C1F;
+      border: 1px solid #B8D89A;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    QPushButton#ouvrirFichierBtn:hover    { background-color: #EEF7E4; }
+    QPushButton#ouvrirFichierBtn:disabled { color: #C0D4B0; border-color: #D6E8C4; }
+
+    /* ── Scrollbars ── */
+    QScrollBar:vertical {
+      background: #EEF5E6; width: 6px; border-radius: 3px;
+    }
+    QScrollBar::handle:vertical { background: #A8D080; border-radius: 3px; }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+    QScrollArea { border: none; background: transparent; }
+   </string>
+  </property>
+
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="mainHLayout">
+    <property name="spacing"><number>0</number></property>
+    <property name="leftMargin"><number>0</number></property>
+    <property name="topMargin"><number>0</number></property>
+    <property name="rightMargin"><number>0</number></property>
+    <property name="bottomMargin"><number>0</number></property>
+
+    <!-- ════════ SIDEBAR ════════ -->
+    <item>
+     <widget class="QWidget" name="sidebar">
+      <layout class="QVBoxLayout" name="sidebarLayout">
+       <property name="spacing"><number>0</number></property>
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>0</number></property>
+       <property name="bottomMargin"><number>0</number></property>
+
+       <!-- Logo -->
+       <item>
+        <widget class="QWidget" name="logoArea">
+         <property name="styleSheet">
+          <string notr="true">QWidget#logoArea { padding: 22px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.12); }</string>
+         </property>
+         <layout class="QVBoxLayout">
+          <property name="spacing"><number>4</number></property>
+          <item>
+           <widget class="QFrame" name="logoIconFrame">
+            <property name="styleSheet">
+             <string notr="true">QFrame { background-color: #6A9E2D; border-radius: 8px; min-width:38px; max-width:38px; min-height:38px; max-height:38px; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="logoTitle">
+            <property name="text"><string>Smart Oil Press</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="logoSub">
+            <property name="text"><string>Gestion agricole</string></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Navigation -->
+       <item>
+        <widget class="QWidget" name="navArea">
+         <layout class="QVBoxLayout" name="navLayout">
+          <property name="spacing"><number>0</number></property>
+          <property name="leftMargin"><number>0</number></property>
+          <property name="topMargin"><number>14</number></property>
+          <property name="rightMargin"><number>0</number></property>
+          <property name="bottomMargin"><number>0</number></property>
+
+          <item>
+           <widget class="QLabel" name="sectionLabel">
+            <property name="text"><string>PRINCIPAL</string></property>
+            <property name="styleSheet"><string notr="true">padding: 6px 18px 4px;</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="agriBtn">
+            <property name="text"><string>  Agriculteurs</string></property>
+            <property name="minimumHeight"><number>40</number></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="statsBtn">
+            <property name="text"><string>  Statistiques</string></property>
+            <property name="minimumHeight"><number>40</number></property>
+           </widget>
+          </item>
+
+          <item>
+           <widget class="QLabel" name="sectionLabel">
+            <property name="text"><string>GESTION</string></property>
+            <property name="styleSheet"><string notr="true">padding: 14px 18px 4px;</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="settingsBtn">
+            <property name="text"><string>  Paramètres</string></property>
+            <property name="minimumHeight"><number>40</number></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="logoutBtn">
+            <property name="text"><string>  Déconnexion</string></property>
+            <property name="minimumHeight"><number>40</number></property>
+           </widget>
+          </item>
+
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Vertical</enum></property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- Admin profile -->
+       <item>
+        <widget class="QWidget" name="adminArea">
+         <property name="styleSheet">
+          <string notr="true">QWidget#adminArea { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.10); background-color: rgba(0,0,0,0.08); }</string>
+         </property>
+         <layout class="QHBoxLayout">
+          <property name="spacing"><number>10</number></property>
+          <item>
+           <widget class="QFrame" name="adminAvatar">
+            <property name="styleSheet">
+             <string notr="true">QFrame { background-color: #6A9E2D; border-radius: 16px; min-width:32px; max-width:32px; min-height:32px; max-height:32px; }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout">
+            <property name="spacing"><number>2</number></property>
+            <item>
+             <widget class="QLabel" name="adminName">
+              <property name="text"><string>Mohamed A.</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="adminRole">
+              <property name="text"><string>Administrateur</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+      </layout>
+     </widget>
+    </item>
+    <!-- ════════ END SIDEBAR ════════ -->
+
+    <!-- ════════ MAIN AREA ════════ -->
+    <item>
+     <widget class="QWidget" name="mainArea">
+      <layout class="QVBoxLayout" name="mainAreaLayout">
+       <property name="spacing"><number>0</number></property>
+       <property name="leftMargin"><number>0</number></property>
+       <property name="topMargin"><number>0</number></property>
+       <property name="rightMargin"><number>0</number></property>
+       <property name="bottomMargin"><number>0</number></property>
+
+       <!-- Top Bar -->
+       <item>
+        <widget class="QWidget" name="topbar">
+         <layout class="QHBoxLayout" name="topbarLayout">
+          <property name="leftMargin"><number>24</number></property>
+          <property name="rightMargin"><number>24</number></property>
+          <property name="topMargin"><number>0</number></property>
+          <property name="bottomMargin"><number>0</number></property>
+          <property name="spacing"><number>12</number></property>
+
+          <item>
+           <widget class="QLabel" name="pageTitle">
+            <property name="text"><string>Tableau de bord — Agriculteurs</string></property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation"><enum>Qt::Horizontal</enum></property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="searchInput">
+            <property name="placeholderText"><string>Rechercher par nom ou CIN…</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="statsFormBtn">
+            <property name="text"><string>&#x1F4CA; Oliviers</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="statsSuperficieBtn">
+            <property name="text"><string>&#x1F4CA; Superficie</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="exportBtn">
+            <property name="text"><string>↓ Exporter</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAdd">
+            <property name="text"><string>+ Nouveau</string></property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <!-- End Top Bar -->
+
+       <!-- Content Area -->
+       <item>
+        <widget class="QScrollArea" name="contentScroll">
+         <property name="widgetResizable"><bool>true</bool></property>
+         <widget class="QWidget" name="contentWidget">
+          <layout class="QHBoxLayout" name="contentLayout">
+           <property name="spacing"><number>18</number></property>
+           <property name="leftMargin"><number>20</number></property>
+           <property name="topMargin"><number>20</number></property>
+           <property name="rightMargin"><number>20</number></property>
+           <property name="bottomMargin"><number>20</number></property>
+
+           <!-- ── Left Column: KPI + Table ── -->
+           <item>
+            <layout class="QVBoxLayout" name="leftColLayout">
+             <property name="spacing"><number>16</number></property>
+
+             <!-- KPI Row -->
+             <item>
+              <layout class="QHBoxLayout" name="kpiRow">
+               <property name="spacing"><number>12</number></property>
+
+               <!-- KPI 1: Total agriculteurs -->
+               <item>
+                <widget class="QFrame" name="kpiCard">
+                 <layout class="QVBoxLayout">
+                  <property name="spacing"><number>6</number></property>
+                  <property name="leftMargin"><number>16</number></property>
+                  <property name="topMargin"><number>14</number></property>
+                  <property name="rightMargin"><number>16</number></property>
+                  <property name="bottomMargin"><number>14</number></property>
+                  <item>
+                   <widget class="QLabel" name="kpiLabel">
+                    <property name="text"><string>TOTAL AGRICULTEURS</string></property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiTotalValue">
+                    <property name="text"><string>0</string></property>
+                    <property name="styleSheet">
+                     <string notr="true">color: #2D5016; font-size: 28px; font-weight: bold;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiDeltaUp">
+                    <property name="text"><string>agriculteurs enregistrés</string></property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+
+               <!-- KPI 2: Superficie -->
+               <item>
+                <widget class="QFrame" name="kpiCard">
+                 <layout class="QVBoxLayout">
+                  <property name="spacing"><number>6</number></property>
+                  <property name="leftMargin"><number>16</number></property>
+                  <property name="topMargin"><number>14</number></property>
+                  <property name="rightMargin"><number>16</number></property>
+                  <property name="bottomMargin"><number>14</number></property>
+                  <item>
+                   <widget class="QLabel" name="kpiLabel">
+                    <property name="text"><string>SUPERFICIE TOTALE</string></property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiSuperficieValue">
+                    <property name="text"><string>0 ha</string></property>
+                    <property name="styleSheet">
+                     <string notr="true">color: #2D5016; font-size: 28px; font-weight: bold;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiDeltaUp">
+                    <property name="text"><string>hectares cultivés</string></property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+
+               <!-- KPI 3: Oliviers -->
+               <item>
+                <widget class="QFrame" name="kpiCard">
+                 <layout class="QVBoxLayout">
+                  <property name="spacing"><number>6</number></property>
+                  <property name="leftMargin"><number>16</number></property>
+                  <property name="topMargin"><number>14</number></property>
+                  <property name="rightMargin"><number>16</number></property>
+                  <property name="bottomMargin"><number>14</number></property>
+                  <item>
+                   <widget class="QLabel" name="kpiLabel">
+                    <property name="text"><string>OLIVIERS TOTAUX</string></property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiOliviersValue">
+                    <property name="text"><string>0</string></property>
+                    <property name="styleSheet">
+                     <string notr="true">color: #2D5016; font-size: 28px; font-weight: bold;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiDeltaUp">
+                    <property name="text"><string>arbres enregistrés</string></property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+
+               <!-- KPI 4: Cultures -->
+               <item>
+                <widget class="QFrame" name="kpiCard">
+                 <layout class="QVBoxLayout">
+                  <property name="spacing"><number>6</number></property>
+                  <property name="leftMargin"><number>16</number></property>
+                  <property name="topMargin"><number>14</number></property>
+                  <property name="rightMargin"><number>16</number></property>
+                  <property name="bottomMargin"><number>14</number></property>
+                  <item>
+                   <widget class="QLabel" name="kpiLabel">
+                    <property name="text"><string>TOTAL CULTURES</string></property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiCulturesValue">
+                    <property name="text"><string>0</string></property>
+                    <property name="styleSheet">
+                     <string notr="true">color: #2D5016; font-size: 28px; font-weight: bold;</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="kpiDeltaUp">
+                    <property name="text"><string>parcelles actives</string></property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+
+              </layout>
+             </item>
+             <!-- End KPI Row -->
+
+             <!-- Table Card -->
+             <item>
+              <widget class="QFrame" name="tableCard">
+               <layout class="QVBoxLayout" name="tableCardLayout">
+                <property name="spacing"><number>12</number></property>
+                <property name="leftMargin"><number>16</number></property>
+                <property name="topMargin"><number>16</number></property>
+                <property name="rightMargin"><number>16</number></property>
+                <property name="bottomMargin"><number>16</number></property>
+
+                <!-- Table header row -->
+                <item>
+                 <layout class="QHBoxLayout">
+                  <property name="spacing"><number>10</number></property>
+                  <item>
+                   <widget class="QLabel" name="cardTitle">
+                    <property name="text"><string>Liste des Agriculteurs</string></property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer>
+                    <property name="orientation"><enum>Qt::Horizontal</enum></property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="historiqueBtn">
+                    <property name="text"><string>Historique</string></property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+
+                <!-- Table -->
+                <item>
+                 <widget class="QTableWidget" name="tableWidget">
+                  <property name="alternatingRowColors"><bool>true</bool></property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+                  </property>
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+                  </property>
+                  <property name="showGrid"><bool>false</bool></property>
+                  <property name="sortingEnabled"><bool>true</bool></property>
+                  <column><property name="text"><string>ID</string></property></column>
+                  <column><property name="text"><string>CIN</string></property></column>
+                  <column><property name="text"><string>Nom</string></property></column>
+                  <column><property name="text"><string>Adresse</string></property></column>
+                  <column><property name="text"><string>Téléphone</string></property></column>
+                  <column><property name="text"><string>Email</string></property></column>
+                  <column><property name="text"><string>Superficie (ha)</string></property></column>
+                  <column><property name="text"><string>Oliviers</string></property></column>
+                 </widget>
+                </item>
+
+               </layout>
+              </widget>
+             </item>
+             <!-- End Table Card -->
+
+            </layout>
+           </item>
+           <!-- ── End Left Column ── -->
+
+           <!-- ── Right Column: Form Panel ── -->
+           <item>
+            <widget class="QFrame" name="rightCard">
+             <property name="minimumWidth"><number>270</number></property>
+             <property name="maximumWidth"><number>290</number></property>
+             <layout class="QVBoxLayout" name="formPanelLayout">
+              <property name="spacing"><number>8</number></property>
+              <property name="leftMargin"><number>18</number></property>
+              <property name="topMargin"><number>18</number></property>
+              <property name="rightMargin"><number>18</number></property>
+              <property name="bottomMargin"><number>18</number></property>
+
+              <item>
+               <widget class="QLabel" name="cardTitle">
+                <property name="text"><string>Formulaire Agriculteur</string></property>
+               </widget>
+              </item>
+
+              <!-- Separator -->
+              <item>
+               <widget class="QFrame" name="formSep">
+                <property name="styleSheet">
+                 <string notr="true">background-color: #E2EAF3; min-height: 1px; max-height: 1px;</string>
+                </property>
+               </widget>
+              </item>
+
+              <!-- ID -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>ID (auto)</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="idEdit">
+                <property name="readOnly"><bool>true</bool></property>
+                <property name="placeholderText"><string>Auto-généré</string></property>
+               </widget>
+              </item>
+
+              <!-- CIN -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>CIN *</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="cinEdit">
+                <property name="placeholderText"><string>Ex: AB123456</string></property>
+               </widget>
+              </item>
+
+              <!-- Nom -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>Nom complet *</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="nomEdit">
+                <property name="placeholderText"><string>Nom et prénom</string></property>
+               </widget>
+              </item>
+
+              <!-- Adresse -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>Adresse</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="adresseEdit">
+                <property name="placeholderText"><string>Ville, Région</string></property>
+               </widget>
+              </item>
+
+              <!-- Téléphone -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>Téléphone</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="telephoneEdit">
+                <property name="placeholderText"><string>+216 98 000 000</string></property>
+               </widget>
+              </item>
+
+              <!-- Email -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>Email</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="emailEdit">
+                <property name="placeholderText"><string>email@exemple.com</string></property>
+               </widget>
+              </item>
+
+              <!-- Superficie -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>Superficie (ha)</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="superficieEdit">
+                <property name="placeholderText"><string>0</string></property>
+               </widget>
+              </item>
+
+              <!-- Oliviers -->
+              <item>
+               <widget class="QLabel">
+                <property name="text"><string>Nombre d'oliviers</string></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="oliviersEdit">
+                <property name="placeholderText"><string>0</string></property>
+               </widget>
+              </item>
+
+              <!-- Action Buttons -->
+              <item>
+               <layout class="QGridLayout" name="formBtnGrid">
+                <property name="spacing"><number>8</number></property>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="ajouterBtn">
+                  <property name="text"><string>Ajouter</string></property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QPushButton" name="modifierBtn">
+                  <property name="text"><string>Modifier</string></property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="effacerBtn">
+                  <property name="text"><string>Effacer</string></property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QPushButton" name="supprimerBtn">
+                  <property name="text"><string>Supprimer</string></property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+
+              <!-- Attachment separator -->
+              <item>
+               <widget class="QFrame" name="attachSep">
+                <property name="styleSheet">
+                 <string notr="true">background-color: #D6E8C4; min-height: 1px; max-height: 1px;</string>
+                </property>
+               </widget>
+              </item>
+
+              <!-- Attachment label -->
+              <item>
+               <widget class="QLabel" name="attachLabel">
+                <property name="text"><string>&#x1F4CE; Pi&#232;ce jointe</string></property>
+                <property name="styleSheet">
+                 <string notr="true">color: #4A6A32; font-size: 11px; font-weight: bold; padding-top: 4px;</string>
+                </property>
+               </widget>
+              </item>
+
+              <!-- Attachment buttons row -->
+              <item>
+               <layout class="QHBoxLayout" name="attachBtnRow">
+                <property name="spacing"><number>8</number></property>
+                <item>
+                 <widget class="QPushButton" name="pieceJointeBtn">
+                  <property name="text"><string>&#x1F4CE; Joindre fichier</string></property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="ouvrirFichierBtn">
+                  <property name="text"><string>&#x1F441; Ouvrir</string></property>
+                  <property name="enabled"><bool>false</bool></property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+
+              <item>
+               <spacer>
+                <property name="orientation"><enum>Qt::Vertical</enum></property>
+               </spacer>
+              </item>
+
+             </layout>
+            </widget>
+           </item>
+           <!-- ── End Right Column ── -->
+
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <!-- End Content Area -->
+
+      </layout>
+     </widget>
+    </item>
+    <!-- ════════ END MAIN AREA ════════ -->
+
+   </layout>
+  </widget>
+
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
